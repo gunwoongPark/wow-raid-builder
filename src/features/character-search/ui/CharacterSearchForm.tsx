@@ -1,105 +1,170 @@
 "use client"
 
+import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import Image from "next/image"
+import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { characterApi, type RosterCharacter } from "@/entities/character"
+import {
+  characterApi,
+  characterQueries,
+  type CharacterSearchResult,
+  type RosterCharacter,
+} from "@/entities/character"
+import { useDebounce } from "@/shared/lib/use-debounce"
 import { useRosterStore } from "@/shared/model/roster-store"
 
 import { characterSearchSchema, type CharacterSearchSchema } from "../schema"
 
 export const CharacterSearchForm = () => {
-  const addCharacter = useRosterStore((s) => s.addCharacter)
-  const characters = useRosterStore((s) => s.characters)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  // 변수부 — 스토어
+  const addCharacter = useRosterStore((store) => store.addCharacter)
+  const characters = useRosterStore((store) => store.characters)
 
-  const {
-    formState: { errors },
-    handleSubmit,
-    register,
-    reset,
-  } = useForm<CharacterSearchSchema>({
-    defaultValues: { name: "", realm: "줄진" },
+  // 변수부 — 로컬 상태
+  const [query, setQuery] = useState("")
+  const [isAdding, setIsAdding] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const debouncedQuery = useDebounce(query, 350)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  // 변수부 — 폼 / 쿼리
+  const { handleSubmit } = useForm<CharacterSearchSchema>({
     resolver: zodResolver(characterSearchSchema),
   })
 
-  const onSubmit = async ({ name, realm }: CharacterSearchSchema) => {
-    const id = `${realm}-${name.toLowerCase()}`
-    if (characters.some((c) => c.id === id)) {
-      setError("이미 로스터에 추가된 캐릭터입니다.")
+  const { data: searchResults = [], isFetching } = useQuery({
+    ...characterQueries.search(debouncedQuery),
+    placeholderData: (previous) => previous,
+  })
+
+  // 함수
+  const onSelect = async (result: CharacterSearchResult | null) => {
+    if (!result) return
+
+    const characterId = `${result.realmSlug}-${result.name.toLowerCase()}`
+    if (characters.some((character) => character.id === characterId)) {
+      setErrorMessage("이미 로스터에 추가된 캐릭터입니다.")
       return
     }
 
-    setIsLoading(true)
-    setError(null)
+    setIsAdding(true)
+    setErrorMessage(null)
 
     try {
-      // Blizzard + Raider.IO 병렬 조회
-      const [character, raiderIO] = await Promise.allSettled([
-        characterApi.getSummary(realm, name),
-        characterApi.getRaiderIO(realm, name),
+      const [characterResult, raiderIOResult, warcraftLogsResult] = await Promise.allSettled([
+        characterApi.getSummary(result.realmSlug, result.name),
+        characterApi.getRaiderIO(result.realmSlug, result.name),
+        characterApi.getWarcraftLogs(result.realmSlug, result.name),
       ])
 
-      if (character.status === "rejected") {
-        setError("캐릭터를 찾을 수 없습니다. 서버명과 캐릭터명을 확인해주세요.")
+      if (characterResult.status === "rejected") {
+        const status = characterResult.reason?.response?.status as number | undefined
+        const message =
+          status === 404
+            ? `"${result.name}" 캐릭터를 블리자드 서버에서 찾을 수 없습니다. 이름 변경이나 서버 이전이 있었을 수 있어요.`
+            : status !== null && status !== undefined && status >= 500
+              ? "블리자드 서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요."
+              : ((characterResult.reason?.response?.data?.error as string | undefined) ??
+                characterResult.reason?.message ??
+                "캐릭터 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.")
+        setErrorMessage(message)
         return
       }
 
-      const result: RosterCharacter = {
-        ...character.value,
+      const added: RosterCharacter = {
+        ...characterResult.value,
         raiderIO:
-          raiderIO.status === "fulfilled"
+          raiderIOResult.status === "fulfilled"
             ? {
-                profileUrl: raiderIO.value.profile_url,
-                raidProgression: raiderIO.value.raid_progression,
-                score: raiderIO.value.mythic_plus_scores_by_season?.[0]?.scores.all ?? 0,
-                thumbnailUrl: raiderIO.value.thumbnail_url,
+                profileUrl: raiderIOResult.value.profile_url,
+                raidProgression: raiderIOResult.value.raid_progression ?? {},
+                score: raiderIOResult.value.mythic_plus_scores_by_season?.[0]?.scores.all ?? 0,
+                thumbnailUrl: raiderIOResult.value.thumbnail_url,
               }
             : null,
+        warcraftLogs: warcraftLogsResult.status === "fulfilled" ? warcraftLogsResult.value : null,
       }
 
-      addCharacter(result)
-      reset({ name: "", realm })
-    } catch {
-      setError("오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+      addCharacter(added)
+      setQuery("")
+      inputRef.current?.blur()
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "오류가 발생했습니다."
+      setErrorMessage(message)
     } finally {
-      setIsLoading(false)
+      setIsAdding(false)
     }
   }
 
+  // 렌더
   return (
-    <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex gap-2">
-        <div className="flex flex-col gap-1">
-          <input
-            {...register("realm")}
-            className="w-32 rounded border px-3 py-2 text-sm"
-            placeholder="서버 (예: 줄진)"
+    <form className="flex flex-col gap-2" onSubmit={handleSubmit(() => {})}>
+      <Combobox immediate onChange={onSelect}>
+        <div className="relative">
+          <ComboboxInput
+            className="border-border/60 bg-input text-foreground placeholder:text-muted-foreground focus:border-primary/60 focus:ring-primary/30 w-full rounded-md border px-3 py-2.5 pr-24 text-sm outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isAdding}
+            displayValue={() => query}
+            placeholder="캐릭터명 검색 (예: 액흑)"
+            ref={inputRef}
+            onChange={(event) => {
+              setQuery(event.target.value)
+              setErrorMessage(null)
+            }}
           />
-          {errors.realm && <span className="text-xs text-red-500">{errors.realm.message}</span>}
+
+          {(isFetching || isAdding) && (
+            <span className="text-muted-foreground absolute top-1/2 right-3 flex -translate-y-1/2 items-center gap-1.5 text-xs">
+              <span className="border-muted-foreground/40 border-t-primary inline-block size-3 animate-spin rounded-full border-2" />
+              {isAdding ? "추가 중…" : "검색 중…"}
+            </span>
+          )}
+
+          {searchResults.length > 0 && (
+            <ComboboxOptions className="border-border/60 bg-popover absolute z-[9999] mt-1 max-h-64 w-full overflow-auto rounded-md border shadow-xl [background:var(--popover)]">
+              {searchResults.map((result) => (
+                <ComboboxOption
+                  className="text-foreground data-[focus]:bg-primary/10 flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm transition-colors"
+                  key={result.realmSlug}
+                  value={result}
+                >
+                  {result.thumbnailUrl && (
+                    <Image
+                      alt={result.name}
+                      className="border-border/50 size-9 rounded border"
+                      height={36}
+                      src={result.thumbnailUrl}
+                      width={36}
+                    />
+                  )}
+                  <div>
+                    <p className="text-foreground font-semibold">{result.name}</p>
+                    <p className="text-muted-foreground text-xs">
+                      {result.realm} · {result.specName} {result.className}
+                      {result.score > 0 && (
+                        <span className="text-primary ml-1.5">
+                          M+ {result.score.toLocaleString()}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </ComboboxOption>
+              ))}
+            </ComboboxOptions>
+          )}
+
+          {!isFetching && debouncedQuery.length >= 2 && searchResults.length === 0 && (
+            <ComboboxOptions className="border-border/60 bg-popover absolute z-[9999] mt-1 w-full rounded-md border shadow-xl [background:var(--popover)]">
+              <p className="text-muted-foreground px-3 py-2.5 text-sm">검색 결과가 없습니다.</p>
+            </ComboboxOptions>
+          )}
         </div>
+      </Combobox>
 
-        <div className="flex flex-1 flex-col gap-1">
-          <input
-            {...register("name")}
-            className="w-full rounded border px-3 py-2 text-sm"
-            placeholder="캐릭터명"
-          />
-          {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
-        </div>
-
-        <button
-          className="rounded bg-blue-600 px-4 py-2 text-sm font-medium whitespace-nowrap text-white disabled:opacity-50"
-          disabled={isLoading}
-          type="submit"
-        >
-          {isLoading ? "조회 중..." : "추가"}
-        </button>
-      </div>
-
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {errorMessage && <p className="text-xs text-red-500">{errorMessage}</p>}
     </form>
   )
 }

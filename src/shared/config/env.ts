@@ -10,4 +10,8 @@ export const env = {
     },
     region: "kr",
   },
+  warcraftLogs: {
+    clientId: process.env.WARCRAFT_LOGS_CLIENT_ID ?? "",
+    clientSecret: process.env.WARCRAFT_LOGS_CLIENT_SECRET ?? "",
+  },
 } satisfies Record<string, unknown>

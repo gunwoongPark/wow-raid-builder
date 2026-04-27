@@ -1,10 +1,10 @@
-import { defineConfig, globalIgnores } from "eslint/config"
+import tanstackQuery from "@tanstack/eslint-plugin-query"
 import nextVitals from "eslint-config-next/core-web-vitals"
 import nextTs from "eslint-config-next/typescript"
-import tanstackQuery from "@tanstack/eslint-plugin-query"
+import prettier from "eslint-config-prettier"
 import perfectionist from "eslint-plugin-perfectionist"
 import unusedImports from "eslint-plugin-unused-imports"
-import prettier from "eslint-config-prettier"
+import { defineConfig, globalIgnores } from "eslint/config"
 
 const eslintConfig = defineConfig([
   // ─── Base ─────────────────────────────────────────────────────────────
@@ -20,8 +20,6 @@ const eslintConfig = defineConfig([
       "perfectionist/sort-imports": [
         "error",
         {
-          type: "alphabetical",
-          order: "asc",
           groups: [
             "builtin",
             "external",
@@ -32,31 +30,33 @@ const eslintConfig = defineConfig([
           ],
           internalPattern: ["^@/"],
           newlinesBetween: 1,
+          order: "asc",
+          type: "alphabetical",
         },
       ],
       // named import 내부 알파벳 정렬
-      "perfectionist/sort-named-imports": ["error", { type: "alphabetical", order: "asc" }],
+      "perfectionist/sort-named-imports": ["error", { order: "asc", type: "alphabetical" }],
       // JSX props 알파벳 정렬 (shorthand-prop 먼저, multiline 마지막)
       "perfectionist/sort-jsx-props": [
         "error",
         {
-          type: "alphabetical",
-          order: "asc",
           groups: ["shorthand-prop", "prop", "multiline-prop"],
+          order: "asc",
+          type: "alphabetical",
         },
       ],
       // 객체 키 알파벳 정렬
       "perfectionist/sort-objects": [
         "error",
         {
-          type: "alphabetical",
           order: "asc",
+          type: "alphabetical",
           // 구조 분해, 타입 정의에도 적용
           partitionByComment: true,
         },
       ],
       // named export 알파벳 정렬
-      "perfectionist/sort-named-exports": ["error", { type: "alphabetical", order: "asc" }],
+      "perfectionist/sort-named-exports": ["error", { order: "asc", type: "alphabetical" }],
     },
   },
 
@@ -71,10 +71,10 @@ const eslintConfig = defineConfig([
       "unused-imports/no-unused-vars": [
         "error",
         {
-          vars: "all",
-          varsIgnorePattern: "^_",
           args: "after-used",
           argsIgnorePattern: "^_",
+          vars: "all",
+          varsIgnorePattern: "^_",
         },
       ],
     },
@@ -93,7 +93,7 @@ const eslintConfig = defineConfig([
       // type import 강제: import { type Foo } 형태
       "@typescript-eslint/consistent-type-imports": [
         "error",
-        { prefer: "type-imports", fixStyle: "inline-type-imports" },
+        { fixStyle: "inline-type-imports", prefer: "type-imports" },
       ],
       // non-null assertion(!) 경고
       "@typescript-eslint/no-non-null-assertion": "warn",
@@ -134,6 +134,16 @@ const eslintConfig = defineConfig([
 
   // ─── Prettier: 포맷 규칙 충돌 비활성화 (반드시 마지막) ─────────────────
   prettier,
+
+  // shadcn/warcraftcn 생성 파일은 외부 코드 — 스타일 규칙 완화
+  {
+    files: ["src/components/ui/**", "src/lib/utils.ts"],
+    rules: {
+      "func-style": "off",
+      "perfectionist/sort-jsx-props": "off",
+      "perfectionist/sort-objects": "off",
+    },
+  },
 
   globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
 ])

@@ -1,0 +1,16 @@
+---
+description: WoW Raid Builder 프로젝트 규칙 — 매 요청마다 자동 참조
+alwaysApply: true
+---
+
+이 프로젝트의 전체 지침은 `CLAUDE.md`에 있습니다. 작업 전 반드시 읽고 따르세요.
+
+핵심 요약:
+- **브랜치**: `develop`에서 작업, `main`은 PR로만
+- **작업 완료 후**: `npm run build` 통과 → `git add -A && git commit && git push origin develop`
+- **백그라운드 서버 실행 금지** — 사용자가 직접 `pnpm dev`
+- **FSD 아키텍처** 준수 — 레이어 간 단방향 의존성
+- **Blizzard API 클라이언트 직접 호출 금지** — 반드시 Route Handler(`app/api/`) 경유
+- **한글 캐릭터명 API 전달** — axios params 사용 금지, `encodeURIComponent`로 URL 직접 구성
+- **CSS `@import`** — 반드시 파일 최상단 배치
+- **`export default`** — Next.js page/layout에서만 허용

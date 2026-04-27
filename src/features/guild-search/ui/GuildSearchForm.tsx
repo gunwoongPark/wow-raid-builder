@@ -62,7 +62,7 @@ export const GuildSearchForm = () => {
       {isError && <p className="text-sm text-red-500">데이터를 불러오지 못했습니다.</p>}
       {data && (
         <p className="text-sm">
-          {data.name} — 멤버 {data.member_count}명
+          {data.guild.name} — 멤버 {data.members.length}명
         </p>
       )}
     </div>

@@ -13,11 +13,27 @@ export const characterQueries = {
       staleTime: 5 * 60 * 1000,
     }),
 
+  search: (name: string) =>
+    queryOptions({
+      ...characterKeys.search(name),
+      enabled: name.length >= 2,
+      queryFn: () => characterApi.search(name),
+      staleTime: 30 * 1000,
+    }),
+
   summary: (realm: string, name: string) =>
     queryOptions({
       ...characterKeys.summary(realm, name),
       enabled: Boolean(realm && name),
       queryFn: () => characterApi.getSummary(realm, name),
       staleTime: 5 * 60 * 1000,
+    }),
+
+  warcraftLogs: (realm: string, name: string) =>
+    queryOptions({
+      ...characterKeys.warcraftLogs(realm, name),
+      enabled: Boolean(realm && name),
+      queryFn: () => characterApi.getWarcraftLogs(realm, name),
+      staleTime: 10 * 60 * 1000,
     }),
 }
