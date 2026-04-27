@@ -60,7 +60,7 @@
 
 ```
 app/api/                     ← Route Handlers (Secret 보호 — 클라이언트 직접 호출 금지)
-entities/character/          ← buffs.ts, queries.ts, types.ts
+entities/character/          ← buffs.ts (spellId·icon 포함), queries.ts, types.ts
 features/character-search/   ← Combobox 자동완성 (useDebounce 350ms)
 features/roster-manager/     ← RosterList, BuffAnalysis, useRosterSync
   config/roster-display.ts   ← ROLE_LABEL, ROLE_COLOR, ROLE_SORT_ORDER
@@ -70,6 +70,16 @@ shared/config/               ← realms.ts, class-colors.ts, season.ts, raiderio
 shared/lib/                  ← use-debounce.ts, roster-url.ts, wcl-token.ts
 shared/model/                ← roster-store.ts (Zustand persist)
 ```
+
+### 버프/유틸 커버리지 (`entities/character/buffs.ts`)
+
+- **한밤(Midnight) 기준** 으로 작성. 각 BuffSource에 `spellId` + `icon` 포함.
+- 아이콘: `wowheadIconUrl(icon)` → `https://wow.zamimg.com/images/wow/icons/medium/{icon}.jpg`
+- **징벌의 오라(retributionAura)**: TWW 시작 시 삭제됨 → 데이터 없음
+- 카테고리: `"핵심" | "공대버프" | "외생기" | "공대쿨기" | "유틸"`
+- 시즌마다 변경될 수 있는 주요 사항:
+  - Hunter's Mark: TWW→Midnight에서 "80%↑일 때 5%" → "항상 3%"로 변경
+  - 새 스펙 추가 시 `specIds` 배열에 추가, `shared/config/season.ts` 확인
 
 ---
 

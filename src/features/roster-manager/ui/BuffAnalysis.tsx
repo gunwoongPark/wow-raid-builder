@@ -1,35 +1,37 @@
 "use client"
 
+import Image from "next/image"
+
 import {
   analyzeBuffCoverage,
   BUFF_CATEGORIES,
   type BuffCategory,
   COUNTABLE_CATEGORIES,
+  wowheadIconUrl,
 } from "@/entities/character"
 import { useRosterStore } from "@/shared/model/roster-store"
 
 const CATEGORY_LABEL: Record<BuffCategory, string> = {
-  시너지: "공격대 시너지",
-  오라: "기사 오라",
+  공대버프: "공대 버프",
+  공대쿨기: "공대 쿨기",
+  외생기: "외생기",
   유틸: "유틸",
-  특수기: "공대 쿨기",
   핵심: "핵심 버프",
-  힐러외생: "힐러 외생기",
 }
 
 export const BuffAnalysis = () => {
-  const characters = useRosterStore((s) => s.characters)
+  const characters = useRosterStore((store) => store.characters)
   const coverage = analyzeBuffCoverage(characters)
 
   if (characters.length === 0) return null
 
-  const byCategory = BUFF_CATEGORIES.map((cat) => ({
-    buffs: coverage.filter((b) => b.category === cat),
-    category: cat,
-    isCountable: (COUNTABLE_CATEGORIES as string[]).includes(cat),
+  const byCategory = BUFF_CATEGORIES.map((category) => ({
+    buffs: coverage.filter((buff) => buff.category === category),
+    category,
+    isCountable: (COUNTABLE_CATEGORIES as string[]).includes(category),
   }))
 
-  const totalCovered = coverage.filter((b) => b.covered).length
+  const totalCovered = coverage.filter((buff) => buff.covered).length
   const total = coverage.length
 
   return (
@@ -49,7 +51,7 @@ export const BuffAnalysis = () => {
       </div>
 
       {byCategory.map(({ buffs, category, isCountable }) => {
-        const coveredCount = buffs.filter((b) => b.covered).length
+        const coveredCount = buffs.filter((buff) => buff.covered).length
         return (
           <div key={category}>
             <div className="mb-2 flex items-center gap-2">
@@ -70,13 +72,22 @@ export const BuffAnalysis = () => {
                       : "border border-red-500/20 bg-red-500/5"
                   }`}
                 >
-                  <span
-                    className={`mt-0.5 shrink-0 text-base leading-none ${
-                      buff.covered ? "text-emerald-400" : "text-red-500/60"
-                    }`}
-                  >
-                    {buff.covered ? "✓" : "✗"}
-                  </span>
+                  <div className="relative mt-0.5 shrink-0">
+                    <Image
+                      alt={buff.label}
+                      className={`rounded ${buff.covered ? "" : "opacity-30 grayscale"}`}
+                      height={24}
+                      src={wowheadIconUrl(buff.icon)}
+                      width={24}
+                    />
+                    <span
+                      className={`absolute -right-1 -bottom-1 flex h-3 w-3 items-center justify-center rounded-full text-[8px] leading-none font-bold ${
+                        buff.covered ? "bg-emerald-500 text-white" : "bg-red-500/60 text-white"
+                      }`}
+                    >
+                      {buff.covered ? "✓" : "✗"}
+                    </span>
+                  </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-1.5">
                       <p
@@ -86,7 +97,6 @@ export const BuffAnalysis = () => {
                       >
                         {buff.label}
                       </p>
-                      {/* 시너지 제외, 커버된 경우 개수 표시 */}
                       {isCountable && buff.covered && buff.count > 0 && (
                         <span className="shrink-0 rounded bg-emerald-500/20 px-1 text-[10px] font-semibold text-emerald-400">
                           ×{buff.count}
