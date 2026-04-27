@@ -32,3 +32,5 @@ jobs:
         env:
           BLIZZARD_CLIENT_ID: ${{ secrets.BLIZZARD_CLIENT_ID }}
           BLIZZARD_CLIENT_SECRET: ${{ secrets.BLIZZARD_CLIENT_SECRET }}
+          WARCRAFT_LOGS_CLIENT_ID: ${{ secrets.WARCRAFT_LOGS_CLIENT_ID }}
+          WARCRAFT_LOGS_CLIENT_SECRET: ${{ secrets.WARCRAFT_LOGS_CLIENT_SECRET }}
