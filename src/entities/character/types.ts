@@ -80,8 +80,8 @@ export interface RosterCharacterRaiderIO {
 }
 
 export interface RosterCharacterWCL {
-  bestParseAvg: number | null
-  medianParseAvg: number | null
+  heroic: number | null // 영웅 난이도 bestPerformanceAverage
+  mythic: number | null // 신화 난이도 bestPerformanceAverage
 }
 
 export interface RosterCharacter {

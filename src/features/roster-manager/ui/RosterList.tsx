@@ -60,6 +60,13 @@ const CharacterRow = ({ character }: { character: RosterCharacter }) => {
     ? Object.values(character.raiderIO.raidProgression)[0]
     : null
 
+  const heroicProgress = progression
+    ? `${progression.heroic_bosses_killed}/${progression.total_bosses}`
+    : null
+  const mythicProgress = progression
+    ? `${progression.mythic_bosses_killed}/${progression.total_bosses}`
+    : null
+
   return (
     <tr className="border-border/30 border-b transition-colors hover:bg-white/5">
       {/* 썸네일 + 이름 */}
@@ -91,10 +98,25 @@ const CharacterRow = ({ character }: { character: RosterCharacter }) => {
       <td className="px-3 py-2 font-mono text-sm">
         <ScoreColor score={score} />
       </td>
+      {/* 로그 H */}
       <td className="px-3 py-2 font-mono text-sm">
-        <ParseColor parse={character.warcraftLogs?.bestParseAvg} />
+        <ParseColor parse={character.warcraftLogs?.heroic} />
       </td>
-      <td className="text-muted-foreground px-3 py-2 text-xs">{progression?.summary ?? "—"}</td>
+      {/* 로그 M */}
+      <td className="px-3 py-2 font-mono text-sm">
+        <ParseColor parse={character.warcraftLogs?.mythic} />
+      </td>
+      {/* 레이드 진행 — 영웅 / 신화 */}
+      <td className="px-3 py-2 text-xs">
+        {progression ? (
+          <div className="flex flex-col gap-0.5">
+            <span className="text-blue-400">H {heroicProgress}</span>
+            <span className="text-yellow-500">M {mythicProgress}</span>
+          </div>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        )}
+      </td>
       <td className="px-3 py-2">
         <button
           className="text-muted-foreground/60 text-xs transition-colors hover:text-red-400"
@@ -163,7 +185,8 @@ export const RosterList = () => {
               <th className="px-3 py-2">역할</th>
               <th className="px-3 py-2">아이템레벨</th>
               <th className="px-3 py-2">M+ 점수</th>
-              <th className="px-3 py-2">파싱 %</th>
+              <th className="px-3 py-2">로그 H</th>
+              <th className="px-3 py-2">로그 M</th>
               <th className="px-3 py-2">레이드 진행</th>
               <th className="px-3 py-2" />
             </tr>

@@ -16,13 +16,17 @@ const WCL_GRAPHQL = "https://www.warcraftlogs.com/api/v2/client"
 
 // Liberation of Undermine — TWW 시즌 2 레이드
 // 시즌 변경 시 WCL zone ID 업데이트 필요
+// Liberation of Undermine — TWW 시즌 2 레이드
+// difficulty: 4 = 영웅, 5 = 신화 — 시즌 변경 시 CURRENT_ZONE_ID 수정
 const CURRENT_ZONE_ID = 43
 
+// 영웅(4)과 신화(5)를 GraphQL 별칭으로 한 번에 조회
 const ZONE_RANKINGS_QUERY = `
   query CharacterZoneRankings($name: String!, $serverSlug: String!, $serverRegion: String!) {
     characterData {
       character(name: $name, serverSlug: $serverSlug, serverRegion: $serverRegion) {
-        zoneRankings(zoneID: ${CURRENT_ZONE_ID})
+        heroic: zoneRankings(zoneID: ${CURRENT_ZONE_ID}, difficulty: 4)
+        mythic: zoneRankings(zoneID: ${CURRENT_ZONE_ID}, difficulty: 5)
       }
     }
   }
@@ -44,12 +48,12 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
       { headers: { Authorization: `Bearer ${token}` }, timeout: 8000 }
     )
 
-    const zoneRankings = data.data?.characterData?.character?.zoneRankings
-    if (!zoneRankings) return NextResponse.json(null)
+    const char = data.data?.characterData?.character
+    if (!char) return NextResponse.json(null)
 
     const result: RosterCharacterWCL = {
-      bestParseAvg: zoneRankings.bestPerformanceAverage ?? null,
-      medianParseAvg: zoneRankings.medianPerformanceAverage ?? null,
+      heroic: char.heroic?.bestPerformanceAverage ?? null,
+      mythic: char.mythic?.bestPerformanceAverage ?? null,
     }
 
     return NextResponse.json(result)
