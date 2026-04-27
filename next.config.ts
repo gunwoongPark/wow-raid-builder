@@ -1,7 +1,19 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+  images: {
+    remotePatterns: [
+      {
+        hostname: "render.worldofwarcraft.com",
+        pathname: "/kr/**",
+        protocol: "https",
+      },
+      {
+        hostname: "cdnassets.raider.io",
+        protocol: "https",
+      },
+    ],
+  },
+}
 
-export default nextConfig;
+export default nextConfig

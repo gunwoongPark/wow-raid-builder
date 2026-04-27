@@ -6,6 +6,7 @@ export const guildKeys = createQueryKeys("guild", {
 
 export const characterKeys = createQueryKeys("character", {
   raiderIO: (realm: string, name: string) => [{ name, realm }],
+  search: (name: string) => [{ name }],
   summary: (realm: string, name: string) => [{ name, realm }],
 })
 
