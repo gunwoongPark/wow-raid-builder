@@ -1,9 +1,14 @@
 "use client"
 
 import Image from "next/image"
-import { useRef, useState } from "react"
-import { createPortal } from "react-dom"
+import { toast } from "sonner"
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTitle,
+  TooltipTrigger,
+} from "@/components/ui/warcraftcn/tooltip"
 import { type RosterCharacter, type WCLZoneRankings } from "@/entities/character"
 import { getClassColor } from "@/shared/config/class-colors"
 import { extractRealmSlug } from "@/shared/lib/roster-url"
@@ -37,6 +42,8 @@ const ScoreColor = ({ score }: { score: number }) => {
   return <span className={color}>{score > 0 ? score.toLocaleString() : "—"}</span>
 }
 
+type ParseVariant = "legendary" | "epic" | "rare" | "uncommon" | "default"
+
 const parseColorClass = (pct: number) =>
   pct >= 95
     ? "text-yellow-400 font-bold"
@@ -48,10 +55,18 @@ const parseColorClass = (pct: number) =>
           ? "text-green-400"
           : "text-muted-foreground"
 
-const ParseCell = ({ zone }: { zone: WCLZoneRankings | null | undefined }) => {
-  const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
-  const ref = useRef<HTMLSpanElement>(null)
+const parseVariant = (pct: number): ParseVariant =>
+  pct >= 95
+    ? "legendary"
+    : pct >= 75
+      ? "epic"
+      : pct >= 50
+        ? "rare"
+        : pct >= 25
+          ? "uncommon"
+          : "default"
 
+const ParseCell = ({ zone }: { zone: WCLZoneRankings | null | undefined }) => {
   const avg = zone?.bestPerformanceAverage
   if (avg === null || avg === undefined) {
     return <span className="text-muted-foreground">—</span>
@@ -59,55 +74,41 @@ const ParseCell = ({ zone }: { zone: WCLZoneRankings | null | undefined }) => {
 
   const pct = Math.round(avg)
   const rankings = zone?.rankings ?? []
+  const variant = parseVariant(pct)
+
+  if (!rankings.length) {
+    return <span className={parseColorClass(pct)}>{pct}</span>
+  }
 
   return (
-    <>
-      <span
-        className={`${parseColorClass(pct)}${rankings.length > 0 ? "cursor-pointer underline decoration-dotted underline-offset-2" : ""}`}
-        onMouseLeave={() => setPos(null)}
-        ref={ref}
-        onMouseEnter={() => {
-          if (!rankings.length || !ref.current) return
-          const rect = ref.current.getBoundingClientRect()
-          setPos({ left: rect.right + 10, top: rect.top })
-        }}
-      >
-        {pct}
-      </span>
-
-      {pos !== null &&
-        rankings.length > 0 &&
-        createPortal(
-          <div
-            className="border-border/60 pointer-events-none fixed z-[9999] w-56 rounded-md border p-2.5 shadow-xl [background:var(--popover)]"
-            style={{ left: pos.left, top: pos.top, transform: "translateY(-100%)" }}
-          >
-            <p className="text-muted-foreground mb-1.5 text-[10px] font-semibold tracking-wider uppercase">
-              보스별 파싱
-            </p>
-            <div className="flex flex-col gap-0.5">
-              {rankings.map((r) => (
-                <div className="flex items-center justify-between gap-2" key={r.encounter.id}>
-                  <span className="text-muted-foreground max-w-[140px] truncate text-[11px]">
-                    {r.encounter.name}
-                  </span>
-                  <span
-                    className={`shrink-0 font-mono text-[11px] ${parseColorClass(Math.round(r.rankPercent ?? 0))}`}
-                  >
-                    {r.rankPercent !== null && r.rankPercent !== undefined
-                      ? Math.round(r.rankPercent)
-                      : "—"}
-                  </span>
-                </div>
-              ))}
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span
+          className={`${parseColorClass(pct)} cursor-pointer underline decoration-dotted underline-offset-2`}
+        >
+          {pct}
+        </span>
+      </TooltipTrigger>
+      <TooltipContent side="left" variant={variant}>
+        <TooltipTitle>보스별 로그 (평균 {pct})</TooltipTitle>
+        <div className="mt-2 flex flex-col gap-1">
+          {rankings.map((r) => (
+            <div className="flex items-center justify-between gap-4" key={r.encounter.id}>
+              <span className="max-w-[140px] truncate text-[11px] text-amber-100/70">
+                {r.encounter.name}
+              </span>
+              <span
+                className={`shrink-0 font-mono text-[11px] ${parseColorClass(Math.round(r.rankPercent ?? 0))}`}
+              >
+                {r.rankPercent !== null && r.rankPercent !== undefined
+                  ? Math.round(r.rankPercent)
+                  : "—"}
+              </span>
             </div>
-            <div className="border-border/40 text-muted-foreground mt-1.5 border-t pt-1.5 text-[10px]">
-              평균 <span className={`font-mono ${parseColorClass(pct)}`}>{pct}</span>
-            </div>
-          </div>,
-          document.body
-        )}
-    </>
+          ))}
+        </div>
+      </TooltipContent>
+    </Tooltip>
   )
 }
 
@@ -237,12 +238,16 @@ export const RosterList = () => {
   const clearRoster = useRosterStore((s) => s.clearRoster)
   const { copyShareUrl, isRefreshing, refreshAll, refreshingIds, refreshOne } = useRosterSync()
 
-  const [copied, setCopied] = useState(false)
-
   const handleCopy = () => {
     copyShareUrl()
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    toast.success("링크 복사됨!", {
+      description: `공격대 ${characters.length}명 로스터 링크가 클립보드에 복사됐습니다.`,
+    })
+  }
+
+  const handleRefreshAll = async () => {
+    await refreshAll()
+    toast.success("최신화 완료!", { description: "모든 공대원 데이터가 업데이트됐습니다." })
   }
 
   if (characters.length === 0) {
@@ -283,7 +288,7 @@ export const RosterList = () => {
           <button
             className="flex items-center gap-1 rounded px-2 py-1 text-xs text-sky-400/80 transition-colors hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-40"
             disabled={isRefreshing}
-            onClick={refreshAll}
+            onClick={handleRefreshAll}
           >
             <span className={`text-sm ${isRefreshing ? "animate-spin" : ""}`}>↻</span>
             {isRefreshing ? "최신화 중…" : "전체 최신화"}
@@ -294,7 +299,7 @@ export const RosterList = () => {
             className="flex items-center gap-1 rounded px-2 py-1 text-xs text-emerald-400/80 transition-colors hover:bg-emerald-400/10 hover:text-emerald-400"
             onClick={handleCopy}
           >
-            {copied ? "✓ 복사됨" : "🔗 링크 복사"}
+            🔗 링크 복사
           </button>
 
           {/* 전체 초기화 */}
