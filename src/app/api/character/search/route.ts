@@ -31,7 +31,7 @@ const KR_REALM_SLUGS = [
 ]
 
 const RAIDERIO_BASE = "https://raider.io/api/v1"
-const CURRENT_SEASON = "season-tww-2"
+const CURRENT_SEASON = "season-mn-1"
 
 const searchOnRealm = async (
   name: string,

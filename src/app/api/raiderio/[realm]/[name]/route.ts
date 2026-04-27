@@ -11,7 +11,7 @@ interface Params {
 }
 
 const RAIDERIO_BASE = "https://raider.io/api/v1"
-const CURRENT_SEASON = "season-tww-2"
+const CURRENT_SEASON = "season-mn-1"
 
 export const GET = async (_req: Request, { params }: { params: Promise<Params> }) => {
   try {
