@@ -89,6 +89,7 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
       role: SPEC_ROLE_MAP[specId] ?? "MELEE",
       specId,
       specName: summary.active_spec.name,
+      warcraftLogs: null,
     }
 
     return NextResponse.json(character)

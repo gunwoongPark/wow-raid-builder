@@ -33,6 +33,25 @@ const ScoreColor = ({ score }: { score: number }) => {
   return <span className={color}>{score > 0 ? score.toLocaleString() : "—"}</span>
 }
 
+// WCL 파싱 % 색상 — 공식 Warcraft Logs 퍼센타일 색상 체계
+const ParseColor = ({ parse }: { parse: number | null | undefined }) => {
+  if (parse === null || parse === undefined) return <span className="text-muted-foreground">—</span>
+
+  const pct = Math.round(parse)
+  const color =
+    pct >= 95
+      ? "text-yellow-400 font-bold" // legendary
+      : pct >= 75
+        ? "text-purple-400" // epic
+        : pct >= 50
+          ? "text-blue-400" // rare
+          : pct >= 25
+            ? "text-green-400" // uncommon
+            : "text-muted-foreground" // common
+
+  return <span className={color}>{pct}</span>
+}
+
 const CharacterRow = ({ character }: { character: RosterCharacter }) => {
   const removeCharacter = useRosterStore((s) => s.removeCharacter)
   const classColor = getClassColor(character.className)
@@ -71,6 +90,9 @@ const CharacterRow = ({ character }: { character: RosterCharacter }) => {
       <td className="text-foreground/90 px-3 py-2 text-sm">{character.itemLevel}</td>
       <td className="px-3 py-2 font-mono text-sm">
         <ScoreColor score={score} />
+      </td>
+      <td className="px-3 py-2 font-mono text-sm">
+        <ParseColor parse={character.warcraftLogs?.bestParseAvg} />
       </td>
       <td className="text-muted-foreground px-3 py-2 text-xs">{progression?.summary ?? "—"}</td>
       <td className="px-3 py-2">
@@ -141,6 +163,7 @@ export const RosterList = () => {
               <th className="px-3 py-2">역할</th>
               <th className="px-3 py-2">아이템레벨</th>
               <th className="px-3 py-2">M+ 점수</th>
+              <th className="px-3 py-2">파싱 %</th>
               <th className="px-3 py-2">레이드 진행</th>
               <th className="px-3 py-2" />
             </tr>

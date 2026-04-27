@@ -28,4 +28,12 @@ export const characterQueries = {
       queryFn: () => characterApi.getSummary(realm, name),
       staleTime: 5 * 60 * 1000,
     }),
+
+  warcraftLogs: (realm: string, name: string) =>
+    queryOptions({
+      ...characterKeys.warcraftLogs(realm, name),
+      enabled: Boolean(realm && name),
+      queryFn: () => characterApi.getWarcraftLogs(realm, name),
+      staleTime: 10 * 60 * 1000,
+    }),
 }

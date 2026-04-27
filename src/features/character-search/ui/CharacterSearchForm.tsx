@@ -55,9 +55,10 @@ export const CharacterSearchForm = () => {
     setError(null)
 
     try {
-      const [character, raiderIO] = await Promise.allSettled([
+      const [character, raiderIO, warcraftLogs] = await Promise.allSettled([
         characterApi.getSummary(result.realmSlug, result.name),
         characterApi.getRaiderIO(result.realmSlug, result.name),
+        characterApi.getWarcraftLogs(result.realmSlug, result.name),
       ])
 
       if (character.status === "rejected") {
@@ -80,6 +81,7 @@ export const CharacterSearchForm = () => {
                 thumbnailUrl: raiderIO.value.thumbnail_url,
               }
             : null,
+        warcraftLogs: warcraftLogs.status === "fulfilled" ? warcraftLogs.value : null,
       }
 
       addCharacter(added)

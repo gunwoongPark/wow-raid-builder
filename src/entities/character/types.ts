@@ -79,6 +79,11 @@ export interface RosterCharacterRaiderIO {
   thumbnailUrl: string
 }
 
+export interface RosterCharacterWCL {
+  bestParseAvg: number | null
+  medianParseAvg: number | null
+}
+
 export interface RosterCharacter {
   classId: number
   className: string
@@ -90,4 +95,5 @@ export interface RosterCharacter {
   role: Role
   specId: number
   specName: string
+  warcraftLogs: RosterCharacterWCL | null
 }
