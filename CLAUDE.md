@@ -71,7 +71,6 @@ shared/model/     roster-store.ts (Zustand persist)
   // ❌ 깨짐: axios.get(url, { params: { name: "액흑" } })
   // ✅ 정상: axios.get(`${url}?name=${encodeURIComponent(name)}&...`)
   ```
-- 현재 시즌 상수: `CURRENT_SEASON = "season-tww-2"` (시즌 변경 시 수정)
 - 제공 데이터: M+ 점수, 레이드 진행도 (파싱 퍼센타일은 Warcraft Logs 영역)
 
 ### Warcraft Logs API
@@ -81,9 +80,23 @@ shared/model/     roster-store.ts (Zustand persist)
 - **환경변수**: `WARCRAFT_LOGS_CLIENT_ID`, `WARCRAFT_LOGS_CLIENT_SECRET` (미설정 시 null 반환, graceful)
 - **토큰 관리**: `shared/lib/wcl-token.ts` (blizzard-token.ts 동일 패턴)
 - **Route Handler**: `app/api/warcraftlogs/[realm]/[name]/route.ts`
-- **현재 레이드 Zone ID**: `CURRENT_ZONE_ID = 43` (Liberation of Undermine, TWW S2) — 시즌 변경 시 수정
 - **사용 데이터**: `zoneRankings.bestPerformanceAverage` (파싱 % 평균), `medianPerformanceAverage`
 - **RosterList 파싱 % 색상**: 95+ 골드(legendary), 75+ 보라(epic), 50+ 파랑(rare), 25+ 초록, 25미만 회색
+
+### 시즌 상수 관리
+
+**`shared/config/season.ts` 한 파일만 수정** — 시즌 변경 시 여기만 업데이트:
+
+```ts
+CURRENT_SEASON = "season-mn-1" // Raider.IO (Midnight S1)
+CURRENT_WCL_ZONE_ID = 46 // WCL Zone (VS/DR/MQD, Midnight S1 raid)
+// Zone 47 = Midnight Mythic+ S1 (쐐기 전용 — 레이드 아님)
+```
+
+시즌 확인:
+
+- Raider.IO: `https://raider.io/api/v1/mythic-plus/seasons?region=kr`
+- WCL Zone: GraphQL `worldData { expansions { zones { id name } } }`
 
 ---
 

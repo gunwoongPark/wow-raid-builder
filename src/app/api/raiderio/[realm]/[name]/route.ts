@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 
 import { type RaiderIOProfile } from "@/entities/character"
 import { toRealmSlug } from "@/shared/config/realms"
+import { CURRENT_SEASON } from "@/shared/config/season"
 import { handleRouteError } from "@/shared/lib/api-error"
 
 interface Params {
@@ -11,7 +12,6 @@ interface Params {
 }
 
 const RAIDERIO_BASE = "https://raider.io/api/v1"
-const CURRENT_SEASON = "season-mn-1"
 
 export const GET = async (_req: Request, { params }: { params: Promise<Params> }) => {
   try {

@@ -38,7 +38,7 @@ export interface RaiderIOMythicPlusScore {
     healer: number
     tank: number
   }
-  season: string // 예: "season-tww-2"
+  season: string // 예: "season-mn-1" (CURRENT_SEASON in shared/config/season.ts)
 }
 
 // 공식 fields 파라미터 응답 구조

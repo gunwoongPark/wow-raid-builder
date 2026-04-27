@@ -2,6 +2,7 @@ import axios from "axios"
 import { type NextRequest, NextResponse } from "next/server"
 
 import { type RaiderIOProfile } from "@/entities/character"
+import { CURRENT_SEASON } from "@/shared/config/season"
 
 export interface CharacterSearchResult {
   className: string
@@ -31,7 +32,6 @@ const KR_REALM_SLUGS = [
 ]
 
 const RAIDERIO_BASE = "https://raider.io/api/v1"
-const CURRENT_SEASON = "season-mn-1"
 
 const searchOnRealm = async (
   name: string,

@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 import { type RosterCharacterWCL, type WCLZoneRankings } from "@/entities/character"
 import { env } from "@/shared/config/env"
 import { toRealmSlug } from "@/shared/config/realms"
+import { CURRENT_WCL_ZONE_ID } from "@/shared/config/season"
 import { handleRouteError } from "@/shared/lib/api-error"
 import { getWCLToken } from "@/shared/lib/wcl-token"
 
@@ -14,18 +15,13 @@ interface Params {
 
 const WCL_GRAPHQL = "https://www.warcraftlogs.com/api/v2/client"
 
-// VS / DR / MQD — Midnight 시즌 1 레이드 Zone ID: 46 (difficulty: 4=영웅, 5=신화)
-// ※ Zone 47은 Midnight Mythic+ Season 1 (쐐기) — 레이드는 반드시 46
-// 시즌 변경 시 CURRENT_ZONE_ID 업데이트 필요
-const CURRENT_ZONE_ID = 46
-
 // zoneRankings는 JSON scalar — rankings 배열에 보스별 상세가 포함됨
 const ZONE_RANKINGS_QUERY = `
   query CharacterZoneRankings($name: String!, $serverSlug: String!, $serverRegion: String!) {
     characterData {
       character(name: $name, serverSlug: $serverSlug, serverRegion: $serverRegion) {
-        heroic: zoneRankings(zoneID: ${CURRENT_ZONE_ID}, difficulty: 4)
-        mythic: zoneRankings(zoneID: ${CURRENT_ZONE_ID}, difficulty: 5)
+        heroic: zoneRankings(zoneID: ${CURRENT_WCL_ZONE_ID}, difficulty: 4)
+        mythic: zoneRankings(zoneID: ${CURRENT_WCL_ZONE_ID}, difficulty: 5)
       }
     }
   }
