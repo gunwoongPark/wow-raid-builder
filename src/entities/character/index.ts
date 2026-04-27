@@ -8,4 +8,6 @@ export type {
   Role,
   RosterCharacter,
   RosterCharacterWCL,
+  WCLBossRanking,
+  WCLZoneRankings,
 } from "./types"

@@ -1,8 +1,10 @@
 "use client"
 
 import Image from "next/image"
+import { useRef, useState } from "react"
+import { createPortal } from "react-dom"
 
-import { type RosterCharacter } from "@/entities/character"
+import { type RosterCharacter, type WCLZoneRankings } from "@/entities/character"
 import { getClassColor } from "@/shared/config/class-colors"
 import { useRosterStore } from "@/shared/model/roster-store"
 
@@ -20,6 +22,12 @@ const ROLE_COLOR: Record<string, string> = {
   TANK: "text-blue-400",
 }
 
+// id = `${realmSlug}-${name.toLowerCase()}` 형식에서 slug 추출
+// KR 캐릭터명에는 하이픈이 없으므로 안전
+const extractRealmSlug = (id: string, name: string) =>
+  id.slice(0, id.length - name.toLowerCase().length - 1)
+
+// M+ 점수 색상 (Raider.IO 기준)
 const ScoreColor = ({ score }: { score: number }) => {
   const color =
     score >= 3000
@@ -29,27 +37,84 @@ const ScoreColor = ({ score }: { score: number }) => {
         : score >= 1000
           ? "text-blue-400"
           : "text-muted-foreground"
-
   return <span className={color}>{score > 0 ? score.toLocaleString() : "—"}</span>
 }
 
-// WCL 파싱 % 색상 — 공식 Warcraft Logs 퍼센타일 색상 체계
-const ParseColor = ({ parse }: { parse: number | null | undefined }) => {
-  if (parse === null || parse === undefined) return <span className="text-muted-foreground">—</span>
+// WCL 공식 퍼센타일 색상 체계
+const parseColorClass = (pct: number) =>
+  pct >= 95
+    ? "text-yellow-400 font-bold"
+    : pct >= 75
+      ? "text-purple-400"
+      : pct >= 50
+        ? "text-blue-400"
+        : pct >= 25
+          ? "text-green-400"
+          : "text-muted-foreground"
 
-  const pct = Math.round(parse)
-  const color =
-    pct >= 95
-      ? "text-yellow-400 font-bold" // legendary
-      : pct >= 75
-        ? "text-purple-400" // epic
-        : pct >= 50
-          ? "text-blue-400" // rare
-          : pct >= 25
-            ? "text-green-400" // uncommon
-            : "text-muted-foreground" // common
+// 보스별 파싱 툴팁이 포함된 WCL 파싱 셀
+// createPortal + position:fixed 로 table overflow 문제 없이 렌더
+const ParseCell = ({ zone }: { zone: WCLZoneRankings | null | undefined }) => {
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
+  const ref = useRef<HTMLSpanElement>(null)
 
-  return <span className={color}>{pct}</span>
+  const avg = zone?.bestPerformanceAverage
+  if (avg === null || avg === undefined) {
+    return <span className="text-muted-foreground">—</span>
+  }
+
+  const pct = Math.round(avg)
+  const rankings = zone?.rankings ?? []
+
+  return (
+    <>
+      <span
+        className={`${parseColorClass(pct)}${rankings.length > 0 ? "cursor-pointer underline decoration-dotted underline-offset-2" : ""}`}
+        onMouseLeave={() => setPos(null)}
+        ref={ref}
+        onMouseEnter={() => {
+          if (!rankings.length || !ref.current) return
+          const rect = ref.current.getBoundingClientRect()
+          setPos({ left: rect.right + 10, top: rect.top })
+        }}
+      >
+        {pct}
+      </span>
+
+      {pos !== null &&
+        rankings.length > 0 &&
+        createPortal(
+          <div
+            className="border-border/60 pointer-events-none fixed z-[9999] w-56 rounded-md border p-2.5 shadow-xl [background:var(--popover)]"
+            style={{ left: pos.left, top: pos.top, transform: "translateY(-100%)" }}
+          >
+            <p className="text-muted-foreground mb-1.5 text-[10px] font-semibold tracking-wider uppercase">
+              보스별 파싱
+            </p>
+            <div className="flex flex-col gap-0.5">
+              {rankings.map((r) => (
+                <div className="flex items-center justify-between gap-2" key={r.encounter.id}>
+                  <span className="text-muted-foreground max-w-[140px] truncate text-[11px]">
+                    {r.encounter.name}
+                  </span>
+                  <span
+                    className={`shrink-0 font-mono text-[11px] ${parseColorClass(Math.round(r.rankPercent ?? 0))}`}
+                  >
+                    {r.rankPercent !== null && r.rankPercent !== undefined
+                      ? Math.round(r.rankPercent)
+                      : "—"}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="border-border/40 text-muted-foreground mt-1.5 border-t pt-1.5 text-[10px]">
+              평균 <span className={`font-mono ${parseColorClass(pct)}`}>{pct}</span>
+            </div>
+          </div>,
+          document.body
+        )}
+    </>
+  )
 }
 
 const CharacterRow = ({ character }: { character: RosterCharacter }) => {
@@ -60,19 +125,17 @@ const CharacterRow = ({ character }: { character: RosterCharacter }) => {
     ? Object.values(character.raiderIO.raidProgression)[0]
     : null
 
-  const heroicProgress = progression
-    ? `${progression.heroic_bosses_killed}/${progression.total_bosses}`
-    : null
-  const mythicProgress = progression
-    ? `${progression.mythic_bosses_killed}/${progression.total_bosses}`
-    : null
+  const realmSlug = extractRealmSlug(character.id, character.name)
+
+  // Blizzard 아머리 링크 — 공식 캐릭터 프로필 페이지
+  const armoryUrl = `https://worldofwarcraft.blizzard.com/ko-kr/character/kr/${realmSlug}/${encodeURIComponent(character.name)}`
 
   return (
     <tr className="border-border/30 border-b transition-colors hover:bg-white/5">
-      {/* 썸네일 + 이름 */}
+      {/* 썸네일 + 이름(아머리) + Raider.IO 링크 */}
       <td className="px-3 py-2">
         <div className="flex items-center gap-2">
-          {character.raiderIO?.thumbnailUrl && (
+          {character.raiderIO?.thumbnailUrl ? (
             <Image
               alt={character.name}
               className="border-border/50 size-8 rounded border"
@@ -80,12 +143,33 @@ const CharacterRow = ({ character }: { character: RosterCharacter }) => {
               src={character.raiderIO.thumbnailUrl}
               width={32}
             />
+          ) : (
+            <div className="border-border/50 bg-muted size-8 rounded border" />
           )}
-          <span className="font-semibold" style={{ color: classColor }}>
-            {character.name}
-          </span>
+          <div className="flex flex-col">
+            <a
+              className="font-semibold hover:underline"
+              href={armoryUrl}
+              rel="noopener noreferrer"
+              style={{ color: classColor }}
+              target="_blank"
+            >
+              {character.name}
+            </a>
+            {character.raiderIO?.profileUrl && (
+              <a
+                className="text-muted-foreground/50 hover:text-muted-foreground text-[10px] transition-colors"
+                href={character.raiderIO.profileUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Raider.IO ↗
+              </a>
+            )}
+          </div>
         </div>
       </td>
+
       <td className="text-muted-foreground px-3 py-2 text-sm">{character.realm}</td>
       <td className="px-3 py-2 text-sm" style={{ color: classColor }}>
         {character.specName}
@@ -95,28 +179,36 @@ const CharacterRow = ({ character }: { character: RosterCharacter }) => {
         {ROLE_LABEL[character.role] ?? character.role}
       </td>
       <td className="text-foreground/90 px-3 py-2 text-sm">{character.itemLevel}</td>
+
+      {/* M+ 점수 — Raider.IO */}
       <td className="px-3 py-2 font-mono text-sm">
         <ScoreColor score={score} />
       </td>
-      {/* 로그 H */}
+
+      {/* 로그 H / M — Warcraft Logs (hover: 보스별 파싱 상세) */}
       <td className="px-3 py-2 font-mono text-sm">
-        <ParseColor parse={character.warcraftLogs?.heroic} />
+        <ParseCell zone={character.warcraftLogs?.heroic} />
       </td>
-      {/* 로그 M */}
       <td className="px-3 py-2 font-mono text-sm">
-        <ParseColor parse={character.warcraftLogs?.mythic} />
+        <ParseCell zone={character.warcraftLogs?.mythic} />
       </td>
-      {/* 레이드 진행 — 영웅 / 신화 */}
+
+      {/* 레이드 진행 — Raider.IO */}
       <td className="px-3 py-2 text-xs">
         {progression ? (
           <div className="flex flex-col gap-0.5">
-            <span className="text-blue-400">H {heroicProgress}</span>
-            <span className="text-yellow-500">M {mythicProgress}</span>
+            <span className="text-blue-400">
+              H {progression.heroic_bosses_killed}/{progression.total_bosses}
+            </span>
+            <span className="text-yellow-500">
+              M {progression.mythic_bosses_killed}/{progression.total_bosses}
+            </span>
           </div>
         ) : (
           <span className="text-muted-foreground">—</span>
         )}
       </td>
+
       <td className="px-3 py-2">
         <button
           className="text-muted-foreground/60 text-xs transition-colors hover:text-red-400"
@@ -153,13 +245,12 @@ export const RosterList = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-primary font-semibold">공격대 ({characters.length}명)</span>
           <div className="flex gap-2 text-xs">
             {Object.entries(roleCounts).map(([role, count]) => (
-              <span className={`${ROLE_COLOR[role] ?? ""}`} key={role}>
+              <span className={ROLE_COLOR[role] ?? ""} key={role}>
                 {ROLE_LABEL[role]} {count}
               </span>
             ))}
@@ -173,7 +264,6 @@ export const RosterList = () => {
         </button>
       </div>
 
-      {/* 테이블 */}
       <div className="border-border/40 bg-card/60 overflow-x-auto rounded-md border">
         <table className="w-full text-left">
           <thead>
@@ -185,8 +275,8 @@ export const RosterList = () => {
               <th className="px-3 py-2">역할</th>
               <th className="px-3 py-2">아이템레벨</th>
               <th className="px-3 py-2">M+ 점수</th>
-              <th className="px-3 py-2">로그 H</th>
-              <th className="px-3 py-2">로그 M</th>
+              <th className="px-3 py-2 text-blue-400/70">로그 H</th>
+              <th className="px-3 py-2 text-yellow-500/70">로그 M</th>
               <th className="px-3 py-2">레이드 진행</th>
               <th className="px-3 py-2" />
             </tr>

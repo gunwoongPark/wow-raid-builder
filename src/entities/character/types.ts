@@ -79,9 +79,27 @@ export interface RosterCharacterRaiderIO {
   thumbnailUrl: string
 }
 
+// ─── Warcraft Logs API v2 ─────────────────────────────────────────────────────
+// 공식 스키마: https://www.warcraftlogs.com/v2-api-docs/warcraft/character.doc.html
+// zoneRankings 필드는 JSON scalar — 아래 구조로 반환됨
+
+export interface WCLBossRanking {
+  bestAmount: number // 실제 DPS / HPS 수치
+  encounter: { id: number; name: string }
+  medianPercent: number | null // 해당 보스 중앙값 파싱 %
+  rankPercent: number | null // 해당 보스 최고 파싱 %
+  spec: string // 최고 파싱 달성 시 사용 스펙
+}
+
+export interface WCLZoneRankings {
+  bestPerformanceAverage: number | null // 전체 보스 최고 파싱 평균
+  medianPerformanceAverage: number | null // 전체 보스 중앙값 파싱 평균
+  rankings: WCLBossRanking[] // 보스별 상세
+}
+
 export interface RosterCharacterWCL {
-  heroic: number | null // 영웅 난이도 bestPerformanceAverage
-  mythic: number | null // 신화 난이도 bestPerformanceAverage
+  heroic: WCLZoneRankings | null
+  mythic: WCLZoneRankings | null
 }
 
 export interface RosterCharacter {

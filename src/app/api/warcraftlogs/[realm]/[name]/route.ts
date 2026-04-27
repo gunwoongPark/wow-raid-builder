@@ -1,7 +1,7 @@
 import axios from "axios"
 import { NextResponse } from "next/server"
 
-import { type RosterCharacterWCL } from "@/entities/character"
+import { type RosterCharacterWCL, type WCLZoneRankings } from "@/entities/character"
 import { env } from "@/shared/config/env"
 import { toRealmSlug } from "@/shared/config/realms"
 import { handleRouteError } from "@/shared/lib/api-error"
@@ -14,13 +14,11 @@ interface Params {
 
 const WCL_GRAPHQL = "https://www.warcraftlogs.com/api/v2/client"
 
-// Liberation of Undermine — TWW 시즌 2 레이드
-// 시즌 변경 시 WCL zone ID 업데이트 필요
-// Liberation of Undermine — TWW 시즌 2 레이드
-// difficulty: 4 = 영웅, 5 = 신화 — 시즌 변경 시 CURRENT_ZONE_ID 수정
+// Liberation of Undermine — TWW 시즌 2 레이드 (difficulty: 4=영웅, 5=신화)
+// 시즌 변경 시 CURRENT_ZONE_ID 업데이트 필요
 const CURRENT_ZONE_ID = 43
 
-// 영웅(4)과 신화(5)를 GraphQL 별칭으로 한 번에 조회
+// zoneRankings는 JSON scalar — rankings 배열에 보스별 상세가 포함됨
 const ZONE_RANKINGS_QUERY = `
   query CharacterZoneRankings($name: String!, $serverSlug: String!, $serverRegion: String!) {
     characterData {
@@ -31,6 +29,20 @@ const ZONE_RANKINGS_QUERY = `
     }
   }
 `
+
+// WCL JSON scalar를 타입 안전하게 변환
+const parseZoneRankings = (raw: unknown): WCLZoneRankings | null => {
+  if (!raw || typeof raw !== "object") return null
+  const r = raw as Record<string, unknown>
+
+  return {
+    bestPerformanceAverage:
+      typeof r.bestPerformanceAverage === "number" ? r.bestPerformanceAverage : null,
+    medianPerformanceAverage:
+      typeof r.medianPerformanceAverage === "number" ? r.medianPerformanceAverage : null,
+    rankings: Array.isArray(r.rankings) ? r.rankings : [],
+  }
+}
 
 export const GET = async (_req: Request, { params }: { params: Promise<Params> }) => {
   if (!env.warcraftLogs.clientId || !env.warcraftLogs.clientSecret) {
@@ -52,8 +64,8 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
     if (!char) return NextResponse.json(null)
 
     const result: RosterCharacterWCL = {
-      heroic: char.heroic?.bestPerformanceAverage ?? null,
-      mythic: char.mythic?.bestPerformanceAverage ?? null,
+      heroic: parseZoneRankings(char.heroic),
+      mythic: parseZoneRankings(char.mythic),
     }
 
     return NextResponse.json(result)

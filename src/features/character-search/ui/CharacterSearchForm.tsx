@@ -105,7 +105,8 @@ export const CharacterSearchForm = () => {
       <Combobox immediate onChange={onSelect}>
         <div className="relative">
           <ComboboxInput
-            className="border-border/60 bg-input text-foreground placeholder:text-muted-foreground focus:border-primary/60 focus:ring-primary/30 w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-1"
+            className="border-border/60 bg-input text-foreground placeholder:text-muted-foreground focus:border-primary/60 focus:ring-primary/30 w-full rounded-md border px-3 py-2.5 pr-24 text-sm outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isAdding}
             displayValue={() => query}
             placeholder="캐릭터명 검색 (예: 액흑)"
             ref={inputRef}
@@ -115,9 +116,10 @@ export const CharacterSearchForm = () => {
             }}
           />
 
-          {isFetching && (
-            <span className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2 text-xs">
-              검색 중…
+          {(isFetching || isAdding) && (
+            <span className="text-muted-foreground absolute top-1/2 right-3 flex -translate-y-1/2 items-center gap-1.5 text-xs">
+              <span className="border-muted-foreground/40 border-t-primary inline-block size-3 animate-spin rounded-full border-2" />
+              {isAdding ? "추가 중…" : "검색 중…"}
             </span>
           )}
 
@@ -162,7 +164,6 @@ export const CharacterSearchForm = () => {
         </div>
       </Combobox>
 
-      {isAdding && <p className="text-xs text-gray-400">캐릭터 정보를 불러오는 중…</p>}
       {error && <p className="text-xs text-red-500">{error}</p>}
     </form>
   )
