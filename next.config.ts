@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         hostname: "cdnassets.raider.io",
         protocol: "https",
       },
+      {
+        hostname: "kr.battle.net",
+        protocol: "https",
+      },
     ],
   },
 }
