@@ -135,6 +135,16 @@ const eslintConfig = defineConfig([
   // ─── Prettier: 포맷 규칙 충돌 비활성화 (반드시 마지막) ─────────────────
   prettier,
 
+  // shadcn/warcraftcn 생성 파일은 외부 코드 — 스타일 규칙 완화
+  {
+    files: ["src/components/ui/**", "src/lib/utils.ts"],
+    rules: {
+      "func-style": "off",
+      "perfectionist/sort-objects": "off",
+      "perfectionist/sort-jsx-props": "off",
+    },
+  },
+
   globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
 ])
 

@@ -1,26 +1,96 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@/components/ui/warcraftcn/styles/warcraft.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+
+  /* WoW 직업 색상 */
+  --color-class-death-knight: #c41e3a;
+  --color-class-demon-hunter: #a330c9;
+  --color-class-druid: #ff7c0a;
+  --color-class-evoker: #33937f;
+  --color-class-hunter: #aad372;
+  --color-class-mage: #3fc7eb;
+  --color-class-monk: #00ff98;
+  --color-class-paladin: #f48cba;
+  --color-class-priest: #f0ece0;
+  --color-class-rogue: #fff468;
+  --color-class-shaman: #0070dd;
+  --color-class-warlock: #8788ee;
+  --color-class-warrior: #c69b3a;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* WoW 라이트 테마 */
+:root {
+  --background: oklch(0.97 0.01 80); /* 따뜻한 양피지 */
+  --foreground: oklch(0.18 0.02 60);
+  --card: oklch(0.94 0.015 75);
+  --card-foreground: oklch(0.18 0.02 60);
+  --popover: oklch(0.96 0.01 80);
+  --popover-foreground: oklch(0.18 0.02 60);
+  --primary: oklch(0.55 0.12 75); /* WoW 골드 (라이트) */
+  --primary-foreground: oklch(0.98 0.01 80);
+  --muted: oklch(0.9 0.015 75);
+  --muted-foreground: oklch(0.45 0.02 70);
+  --border: oklch(0.7 0.04 70 / 60%);
+  --input: oklch(0.92 0.015 75);
+  --ring: oklch(0.55 0.12 75 / 50%);
+  --radius: 0.375rem;
+}
+
+/* WoW 다크 테마 */
+.dark {
+  --background: oklch(0.1 0.01 60);
+  --foreground: oklch(0.92 0.04 80);
+  --card: oklch(0.14 0.015 60);
+  --card-foreground: oklch(0.92 0.04 80);
+  --popover: oklch(0.12 0.01 60);
+  --popover-foreground: oklch(0.92 0.04 80);
+  --primary: oklch(0.75 0.12 80); /* WoW 골드 */
+  --primary-foreground: oklch(0.1 0.01 60);
+  --muted: oklch(0.18 0.01 60);
+  --muted-foreground: oklch(0.6 0.03 80);
+  --border: oklch(0.3 0.04 70 / 50%);
+  --input: oklch(0.18 0.015 60);
+  --ring: oklch(0.75 0.12 80 / 50%);
+  --radius: 0.375rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+    min-height: 100vh;
+  }
+  .dark body {
+    background-image: radial-gradient(
+      ellipse at top,
+      oklch(0.14 0.02 50) 0%,
+      oklch(0.08 0.01 60) 100%
+    );
+  }
+  html {
+    @apply font-sans;
+  }
 }

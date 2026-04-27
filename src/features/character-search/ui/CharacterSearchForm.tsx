@@ -98,9 +98,9 @@ export const CharacterSearchForm = () => {
       <Combobox immediate onChange={onSelect}>
         <div className="relative">
           <ComboboxInput
-            className="w-full rounded border px-3 py-2 text-sm outline-none focus:border-blue-500"
+            className="border-border/60 bg-input text-foreground placeholder:text-muted-foreground focus:border-primary/60 focus:ring-primary/30 w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-1"
             displayValue={() => query}
-            placeholder="캐릭터명 검색 (예: Nymue)"
+            placeholder="캐릭터명 검색 (예: 액흑)"
             ref={inputRef}
             onChange={(e) => {
               setQuery(e.target.value)
@@ -108,37 +108,35 @@ export const CharacterSearchForm = () => {
             }}
           />
 
-          {/* 로딩 인디케이터 */}
           {isFetching && (
-            <span className="absolute top-1/2 right-3 -translate-y-1/2 text-xs text-gray-400">
+            <span className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2 text-xs">
               검색 중…
             </span>
           )}
 
-          {/* 드롭다운 */}
           {searchResults.length > 0 && (
-            <ComboboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded border bg-white shadow-lg">
+            <ComboboxOptions className="border-border/60 bg-popover absolute z-20 mt-1 max-h-64 w-full overflow-auto rounded-md border shadow-xl">
               {searchResults.map((result) => (
                 <ComboboxOption
-                  className="flex cursor-pointer items-center gap-3 px-3 py-2 text-sm data-[focus]:bg-blue-50"
+                  className="text-foreground data-[focus]:bg-primary/10 flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm transition-colors"
                   key={result.realmSlug}
                   value={result}
                 >
                   {result.thumbnailUrl && (
                     <Image
                       alt={result.name}
-                      className="size-8 rounded"
-                      height={32}
+                      className="border-border/50 size-9 rounded border"
+                      height={36}
                       src={result.thumbnailUrl}
-                      width={32}
+                      width={36}
                     />
                   )}
                   <div>
-                    <p className="font-medium">{result.name}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-foreground font-semibold">{result.name}</p>
+                    <p className="text-muted-foreground text-xs">
                       {result.realm} · {result.specName} {result.className}
                       {result.score > 0 && (
-                        <span className="ml-1 text-blue-600">
+                        <span className="text-primary ml-1.5">
                           M+ {result.score.toLocaleString()}
                         </span>
                       )}
@@ -149,10 +147,9 @@ export const CharacterSearchForm = () => {
             </ComboboxOptions>
           )}
 
-          {/* 결과 없음 */}
           {!isFetching && debouncedQuery.length >= 2 && searchResults.length === 0 && (
-            <ComboboxOptions className="absolute z-10 mt-1 w-full rounded border bg-white shadow-lg">
-              <p className="px-3 py-2 text-sm text-gray-400">검색 결과가 없습니다.</p>
+            <ComboboxOptions className="border-border/60 bg-popover absolute z-20 mt-1 w-full rounded-md border shadow-xl">
+              <p className="text-muted-foreground px-3 py-2.5 text-sm">검색 결과가 없습니다.</p>
             </ComboboxOptions>
           )}
         </div>

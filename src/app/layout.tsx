@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 
 import { QueryProvider } from "@/shared/lib/query-provider"
+import { AppThemeProvider } from "@/shared/lib/theme-provider"
+import { ThemeToggle } from "@/shared/ui/ThemeToggle"
 
 import "./globals.css"
 
@@ -26,9 +28,16 @@ export const RootLayout = ({
   children: React.ReactNode
 }>) => {
   return (
-    <html className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} lang="ko">
+    <html
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      lang="ko"
+    >
       <body className="flex min-h-full flex-col">
-        <QueryProvider>{children}</QueryProvider>
+        <AppThemeProvider>
+          <QueryProvider>{children}</QueryProvider>
+          <ThemeToggle />
+        </AppThemeProvider>
       </body>
     </html>
   )
