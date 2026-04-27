@@ -1,75 +1,93 @@
-export type Role = "TANK" | "HEALER" | "MELEE" | "RANGED"
+export type Role = "HEALER" | "MELEE" | "RANGED" | "TANK"
 
-export interface CharacterSpec {
-  name: string
-  id: number
-  role: { type: Role; name: string }
-}
+// ─── Raider.IO ────────────────────────────────────────────────────────────────
+// 공식 문서: https://raider.io/api#operation/getApiV1CharactersProfile
 
-export interface CharacterSummary {
-  name: string
-  realm: string
-  className: string
-  classId: number
-  spec: CharacterSpec
-  itemLevel: number
-}
-
-export interface RaiderIORaidBoss {
+export interface RaiderIOAffix {
+  description: string
+  icon: string
   id: number
   name: string
-  killed: boolean
-  heroic_killed: boolean
-  mythic_killed: boolean
+  wowhead_url: string
+}
+
+export interface RaiderIOMythicRun {
+  affixes: RaiderIOAffix[]
+  completed_at: string
+  dungeon: string
+  duration: number
+  keystone_run_id: number
+  level: number
+  score: number
+  short_name: string
+  url: string
 }
 
 export interface RaiderIORaidProgression {
-  summary: string
-  total_bosses: number
-  normal_bosses_killed: number
   heroic_bosses_killed: number
   mythic_bosses_killed: number
+  normal_bosses_killed: number
+  summary: string // 예: "10/10 N, 10/10 H, 5/10 M"
+  total_bosses: number
 }
 
+export interface RaiderIOMythicPlusScore {
+  scores: {
+    all: number // 전체 점수 (메인 지표)
+    dps: number
+    healer: number
+    tank: number
+  }
+  season: string // 예: "season-tww-2"
+}
+
+// 공식 fields 파라미터 응답 구조
+// https://raider.io/api#operation/getApiV1CharactersProfile
 export interface RaiderIOProfile {
-  name: string
-  race: string
-  class: string
+  achievement_points: number
   active_spec_name: string
   active_spec_role: string
-  gender: string
+  class: string
   faction: string
-  achievement_points: number
-  thumbnail_url: string
+  gender: string
+  mythic_plus_best_runs?: RaiderIOMythicRun[]
+  mythic_plus_recent_runs?: RaiderIOMythicRun[]
+  mythic_plus_scores_by_season?: RaiderIOMythicPlusScore[]
+  name: string
+  profile_url: string
+  race: string
+  raid_progression?: Record<string, RaiderIORaidProgression>
   realm: string
   region: string
-  profile_url: string
-  mythic_plus_scores_by_season: Array<{
-    season: string
-    scores: {
-      all: number
-      dps: number
-      healer: number
-      tank: number
-    }
-  }>
-  raid_progression: Record<string, RaiderIORaidProgression>
+  thumbnail_url: string
+}
+
+// ─── 에러 ─────────────────────────────────────────────────────────────────────
+
+export interface RaiderIOErrorResponse {
+  error: string
+  message: string
+  statusCode: number
+}
+
+// ─── 로스터 ───────────────────────────────────────────────────────────────────
+
+export interface RosterCharacterRaiderIO {
+  profileUrl: string
+  raidProgression: Record<string, RaiderIORaidProgression>
+  score: number
+  thumbnailUrl: string
 }
 
 export interface RosterCharacter {
-  id: string // `${realm}-${name}` 형태의 고유키
-  name: string
-  realm: string
-  className: string
   classId: number
-  specName: string
-  specId: number
-  role: Role
+  className: string
+  id: string // `${realmSlug}-${name}` 고유키
   itemLevel: number
-  raiderIO: {
-    score: number
-    raidProgression: Record<string, RaiderIORaidProgression>
-    thumbnailUrl: string
-    profileUrl: string
-  } | null
+  name: string
+  raiderIO: RosterCharacterRaiderIO | null
+  realm: string
+  role: Role
+  specId: number
+  specName: string
 }

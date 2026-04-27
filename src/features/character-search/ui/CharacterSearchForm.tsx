@@ -53,7 +53,7 @@ export const CharacterSearchForm = () => {
           raiderIO.status === "fulfilled"
             ? {
                 profileUrl: raiderIO.value.profile_url,
-                raidProgression: raiderIO.value.raid_progression,
+                raidProgression: raiderIO.value.raid_progression ?? {},
                 score: raiderIO.value.mythic_plus_scores_by_season?.[0]?.scores.all ?? 0,
                 thumbnailUrl: raiderIO.value.thumbnail_url,
               }

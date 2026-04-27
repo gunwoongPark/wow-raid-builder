@@ -1,20 +1,27 @@
 import { NextResponse } from "next/server"
 
-import { type Guild } from "@/entities/guild"
+import { toRealmSlug } from "@/shared/config/realms"
+import { handleRouteError } from "@/shared/lib/api-error"
 import { blizzardFetch } from "@/shared/lib/blizzard-fetch"
+import { type BlizzardGuildRoster } from "@/shared/types/blizzard"
 
 interface Params {
-  realm: string
   guildName: string
+  realm: string
 }
 
 export const GET = async (_req: Request, { params }: { params: Promise<Params> }) => {
-  const { guildName, realm } = await params
+  try {
+    const { guildName, realm } = await params
+    const realmSlug = toRealmSlug(realm)
 
-  const data = await blizzardFetch<Guild>(
-    `/data/wow/guild/${encodeURIComponent(realm)}/${encodeURIComponent(guildName)}/roster`,
-    { namespace: "profile" }
-  )
+    const data = await blizzardFetch<BlizzardGuildRoster>(
+      `/data/wow/guild/${encodeURIComponent(realmSlug)}/${encodeURIComponent(guildName.toLowerCase())}/roster`,
+      { namespace: "profile" }
+    )
 
-  return NextResponse.json(data)
+    return NextResponse.json(data)
+  } catch (error) {
+    return handleRouteError(error)
+  }
 }
