@@ -209,18 +209,22 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
         <div className="flex items-center gap-2">
           <button
             aria-label="최신화"
-            className="text-muted-foreground/40 text-xs transition-colors hover:text-sky-400 disabled:cursor-not-allowed"
+            className="text-muted-foreground/50 rounded p-1.5 transition-colors hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-30"
             disabled={isRefreshing}
             onClick={onRefresh}
             title="최신화"
           >
-            <span className={`inline-block ${isRefreshing ? "animate-spin" : ""}`}>↻</span>
+            <span className={`block text-base leading-none ${isRefreshing ? "animate-spin" : ""}`}>
+              ↻
+            </span>
           </button>
+          <div className="bg-border/40 h-4 w-px" />
           <button
-            className="text-muted-foreground/60 text-xs transition-colors hover:text-red-400"
+            className="text-muted-foreground/50 rounded p-1.5 text-xs transition-colors hover:bg-red-400/10 hover:text-red-400"
             onClick={() => removeCharacter(character.id)}
+            title="제거"
           >
-            제거
+            ✕
           </button>
         </div>
       </td>
