@@ -115,7 +115,7 @@ export const CharacterSearchForm = () => {
           )}
 
           {searchResults.length > 0 && (
-            <ComboboxOptions className="border-border/60 bg-popover absolute z-[9999] mt-1 max-h-64 w-full overflow-auto rounded-md border shadow-xl">
+            <ComboboxOptions className="border-border/60 bg-popover absolute z-[9999] mt-1 max-h-64 w-full overflow-auto rounded-md border shadow-xl [background:var(--popover)]">
               {searchResults.map((result) => (
                 <ComboboxOption
                   className="text-foreground data-[focus]:bg-primary/10 flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm transition-colors"
@@ -148,7 +148,7 @@ export const CharacterSearchForm = () => {
           )}
 
           {!isFetching && debouncedQuery.length >= 2 && searchResults.length === 0 && (
-            <ComboboxOptions className="border-border/60 bg-popover absolute z-[9999] mt-1 w-full rounded-md border shadow-xl">
+            <ComboboxOptions className="border-border/60 bg-popover absolute z-[9999] mt-1 w-full rounded-md border shadow-xl [background:var(--popover)]">
               <p className="text-muted-foreground px-3 py-2.5 text-sm">검색 결과가 없습니다.</p>
             </ComboboxOptions>
           )}
