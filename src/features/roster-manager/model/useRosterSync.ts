@@ -2,47 +2,21 @@
 
 import { useCallback, useState } from "react"
 
-import { characterApi } from "@/entities/character/api"
-import { type RaiderIOProfile, type RosterCharacter } from "@/entities/character/types"
 import { buildShareUrl, extractRealmSlug, type RosterUrlEntry } from "@/shared/lib/roster-url"
 import { useRosterStore } from "@/shared/model/roster-store"
 
-// 3개 API 병렬 조회 후 RosterCharacter 조립 — 새로고침/URL 로드 공용
-const fetchCharacter = async (realmSlug: string, name: string): Promise<RosterCharacter | null> => {
-  const [character, raiderIO, warcraftLogs] = await Promise.allSettled([
-    characterApi.getSummary(realmSlug, name),
-    characterApi.getRaiderIO(realmSlug, name),
-    characterApi.getWarcraftLogs(realmSlug, name),
-  ])
-
-  if (character.status === "rejected") return null
-
-  const buildRaiderIO = (data: RaiderIOProfile) => ({
-    profileUrl: data.profile_url,
-    raidProgression: data.raid_progression ?? {},
-    score: data.mythic_plus_scores_by_season?.[0]?.scores.all ?? 0,
-    thumbnailUrl: data.thumbnail_url,
-  })
-
-  return {
-    ...character.value,
-    raiderIO:
-      raiderIO.status === "fulfilled" && raiderIO.value ? buildRaiderIO(raiderIO.value) : null,
-    warcraftLogs: warcraftLogs.status === "fulfilled" ? warcraftLogs.value : null,
-  }
-}
+import { fetchCharacter } from "../lib/fetch-character"
 
 interface RosterSyncState {
-  // 전체 새로고침 중인지
   isRefreshing: boolean
-  // 개별 새로고침 중인 character id Set
   refreshingIds: Set<string>
 }
 
 export const useRosterSync = () => {
-  const characters = useRosterStore((s) => s.characters)
-  const addCharacter = useRosterStore((s) => s.addCharacter)
-  const updateCharacter = useRosterStore((s) => s.updateCharacter)
+  // 변수부
+  const characters = useRosterStore((store) => store.characters)
+  const addCharacter = useRosterStore((store) => store.addCharacter)
+  const updateCharacter = useRosterStore((store) => store.updateCharacter)
 
   const [state, setState] = useState<RosterSyncState>({
     isRefreshing: false,
@@ -52,23 +26,23 @@ export const useRosterSync = () => {
   // 단일 캐릭터 새로고침
   const refreshOne = useCallback(
     async (id: string) => {
-      const char = characters.find((c) => c.id === id)
-      if (!char) return
+      const character = characters.find((entry) => entry.id === id)
+      if (!character) return
 
-      setState((prev) => ({
-        ...prev,
-        refreshingIds: new Set([...prev.refreshingIds, id]),
+      setState((previous) => ({
+        ...previous,
+        refreshingIds: new Set([...previous.refreshingIds, id]),
       }))
 
       try {
-        const realmSlug = extractRealmSlug(char.id, char.name)
-        const fresh = await fetchCharacter(realmSlug, char.name)
+        const realmSlug = extractRealmSlug(character.id, character.name)
+        const fresh = await fetchCharacter(realmSlug, character.name)
         if (fresh) updateCharacter(id, fresh)
       } finally {
-        setState((prev) => {
-          const next = new Set(prev.refreshingIds)
+        setState((previous) => {
+          const next = new Set(previous.refreshingIds)
           next.delete(id)
-          return { ...prev, refreshingIds: next }
+          return { ...previous, refreshingIds: next }
         })
       }
     },
@@ -79,17 +53,17 @@ export const useRosterSync = () => {
   const refreshAll = useCallback(async () => {
     if (state.isRefreshing || !characters.length) return
 
-    setState((prev) => ({ ...prev, isRefreshing: true }))
+    setState((previous) => ({ ...previous, isRefreshing: true }))
     try {
       await Promise.allSettled(
-        characters.map(async (char) => {
-          const realmSlug = extractRealmSlug(char.id, char.name)
-          const fresh = await fetchCharacter(realmSlug, char.name)
-          if (fresh) updateCharacter(char.id, fresh)
+        characters.map(async (character) => {
+          const realmSlug = extractRealmSlug(character.id, character.name)
+          const fresh = await fetchCharacter(realmSlug, character.name)
+          if (fresh) updateCharacter(character.id, fresh)
         })
       )
     } finally {
-      setState((prev) => ({ ...prev, isRefreshing: false }))
+      setState((previous) => ({ ...previous, isRefreshing: false }))
     }
   }, [characters, state.isRefreshing, updateCharacter])
 
@@ -98,9 +72,8 @@ export const useRosterSync = () => {
     async (entries: RosterUrlEntry[]) => {
       if (!entries.length) return
 
-      setState((prev) => ({ ...prev, isRefreshing: true }))
+      setState((previous) => ({ ...previous, isRefreshing: true }))
       try {
-        // 현재 store 상태는 Zustand getState()로 항상 최신값 참조
         await Promise.allSettled(
           entries.map(async ({ name, realmSlug }) => {
             const id = `${realmSlug}-${name.toLowerCase()}`
@@ -108,7 +81,7 @@ export const useRosterSync = () => {
             if (!fresh) return
 
             const { characters: current } = useRosterStore.getState()
-            if (current.some((c) => c.id === id)) {
+            if (current.some((character) => character.id === id)) {
               updateCharacter(id, fresh)
             } else {
               addCharacter(fresh)
@@ -116,7 +89,7 @@ export const useRosterSync = () => {
           })
         )
       } finally {
-        setState((prev) => ({ ...prev, isRefreshing: false }))
+        setState((previous) => ({ ...previous, isRefreshing: false }))
       }
     },
     [addCharacter, updateCharacter]

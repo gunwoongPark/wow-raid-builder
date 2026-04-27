@@ -20,6 +20,24 @@ export const KR_REALM_SLUGS: Record<string, string> = {
   헬스크림: "hellscream",
 }
 
+// Raider.IO 캐릭터 검색 시 순회할 활성 KR 서버 slug 목록
+export const KR_SEARCH_REALM_SLUGS = [
+  "zuljin",
+  "azshara",
+  "hellscream",
+  "hyjal",
+  "durotan",
+  "malfurion",
+  "windrunner",
+  "dalaran",
+  "rexxar",
+  "cenarius",
+  "garona",
+  "guldan",
+  "stormrage",
+  "deathwing",
+] as const
+
 export const toRealmSlug = (input: string): string => {
   const trimmed = input.trim()
   return KR_REALM_SLUGS[trimmed] ?? trimmed.toLowerCase().replace(/\s+/g, "-")

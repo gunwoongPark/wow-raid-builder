@@ -14,24 +14,14 @@ import { getClassColor } from "@/shared/config/class-colors"
 import { extractRealmSlug } from "@/shared/lib/roster-url"
 import { useRosterStore } from "@/shared/model/roster-store"
 
+import { ROLE_COLOR, ROLE_LABEL, ROLE_SORT_ORDER } from "../config/roster-display"
+import { logColorClass, logVariant } from "../lib/log-color"
 import { useRosterSync } from "../model/useRosterSync"
 
-const ROLE_LABEL: Record<string, string> = {
-  HEALER: "힐러",
-  MELEE: "근딜",
-  RANGED: "원딜",
-  TANK: "탱커",
-}
+// ─── M+ 점수 색상 표시 컴포넌트 ──────────────────────────────────────────────
 
-const ROLE_COLOR: Record<string, string> = {
-  HEALER: "text-emerald-400",
-  MELEE: "text-red-400",
-  RANGED: "text-sky-400",
-  TANK: "text-blue-400",
-}
-
-const ScoreColor = ({ score }: { score: number }) => {
-  const color =
+const ScoreCell = ({ score }: { score: number }) => {
+  const colorClass =
     score >= 3000
       ? "text-orange-400 font-bold"
       : score >= 2000
@@ -39,69 +29,47 @@ const ScoreColor = ({ score }: { score: number }) => {
         : score >= 1000
           ? "text-blue-400"
           : "text-muted-foreground"
-  return <span className={color}>{score > 0 ? score.toLocaleString() : "—"}</span>
+  return <span className={colorClass}>{score > 0 ? score.toLocaleString() : "—"}</span>
 }
 
-type ParseVariant = "legendary" | "epic" | "rare" | "uncommon" | "default"
+// ─── WCL 로그 % 셀 (호버 시 보스별 상세) ────────────────────────────────────
 
-const parseColorClass = (pct: number) =>
-  pct >= 95
-    ? "text-yellow-400 font-bold"
-    : pct >= 75
-      ? "text-purple-400"
-      : pct >= 50
-        ? "text-blue-400"
-        : pct >= 25
-          ? "text-green-400"
-          : "text-muted-foreground"
-
-const parseVariant = (pct: number): ParseVariant =>
-  pct >= 95
-    ? "legendary"
-    : pct >= 75
-      ? "epic"
-      : pct >= 50
-        ? "rare"
-        : pct >= 25
-          ? "uncommon"
-          : "default"
-
-const ParseCell = ({ zone }: { zone: WCLZoneRankings | null | undefined }) => {
-  const avg = zone?.bestPerformanceAverage
-  if (avg === null || avg === undefined) {
+const LogCell = ({ zone }: { zone: WCLZoneRankings | null | undefined }) => {
+  const average = zone?.bestPerformanceAverage
+  if (average === null || average === undefined) {
     return <span className="text-muted-foreground">—</span>
   }
 
-  const pct = Math.round(avg)
+  const percent = Math.round(average)
   const rankings = zone?.rankings ?? []
-  const variant = parseVariant(pct)
+  const variant = logVariant(percent)
 
   if (!rankings.length) {
-    return <span className={parseColorClass(pct)}>{pct}</span>
+    return <span className={logColorClass(percent)}>{percent}</span>
   }
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <span
-          className={`${parseColorClass(pct)} cursor-pointer underline decoration-dotted underline-offset-2`}
+          className={`${logColorClass(percent)} cursor-pointer underline decoration-dotted underline-offset-2`}
         >
-          {pct}
+          {percent}
         </span>
       </TooltipTrigger>
       <TooltipContent side="left" variant={variant}>
-        <TooltipTitle>보스별 로그 (평균 {pct})</TooltipTitle>
+        <TooltipTitle>보스별 로그 (평균 {percent})</TooltipTitle>
         <div className="mt-2 flex flex-col gap-1">
-          {rankings.map((r) => (
-            <div className="flex items-center justify-between gap-4" key={r.encounter.id}>
+          {rankings.map((ranking) => (
+            <div className="flex items-center justify-between gap-4" key={ranking.encounter.id}>
               <span className="max-w-[140px] truncate text-[11px] text-amber-100/70">
-                {r.encounter.name}
+                {ranking.encounter.name}
               </span>
               <span
-                className={`shrink-0 font-mono text-[11px] ${parseColorClass(Math.round(r.rankPercent ?? 0))}`}
+                className={`shrink-0 font-mono text-[11px] ${logColorClass(Math.round(ranking.rankPercent ?? 0))}`}
               >
-                {r.rankPercent !== null && r.rankPercent !== undefined
-                  ? Math.round(r.rankPercent)
+                {ranking.rankPercent !== null && ranking.rankPercent !== undefined
+                  ? Math.round(ranking.rankPercent)
                   : "—"}
               </span>
             </div>
@@ -112,6 +80,8 @@ const ParseCell = ({ zone }: { zone: WCLZoneRankings | null | undefined }) => {
   )
 }
 
+// ─── 캐릭터 행 ───────────────────────────────────────────────────────────────
+
 interface CharacterRowProps {
   character: RosterCharacter
   isRefreshing: boolean
@@ -119,16 +89,17 @@ interface CharacterRowProps {
 }
 
 const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps) => {
-  const removeCharacter = useRosterStore((s) => s.removeCharacter)
+  // 변수부
+  const removeCharacter = useRosterStore((store) => store.removeCharacter)
   const classColor = getClassColor(character.className)
   const score = character.raiderIO?.score ?? 0
   const progression = character.raiderIO?.raidProgression
     ? Object.values(character.raiderIO.raidProgression)[0]
     : null
-
   const realmSlug = extractRealmSlug(character.id, character.name)
   const armoryUrl = `https://worldofwarcraft.blizzard.com/ko-kr/character/kr/${realmSlug}/${encodeURIComponent(character.name)}`
 
+  // 렌더
   return (
     <tr className="border-border/30 border-b transition-colors hover:bg-white/5">
       {/* 썸네일 + 이름(아머리) + Raider.IO 링크 */}
@@ -180,14 +151,14 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
       <td className="text-foreground/90 px-3 py-2 text-sm">{character.itemLevel}</td>
 
       <td className="px-3 py-2 font-mono text-sm">
-        <ScoreColor score={score} />
+        <ScoreCell score={score} />
       </td>
 
       <td className="px-3 py-2 font-mono text-sm">
-        <ParseCell zone={character.warcraftLogs?.heroic} />
+        <LogCell zone={character.warcraftLogs?.heroic} />
       </td>
       <td className="px-3 py-2 font-mono text-sm">
-        <ParseCell zone={character.warcraftLogs?.mythic} />
+        <LogCell zone={character.warcraftLogs?.mythic} />
       </td>
 
       <td className="px-3 py-2 text-xs">
@@ -205,7 +176,7 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
         )}
       </td>
 
-      {/* 액션 버튼: 새로고침 + 제거 */}
+      {/* 액션 버튼: 최신화 + 제거 */}
       <td className="px-3 py-2">
         <div className="flex items-center gap-2">
           <button
@@ -233,12 +204,18 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
   )
 }
 
+// ─── 공격대 목록 (메인 컴포넌트) ─────────────────────────────────────────────
+
 export const RosterList = () => {
-  const characters = useRosterStore((s) => s.characters)
-  const clearRoster = useRosterStore((s) => s.clearRoster)
+  // 변수부 — 스토어
+  const characters = useRosterStore((store) => store.characters)
+  const clearRoster = useRosterStore((store) => store.clearRoster)
+
+  // 변수부 — 커스텀 훅
   const { copyShareUrl, isRefreshing, refreshAll, refreshingIds, refreshOne } = useRosterSync()
 
-  const handleCopy = () => {
+  // 함수
+  const handleCopyLink = () => {
     copyShareUrl()
     toast.success("링크 복사됨!", {
       description: `공격대 ${characters.length}명 로스터 링크가 클립보드에 복사됐습니다.`,
@@ -250,6 +227,7 @@ export const RosterList = () => {
     toast.success("최신화 완료!", { description: "모든 공대원 데이터가 업데이트됐습니다." })
   }
 
+  // 빈 상태
   if (characters.length === 0) {
     return (
       <p className="text-muted-foreground py-6 text-center text-sm">
@@ -258,16 +236,17 @@ export const RosterList = () => {
     )
   }
 
-  const roleOrder = ["TANK", "HEALER", "MELEE", "RANGED"]
+  // 파생 데이터 (훅 이후)
   const sorted = [...characters].sort(
-    (a, b) => roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role)
+    (a, b) => ROLE_SORT_ORDER.indexOf(a.role) - ROLE_SORT_ORDER.indexOf(b.role)
   )
 
-  const roleCounts = sorted.reduce<Record<string, number>>((acc, c) => {
-    acc[c.role] = (acc[c.role] ?? 0) + 1
-    return acc
+  const roleCounts = sorted.reduce<Record<string, number>>((accumulator, character) => {
+    accumulator[character.role] = (accumulator[character.role] ?? 0) + 1
+    return accumulator
   }, {})
 
+  // 렌더
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
@@ -284,7 +263,6 @@ export const RosterList = () => {
 
         {/* 헤더 액션 버튼 */}
         <div className="flex items-center gap-2">
-          {/* 전체 최신화 */}
           <button
             className="flex items-center gap-1 rounded px-2 py-1 text-xs text-sky-400/80 transition-colors hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-40"
             disabled={isRefreshing}
@@ -294,15 +272,13 @@ export const RosterList = () => {
             {isRefreshing ? "최신화 중…" : "전체 최신화"}
           </button>
 
-          {/* 링크 복사 */}
           <button
             className="flex items-center gap-1 rounded px-2 py-1 text-xs text-emerald-400/80 transition-colors hover:bg-emerald-400/10 hover:text-emerald-400"
-            onClick={handleCopy}
+            onClick={handleCopyLink}
           >
             🔗 링크 복사
           </button>
 
-          {/* 전체 초기화 */}
           <button
             className="text-muted-foreground/60 text-xs transition-colors hover:text-red-400"
             onClick={clearRoster}
@@ -330,12 +306,12 @@ export const RosterList = () => {
             </tr>
           </thead>
           <tbody>
-            {sorted.map((c) => (
+            {sorted.map((character) => (
               <CharacterRow
-                character={c}
-                isRefreshing={refreshingIds.has(c.id)}
-                key={c.id}
-                onRefresh={() => refreshOne(c.id)}
+                character={character}
+                isRefreshing={refreshingIds.has(character.id)}
+                key={character.id}
+                onRefresh={() => refreshOne(character.id)}
               />
             ))}
           </tbody>

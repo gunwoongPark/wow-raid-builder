@@ -1,37 +1,10 @@
 import axios from "axios"
 import { type NextRequest, NextResponse } from "next/server"
 
-import { type RaiderIOProfile } from "@/entities/character"
+import { type CharacterSearchResult, type RaiderIOProfile } from "@/entities/character"
+import { RAIDERIO_BASE_URL } from "@/shared/config/raiderio"
+import { KR_SEARCH_REALM_SLUGS } from "@/shared/config/realms"
 import { CURRENT_SEASON } from "@/shared/config/season"
-
-export interface CharacterSearchResult {
-  className: string
-  name: string
-  realm: string
-  realmSlug: string
-  score: number
-  specName: string
-  thumbnailUrl: string
-}
-
-const KR_REALM_SLUGS = [
-  "zuljin",
-  "azshara",
-  "hellscream",
-  "hyjal",
-  "durotan",
-  "malfurion",
-  "windrunner",
-  "dalaran",
-  "rexxar",
-  "cenarius",
-  "garona",
-  "guldan",
-  "stormrage",
-  "deathwing",
-]
-
-const RAIDERIO_BASE = "https://raider.io/api/v1"
 
 const searchOnRealm = async (
   name: string,
@@ -40,7 +13,7 @@ const searchOnRealm = async (
   try {
     // axios params 직렬화 시 한글이 깨지므로 URL을 직접 구성
     const url =
-      `${RAIDERIO_BASE}/characters/profile` +
+      `${RAIDERIO_BASE_URL}/characters/profile` +
       `?region=kr` +
       `&realm=${encodeURIComponent(realmSlug)}` +
       `&name=${encodeURIComponent(name)}` +
@@ -62,8 +35,8 @@ const searchOnRealm = async (
   }
 }
 
-export const GET = async (req: NextRequest) => {
-  const name = req.nextUrl.searchParams.get("name")?.trim()
+export const GET = async (request: NextRequest) => {
+  const name = request.nextUrl.searchParams.get("name")?.trim()
 
   if (!name || name.length < 2) {
     return NextResponse.json(
@@ -72,8 +45,8 @@ export const GET = async (req: NextRequest) => {
     )
   }
 
-  const results = await Promise.all(KR_REALM_SLUGS.map((slug) => searchOnRealm(name, slug)))
-  const found = results.filter((r): r is CharacterSearchResult => r !== null)
+  const results = await Promise.all(KR_SEARCH_REALM_SLUGS.map((slug) => searchOnRealm(name, slug)))
+  const found = results.filter((result): result is CharacterSearchResult => result !== null)
 
   return NextResponse.json(found)
 }

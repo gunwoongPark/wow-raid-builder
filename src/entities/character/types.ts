@@ -102,6 +102,18 @@ export interface RosterCharacterWCL {
   mythic: WCLZoneRankings | null
 }
 
+// ─── 캐릭터 검색 결과 ─────────────────────────────────────────────────────────
+
+export interface CharacterSearchResult {
+  className: string
+  name: string
+  realm: string
+  realmSlug: string
+  score: number
+  specName: string
+  thumbnailUrl: string
+}
+
 export interface RosterCharacter {
   classId: number
   className: string

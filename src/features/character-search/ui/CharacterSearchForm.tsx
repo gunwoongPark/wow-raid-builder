@@ -4,102 +4,102 @@ import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headl
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { type CharacterSearchResult } from "@/app/api/character/search/route"
-import { characterApi, characterQueries, type RosterCharacter } from "@/entities/character"
+import {
+  characterApi,
+  characterQueries,
+  type CharacterSearchResult,
+  type RosterCharacter,
+} from "@/entities/character"
+import { useDebounce } from "@/shared/lib/use-debounce"
 import { useRosterStore } from "@/shared/model/roster-store"
 
 import { characterSearchSchema, type CharacterSearchSchema } from "../schema"
 
-const useDebounce = (value: string, delay: number) => {
-  const [debounced, setDebounced] = useState(value)
-  useEffect(() => {
-    const timer = setTimeout(() => setDebounced(value), delay)
-    return () => clearTimeout(timer)
-  }, [value, delay])
-  return debounced
-}
-
 export const CharacterSearchForm = () => {
-  const addCharacter = useRosterStore((s) => s.addCharacter)
-  const characters = useRosterStore((s) => s.characters)
+  // 변수부 — 스토어
+  const addCharacter = useRosterStore((store) => store.addCharacter)
+  const characters = useRosterStore((store) => store.characters)
 
+  // 변수부 — 로컬 상태
   const [query, setQuery] = useState("")
   const [isAdding, setIsAdding] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const debouncedQuery = useDebounce(query, 350)
-
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // 변수부 — 폼 / 쿼리
   const { handleSubmit } = useForm<CharacterSearchSchema>({
     resolver: zodResolver(characterSearchSchema),
   })
 
   const { data: searchResults = [], isFetching } = useQuery({
     ...characterQueries.search(debouncedQuery),
-    placeholderData: (prev) => prev,
+    placeholderData: (previous) => previous,
   })
 
+  // 함수
   const onSelect = async (result: CharacterSearchResult | null) => {
     if (!result) return
 
-    const id = `${result.realmSlug}-${result.name.toLowerCase()}`
-    if (characters.some((c) => c.id === id)) {
-      setError("이미 로스터에 추가된 캐릭터입니다.")
+    const characterId = `${result.realmSlug}-${result.name.toLowerCase()}`
+    if (characters.some((character) => character.id === characterId)) {
+      setErrorMessage("이미 로스터에 추가된 캐릭터입니다.")
       return
     }
 
     setIsAdding(true)
-    setError(null)
+    setErrorMessage(null)
 
     try {
-      const [character, raiderIO, warcraftLogs] = await Promise.allSettled([
+      const [characterResult, raiderIOResult, warcraftLogsResult] = await Promise.allSettled([
         characterApi.getSummary(result.realmSlug, result.name),
         characterApi.getRaiderIO(result.realmSlug, result.name),
         characterApi.getWarcraftLogs(result.realmSlug, result.name),
       ])
 
-      if (character.status === "rejected") {
-        const status = character.reason?.response?.status as number | undefined
-        const msg =
+      if (characterResult.status === "rejected") {
+        const status = characterResult.reason?.response?.status as number | undefined
+        const message =
           status === 404
             ? `"${result.name}" 캐릭터를 블리자드 서버에서 찾을 수 없습니다. 이름 변경이나 서버 이전이 있었을 수 있어요.`
             : status !== null && status !== undefined && status >= 500
               ? "블리자드 서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요."
-              : ((character.reason?.response?.data?.error as string | undefined) ??
-                character.reason?.message ??
+              : ((characterResult.reason?.response?.data?.error as string | undefined) ??
+                characterResult.reason?.message ??
                 "캐릭터 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.")
-        setError(msg)
+        setErrorMessage(message)
         return
       }
 
       const added: RosterCharacter = {
-        ...character.value,
+        ...characterResult.value,
         raiderIO:
-          raiderIO.status === "fulfilled"
+          raiderIOResult.status === "fulfilled"
             ? {
-                profileUrl: raiderIO.value.profile_url,
-                raidProgression: raiderIO.value.raid_progression ?? {},
-                score: raiderIO.value.mythic_plus_scores_by_season?.[0]?.scores.all ?? 0,
-                thumbnailUrl: raiderIO.value.thumbnail_url,
+                profileUrl: raiderIOResult.value.profile_url,
+                raidProgression: raiderIOResult.value.raid_progression ?? {},
+                score: raiderIOResult.value.mythic_plus_scores_by_season?.[0]?.scores.all ?? 0,
+                thumbnailUrl: raiderIOResult.value.thumbnail_url,
               }
             : null,
-        warcraftLogs: warcraftLogs.status === "fulfilled" ? warcraftLogs.value : null,
+        warcraftLogs: warcraftLogsResult.status === "fulfilled" ? warcraftLogsResult.value : null,
       }
 
       addCharacter(added)
       setQuery("")
       inputRef.current?.blur()
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "오류가 발생했습니다."
-      setError(msg)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "오류가 발생했습니다."
+      setErrorMessage(message)
     } finally {
       setIsAdding(false)
     }
   }
 
+  // 렌더
   return (
     <form className="flex flex-col gap-2" onSubmit={handleSubmit(() => {})}>
       <Combobox immediate onChange={onSelect}>
@@ -110,9 +110,9 @@ export const CharacterSearchForm = () => {
             displayValue={() => query}
             placeholder="캐릭터명 검색 (예: 액흑)"
             ref={inputRef}
-            onChange={(e) => {
-              setQuery(e.target.value)
-              setError(null)
+            onChange={(event) => {
+              setQuery(event.target.value)
+              setErrorMessage(null)
             }}
           />
 
@@ -164,7 +164,7 @@ export const CharacterSearchForm = () => {
         </div>
       </Combobox>
 
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {errorMessage && <p className="text-xs text-red-500">{errorMessage}</p>}
     </form>
   )
 }

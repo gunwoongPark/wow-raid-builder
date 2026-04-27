@@ -2,105 +2,110 @@
 
 # WoW Raid Builder — Claude 지침
 
-## 프로젝트
+공대장(길드/막공)을 위한 공대 구성 분석 서비스. Blizzard API + Raider.IO + WCL로 캐릭터 데이터 자동 수집, 버프/유틸 커버리지 시각화.
 
-공대장(길드/막공)을 위한 공대 구성 분석 서비스. Blizzard API + Raider.IO로 캐릭터 데이터 자동 수집, 버프/유틸 커버리지 시각화.
+---
+
+## 코딩 규칙 (반드시 준수)
+
+1. **줄임말 금지** — 모든 변수·함수·타입·파라미터에 줄임말 사용 금지.
+   `pct→percent`, `avg→average`, `req→request`, `idx→index`, `r→ranking`, `c→character`
+   예외: `ref`(React API), `props`, `params`(Next.js), `event`
+
+2. **WCL 로그 표현** — UI·코드 모두 `parse` 대신 `log` 사용.
+   `parseColorClass→logColorClass`, `ParseCell→LogCell`, `ParseVariant→LogVariant`
+
+3. **컴포넌트 코드 순서**
+   `스토어·useState·useRef·커스텀훅` → `핸들러 함수` → `useEffect` → `return JSX`
+
+4. **상수·타입·유틸 분리 (FSD)** — 컴포넌트에 있을 필요 없는 것은 분리.
+   표시용 상수→`feature/config/`, 도메인 유틸→`feature/lib/`, 범용 유틸→`shared/lib/`
+   파일명은 도메인명 사용 (❌`utils.ts` / ✅`log-color.ts`)
+   **예외**: 해당 컴포넌트 전용 Props 인터페이스(`interface XxxProps`)는 컴포넌트 파일 내부에 둔다.
+
+5. **lodash-es 우선** — debounce·타입 체킹은 직접 구현 금지, `lodash-es` 사용.
+   tree-shaking을 위해 `lodash` 아닌 `lodash-es`. (`isNumber`, `isArray`, `isPlainObject` 등)
+
+6. **코드 중복 금지** — 동일 값·로직 2곳 이상 반복 시 공통 위치로 추출.
+   API Base URL→`shared/config/<서비스>.ts`, 공통 타입→`entities/<도메인>/model/`
+
+7. **FSD import 방향** — `app→pages→widgets→features→entities→shared`.
+   같은 레이어 간 cross-import 금지. 슬라이스는 `index.ts`로만 노출.
 
 ---
 
 ## 작업 규칙
 
-```
-작업 완료 후 반드시:
-1. npm run build  → 통과 확인
-2. git add -A && git commit -m "..." && git push origin develop
-```
-
+- 작업 완료 후: `pnpm build` 통과 → `git add -A && git commit && git push origin develop`
 - **브랜치**: `develop`에서 작업, `main`은 PR로만
 - **백그라운드 서버 실행 금지** — 사용자가 직접 `pnpm dev`
-- 의미 있는 단위마다 주기적으로 커밋 & 푸시
 
 ---
 
 ## 기술 스택
 
-| 역할       | 선택                                          |
-| ---------- | --------------------------------------------- |
-| 프레임워크 | Next.js 16 (App Router, Turbopack)            |
-| 상태       | TanStack Query v5 + Zustand v5 persist        |
-| 폼         | React Hook Form + Zod                         |
-| HTTP       | Axios (인스턴스 + interceptor)                |
-| UI         | Tailwind CSS v4 + shadcn + warcraftcn         |
-| 테마       | next-themes (dark/light/system, 기본: system) |
-| 호스팅     | Vercel + Neon PostgreSQL (예정)               |
+| 역할       | 선택                                   |
+| ---------- | -------------------------------------- |
+| 프레임워크 | Next.js 16 (App Router, Turbopack)     |
+| 상태       | TanStack Query v5 + Zustand v5 persist |
+| 폼         | React Hook Form + Zod                  |
+| HTTP       | Axios (인스턴스 + interceptor)         |
+| UI         | Tailwind CSS v4 + shadcn + warcraftcn  |
+| 유틸       | lodash-es                              |
+| 호스팅     | Vercel                                 |
 
 ---
 
 ## FSD 구조 (`src/`)
 
 ```
-app/api/          ← Route Handlers (Blizzard Secret 보호 — 클라이언트 직접 호출 금지)
-entities/character/   buffs.ts, queries.ts, types.ts
-entities/guild/
-features/character-search/   Combobox 자동완성 (debounce 350ms)
-features/roster-manager/     RosterList + BuffAnalysis
-shared/api/       apiClient (/api 프록시), blizzardClient (interceptor)
-shared/config/    realms.ts (KR slug 매핑), class-colors.ts (직업 색상)
-shared/lib/       blizzard-token.ts, query-keys.ts, theme-provider.tsx
-shared/model/     roster-store.ts (Zustand persist)
+app/api/                     ← Route Handlers (Secret 보호 — 클라이언트 직접 호출 금지)
+entities/character/          ← buffs.ts, queries.ts, types.ts
+features/character-search/   ← Combobox 자동완성 (useDebounce 350ms)
+features/roster-manager/     ← RosterList, BuffAnalysis, useRosterSync
+  config/roster-display.ts   ← ROLE_LABEL, ROLE_COLOR, ROLE_SORT_ORDER
+  lib/log-color.ts           ← LogVariant, logColorClass, logVariant
+shared/api/                  ← apiClient, blizzardClient
+shared/config/               ← realms.ts, class-colors.ts, season.ts, raiderio.ts
+shared/lib/                  ← use-debounce.ts, roster-url.ts, wcl-token.ts
+shared/model/                ← roster-store.ts (Zustand persist)
 ```
 
 ---
 
 ## 외부 API
 
-### Blizzard API
+### Blizzard
 
-- **인증**: Client Credentials OAuth → `https://kr.battle.net/oauth/token`
-- **Base URL**: `https://kr.api.blizzard.com`, Namespace: `profile-kr / static-kr / dynamic-kr`
-- **Locale**: `ko_KR`
-- **interceptor**: request(토큰 주입) + response(401 → invalidate → 재시도 1회)
-- **realm 파라미터**: 반드시 영문 slug (`줄진` → `zuljin`) — `shared/config/realms.ts` 참조
-- **길드 로스터**: 특성화(spec) 미포함 → 멤버별 개별 캐릭터 호출 필요 (N+1 주의)
+- OAuth Client Credentials → `https://kr.battle.net/oauth/token`
+- Base URL: `https://kr.api.blizzard.com` / Namespace: `profile-kr / static-kr`
+- interceptor: 토큰 주입 + 401 → invalidate → 재시도 1회
+- realm은 반드시 영문 slug — `shared/config/realms.ts` 참조
 
-### Raider.IO API
+### Raider.IO
 
-- 공개 API, 키 불필요
-- **한글 이름 전달 시**: `axios params` 객체 사용 금지 → URL 직접 구성 (`encodeURIComponent`)
-  ```ts
-  // ❌ 깨짐: axios.get(url, { params: { name: "액흑" } })
-  // ✅ 정상: axios.get(`${url}?name=${encodeURIComponent(name)}&...`)
-  ```
-- 제공 데이터: M+ 점수, 레이드 진행도 (파싱 퍼센타일은 Warcraft Logs 영역)
+- 공개 API, 키 불필요. Base URL: `shared/config/raiderio.ts`
+- **한글 이름**: `axios params` 금지 → URL 직접 구성 (`encodeURIComponent`)
 
-### Warcraft Logs API
+### Warcraft Logs
 
 - GraphQL: `https://www.warcraftlogs.com/api/v2/client`
-- Client Credentials OAuth (등록: warcraftlogs.com/api/clients)
-- **환경변수**: `WARCRAFT_LOGS_CLIENT_ID`, `WARCRAFT_LOGS_CLIENT_SECRET` (미설정 시 null 반환, graceful)
-- **토큰 관리**: `shared/lib/wcl-token.ts` (blizzard-token.ts 동일 패턴)
-- **Route Handler**: `app/api/warcraftlogs/[realm]/[name]/route.ts`
-- **사용 데이터**: `zoneRankings.bestPerformanceAverage` (파싱 % 평균), `medianPerformanceAverage`
-- **RosterList 파싱 % 색상**: 95+ 골드(legendary), 75+ 보라(epic), 50+ 파랑(rare), 25+ 초록, 25미만 회색
+- 환경변수: `WARCRAFT_LOGS_CLIENT_ID`, `WARCRAFT_LOGS_CLIENT_SECRET` (미설정 시 null, graceful)
+- 사용 데이터: `zoneRankings.bestPerformanceAverage` (로그 % 평균)
+- 로그 % 색상: 95+골드(legendary), 75+보라(epic), 50+파랑(rare), 25+초록, 미만 회색
 
-### 시즌 상수 관리
-
-**`shared/config/season.ts` 한 파일만 수정** — 시즌 변경 시 여기만 업데이트:
+### 시즌 상수 — `shared/config/season.ts` 한 파일만 수정
 
 ```ts
 CURRENT_SEASON = "season-mn-1" // Raider.IO (Midnight S1)
-CURRENT_WCL_ZONE_ID = 46 // WCL Zone (VS/DR/MQD, Midnight S1 raid)
-// Zone 47 = Midnight Mythic+ S1 (쐐기 전용 — 레이드 아님)
+CURRENT_WCL_ZONE_ID = 46 // WCL (VS/DR/MQD, Midnight S1 raid)
 ```
 
-시즌 확인:
-
-- Raider.IO: `https://raider.io/api/v1/mythic-plus/seasons?region=kr`
-- WCL Zone: GraphQL `worldData { expansions { zones { id name } } }`
+확인: Raider.IO `GET /mythic-plus/seasons?region=kr` / WCL GraphQL `worldData { zones }`
 
 ---
 
-## 로컬 개발 환경
+## 로컬 개발
 
 ```bash
 # SSL 인증서 이슈 (macOS) — pnpm dev 스크립트에 이미 포함됨
@@ -108,36 +113,29 @@ NODE_EXTRA_CA_CERTS=$(pwd)/.certs.pem next dev
 # .certs.pem 없으면: security find-certificate -a -p /Library/Keychains/System.keychain > .certs.pem
 ```
 
-- `.certs.pem` → `.gitignore` 등록됨 (커밋 금지)
-- `NODE_EXTRA_CA_CERTS`는 `.env.local`이 아닌 스크립트에서 설정해야 함 (TLS 초기화 전 필요)
+`.certs.pem`은 `.gitignore` 등록됨. `NODE_EXTRA_CA_CERTS`는 스크립트에서 설정 (TLS 초기화 전 필요).
 
 ---
 
-## 주요 함정 (Known Gotchas)
+## Known Gotchas
 
-| 문제                           | 원인                                       | 해결                                                 |
-| ------------------------------ | ------------------------------------------ | ---------------------------------------------------- |
-| CSS `@import` 파싱 오류        | 다른 규칙 뒤에 `@import` 위치              | `@import`를 파일 최상단에 배치                       |
-| Combobox 드롭다운 z-index 무효 | `backdrop-blur-sm`이 stacking context 생성 | 검색 섹션에서 `backdrop-blur` 제거                   |
-| warcraftcn CSS asset 오류      | 미설치 컴포넌트의 로컬 경로 참조           | CDN URL로 교체 (`url("https://warcraftcn.com/...")`) |
-| CSS `@/` alias 불가            | Turbopack이 CSS에서 `@/` 미지원            | 상대경로 사용 (`../components/...`)                  |
-| 한글 검색 빈 배열              | axios params 직렬화 시 한글 인코딩 깨짐    | URL 직접 구성 + `encodeURIComponent`                 |
-
----
-
-## 버프 분석 (`entities/character/buffs.ts`)
-
-- 스펙 ID 기반 정적 매핑 (Blizzard API는 버프 의미론적 분류 미제공)
-- `COUNTABLE_CATEGORIES`: 시너지 제외 카테고리는 공급자 수(×N) 표시
-- 스펙 ID 검증: `GET /data/wow/playable-specialization/index` (Namespace: static-kr)
+| 문제                      | 원인                                | 해결                                 |
+| ------------------------- | ----------------------------------- | ------------------------------------ |
+| CSS `@import` 오류        | 다른 규칙 뒤에 위치                 | 파일 최상단에 배치                   |
+| Combobox z-index 무효     | `backdrop-blur-sm` stacking context | 검색 섹션에서 제거                   |
+| warcraftcn CSS asset 오류 | 미설치 컴포넌트 로컬 경로           | CDN URL로 교체                       |
+| CSS `@/` alias 불가       | Turbopack 미지원                    | 상대경로 사용                        |
+| 한글 검색 빈 배열         | axios params 한글 인코딩 깨짐       | URL 직접 구성 + `encodeURIComponent` |
 
 ---
 
 ## 환경변수
 
 ```bash
-BLIZZARD_CLIENT_ID=        # develop.battle.net
+BLIZZARD_CLIENT_ID=
 BLIZZARD_CLIENT_SECRET=
+WARCRAFT_LOGS_CLIENT_ID=
+WARCRAFT_LOGS_CLIENT_SECRET=
 ```
 
 GitHub Actions Secrets에도 동일하게 등록 필요.

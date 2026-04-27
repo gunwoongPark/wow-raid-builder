@@ -1,7 +1,11 @@
-import { type CharacterSearchResult } from "@/app/api/character/search/route"
 import { apiClient } from "@/shared/api/axios"
 
-import { type RaiderIOProfile, type RosterCharacter, type RosterCharacterWCL } from "./types"
+import {
+  type CharacterSearchResult,
+  type RaiderIOProfile,
+  type RosterCharacter,
+  type RosterCharacterWCL,
+} from "./types"
 
 export const characterApi = {
   getRaiderIO: async (realm: string, name: string): Promise<RaiderIOProfile> => {

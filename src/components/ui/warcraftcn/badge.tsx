@@ -59,7 +59,7 @@ function Badge({
   size,
   variant,
   ...props
-}: BadgeProps) {
+}: Readonly<BadgeProps>) {
   const Comp = asChild ? Slot : "div"
 
   return (
