@@ -62,10 +62,15 @@ export const CharacterSearchForm = () => {
       ])
 
       if (character.status === "rejected") {
+        const status = character.reason?.response?.status as number | undefined
         const msg =
-          character.reason?.response?.data?.error ??
-          character.reason?.message ??
-          "캐릭터를 찾을 수 없습니다."
+          status === 404
+            ? `"${result.name}" 캐릭터를 블리자드 서버에서 찾을 수 없습니다. 이름 변경이나 서버 이전이 있었을 수 있어요.`
+            : status !== null && status !== undefined && status >= 500
+              ? "블리자드 서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요."
+              : ((character.reason?.response?.data?.error as string | undefined) ??
+                character.reason?.message ??
+                "캐릭터 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.")
         setError(msg)
         return
       }
