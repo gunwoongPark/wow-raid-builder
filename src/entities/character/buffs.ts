@@ -231,21 +231,26 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
 export type BuffCategory = "핵심" | "시너지" | "오라" | "힐러외생" | "특수기" | "유틸"
 
 export interface BuffCoverage {
+  category: BuffCategory
+  count: number // 제공 가능한 수 (시너지는 의미 없어 0)
+  covered: boolean
   key: BuffKey
   label: string
-  category: BuffCategory
-  covered: boolean
-  providers: string[]
+  providers: string[] // 캐릭터명 목록
 }
+
+// 카운트를 표시하는 카테고리 (시너지는 제외 — 공대 단위 패시브 버프)
+export const COUNTABLE_CATEGORIES: BuffCategory[] = ["핵심", "오라", "힐러외생", "특수기", "유틸"]
 
 export const analyzeBuffCoverage = (characters: RosterCharacter[]): BuffCoverage[] =>
   (Object.entries(BUFF_SOURCES) as Array<[BuffKey, BuffSource]>).map(([key, source]) => {
-    const providers = characters
-      .filter((c) => source.specIds.includes(c.specId))
-      .map((c) => `${c.name} (${c.specName})`)
+    const matchingChars = characters.filter((c) => source.specIds.includes(c.specId))
+    const providers = matchingChars.map((c) => `${c.name} (${c.specName})`)
+    const isCountable = (COUNTABLE_CATEGORIES as string[]).includes(source.category)
 
     return {
       category: source.category,
+      count: isCountable ? matchingChars.length : 0,
       covered: providers.length > 0,
       key,
       label: source.label,

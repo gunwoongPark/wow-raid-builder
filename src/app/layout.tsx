@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Cinzel, Geist, Geist_Mono } from "next/font/google"
 
 import { QueryProvider } from "@/shared/lib/query-provider"
 import { AppThemeProvider } from "@/shared/lib/theme-provider"
@@ -17,6 +17,12 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 })
 
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  variable: "--font-cinzel",
+  weight: ["400", "700"],
+})
+
 export const metadata: Metadata = {
   description: "WoW 공대 구성 자동 분석기",
   title: "WoW Raid Builder",
@@ -30,7 +36,7 @@ export const RootLayout = ({
   return (
     <html
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${cinzel.variable} h-full antialiased`}
       lang="ko"
     >
       <body className="flex min-h-full flex-col">

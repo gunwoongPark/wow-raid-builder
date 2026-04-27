@@ -2,7 +2,7 @@ import { CharacterSearchForm } from "@/features/character-search"
 import { BuffAnalysis, RosterList } from "@/features/roster-manager"
 
 const Section = ({ children, title }: { children: React.ReactNode; title?: string }) => (
-  <section className="border-border/40 bg-card/40 rounded-lg border p-5 backdrop-blur-sm">
+  <section className="border-border/40 bg-card/40 rounded-lg border p-5">
     {title && (
       <h2 className="fantasy text-primary/80 mb-4 text-sm font-semibold tracking-widest uppercase">
         {title}
@@ -15,7 +15,6 @@ const Section = ({ children, title }: { children: React.ReactNode; title?: strin
 const HomePage = () => {
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-6 p-6">
-      {/* 헤더 */}
       <div className="border-border/30 flex flex-col gap-1 border-b pb-6">
         <h1 className="fantasy text-primary text-3xl font-bold">WoW Raid Builder</h1>
         <p className="text-muted-foreground text-sm">
@@ -23,9 +22,13 @@ const HomePage = () => {
         </p>
       </div>
 
-      <Section title="캐릭터 추가">
+      {/* 검색 섹션: backdrop-blur 제거 → stacking context 없애서 드롭다운이 위로 나옴 */}
+      <div className="border-border/40 bg-card/40 relative z-10 rounded-lg border p-5">
+        <h2 className="fantasy text-primary/80 mb-4 text-sm font-semibold tracking-widest uppercase">
+          캐릭터 추가
+        </h2>
         <CharacterSearchForm />
-      </Section>
+      </div>
 
       <Section>
         <RosterList />

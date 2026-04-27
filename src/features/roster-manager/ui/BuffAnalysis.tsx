@@ -1,6 +1,11 @@
 "use client"
 
-import { analyzeBuffCoverage, BUFF_CATEGORIES, type BuffCategory } from "@/entities/character"
+import {
+  analyzeBuffCoverage,
+  BUFF_CATEGORIES,
+  type BuffCategory,
+  COUNTABLE_CATEGORIES,
+} from "@/entities/character"
 import { useRosterStore } from "@/shared/model/roster-store"
 
 const CATEGORY_LABEL: Record<BuffCategory, string> = {
@@ -21,6 +26,7 @@ export const BuffAnalysis = () => {
   const byCategory = BUFF_CATEGORIES.map((cat) => ({
     buffs: coverage.filter((b) => b.category === cat),
     category: cat,
+    isCountable: (COUNTABLE_CATEGORIES as string[]).includes(cat),
   }))
 
   const totalCovered = coverage.filter((b) => b.covered).length
@@ -28,7 +34,6 @@ export const BuffAnalysis = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* 헤더 */}
       <div className="flex items-center justify-between">
         <span className="text-primary font-semibold">버프 / 유틸 커버리지</span>
         <span className="text-muted-foreground text-xs">
@@ -36,7 +41,6 @@ export const BuffAnalysis = () => {
         </span>
       </div>
 
-      {/* 커버리지 바 */}
       <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">
         <div
           className="bg-primary h-full rounded-full transition-all duration-500"
@@ -44,8 +48,7 @@ export const BuffAnalysis = () => {
         />
       </div>
 
-      {/* 카테고리별 그리드 */}
-      {byCategory.map(({ buffs, category }) => {
+      {byCategory.map(({ buffs, category, isCountable }) => {
         const coveredCount = buffs.filter((b) => b.covered).length
         return (
           <div key={category}>
@@ -75,13 +78,21 @@ export const BuffAnalysis = () => {
                     {buff.covered ? "✓" : "✗"}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p
-                      className={`text-xs leading-snug font-medium ${
-                        buff.covered ? "text-foreground" : "text-foreground/50"
-                      }`}
-                    >
-                      {buff.label}
-                    </p>
+                    <div className="flex items-baseline gap-1.5">
+                      <p
+                        className={`text-xs leading-snug font-medium ${
+                          buff.covered ? "text-foreground" : "text-foreground/50"
+                        }`}
+                      >
+                        {buff.label}
+                      </p>
+                      {/* 시너지 제외, 커버된 경우 개수 표시 */}
+                      {isCountable && buff.covered && buff.count > 0 && (
+                        <span className="shrink-0 rounded bg-emerald-500/20 px-1 text-[10px] font-semibold text-emerald-400">
+                          ×{buff.count}
+                        </span>
+                      )}
+                    </div>
                     {buff.covered && (
                       <p className="mt-0.5 truncate text-[10px] text-emerald-400/70">
                         {buff.providers.join(", ")}

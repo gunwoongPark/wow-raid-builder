@@ -13,7 +13,6 @@ export interface CharacterSearchResult {
   thumbnailUrl: string
 }
 
-// KR 활성 서버 slug 목록
 const KR_REALM_SLUGS = [
   "zuljin",
   "azshara",
@@ -39,15 +38,15 @@ const searchOnRealm = async (
   realmSlug: string
 ): Promise<CharacterSearchResult | null> => {
   try {
-    const { data } = await axios.get<RaiderIOProfile>(`${RAIDERIO_BASE}/characters/profile`, {
-      params: {
-        fields: `mythic_plus_scores_by_season:${CURRENT_SEASON}`,
-        name,
-        realm: realmSlug,
-        region: "kr",
-      },
-      timeout: 4000,
-    })
+    // axios params 직렬화 시 한글이 깨지므로 URL을 직접 구성
+    const url =
+      `${RAIDERIO_BASE}/characters/profile` +
+      `?region=kr` +
+      `&realm=${encodeURIComponent(realmSlug)}` +
+      `&name=${encodeURIComponent(name)}` +
+      `&fields=mythic_plus_scores_by_season:${CURRENT_SEASON}`
+
+    const { data } = await axios.get<RaiderIOProfile>(url, { timeout: 4000 })
 
     return {
       className: data.class,
