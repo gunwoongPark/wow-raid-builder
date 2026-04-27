@@ -6,7 +6,7 @@
     "dev": "NODE_EXTRA_CA_CERTS=$(pwd)/.certs.pem next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint --max-warnings=0",
     "lint:fix": "eslint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
