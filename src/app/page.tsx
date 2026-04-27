@@ -1,5 +1,7 @@
+import { Suspense } from "react"
+
 import { CharacterSearchForm } from "@/features/character-search"
-import { BuffAnalysis, RosterList } from "@/features/roster-manager"
+import { BuffAnalysis, RosterList, RosterUrlLoader } from "@/features/roster-manager"
 
 const Section = ({ children, title }: { children: React.ReactNode; title?: string }) => (
   <section className="border-border/40 bg-card/40 rounded-lg border p-5">
@@ -15,6 +17,11 @@ const Section = ({ children, title }: { children: React.ReactNode; title?: strin
 const HomePage = () => {
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-6 p-6">
+      {/* ?r= 파라미터로 공유된 로스터를 자동 로드 — useSearchParams는 Suspense 필요 */}
+      <Suspense fallback={null}>
+        <RosterUrlLoader />
+      </Suspense>
+
       <div className="border-border/30 flex flex-col gap-1 border-b pb-6">
         <h1 className="fantasy text-primary text-3xl font-bold">WoW Raid Builder</h1>
         <p className="text-muted-foreground text-sm">

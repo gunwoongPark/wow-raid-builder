@@ -6,7 +6,10 @@ import { createPortal } from "react-dom"
 
 import { type RosterCharacter, type WCLZoneRankings } from "@/entities/character"
 import { getClassColor } from "@/shared/config/class-colors"
+import { extractRealmSlug } from "@/shared/lib/roster-url"
 import { useRosterStore } from "@/shared/model/roster-store"
+
+import { useRosterSync } from "../model/useRosterSync"
 
 const ROLE_LABEL: Record<string, string> = {
   HEALER: "힐러",
@@ -22,12 +25,6 @@ const ROLE_COLOR: Record<string, string> = {
   TANK: "text-blue-400",
 }
 
-// id = `${realmSlug}-${name.toLowerCase()}` 형식에서 slug 추출
-// KR 캐릭터명에는 하이픈이 없으므로 안전
-const extractRealmSlug = (id: string, name: string) =>
-  id.slice(0, id.length - name.toLowerCase().length - 1)
-
-// M+ 점수 색상 (Raider.IO 기준)
 const ScoreColor = ({ score }: { score: number }) => {
   const color =
     score >= 3000
@@ -40,7 +37,6 @@ const ScoreColor = ({ score }: { score: number }) => {
   return <span className={color}>{score > 0 ? score.toLocaleString() : "—"}</span>
 }
 
-// WCL 공식 퍼센타일 색상 체계
 const parseColorClass = (pct: number) =>
   pct >= 95
     ? "text-yellow-400 font-bold"
@@ -52,8 +48,6 @@ const parseColorClass = (pct: number) =>
           ? "text-green-400"
           : "text-muted-foreground"
 
-// 보스별 파싱 툴팁이 포함된 WCL 파싱 셀
-// createPortal + position:fixed 로 table overflow 문제 없이 렌더
 const ParseCell = ({ zone }: { zone: WCLZoneRankings | null | undefined }) => {
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
   const ref = useRef<HTMLSpanElement>(null)
@@ -117,7 +111,13 @@ const ParseCell = ({ zone }: { zone: WCLZoneRankings | null | undefined }) => {
   )
 }
 
-const CharacterRow = ({ character }: { character: RosterCharacter }) => {
+interface CharacterRowProps {
+  character: RosterCharacter
+  isRefreshing: boolean
+  onRefresh: () => void
+}
+
+const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps) => {
   const removeCharacter = useRosterStore((s) => s.removeCharacter)
   const classColor = getClassColor(character.className)
   const score = character.raiderIO?.score ?? 0
@@ -126,8 +126,6 @@ const CharacterRow = ({ character }: { character: RosterCharacter }) => {
     : null
 
   const realmSlug = extractRealmSlug(character.id, character.name)
-
-  // Blizzard 아머리 링크 — 공식 캐릭터 프로필 페이지
   const armoryUrl = `https://worldofwarcraft.blizzard.com/ko-kr/character/kr/${realmSlug}/${encodeURIComponent(character.name)}`
 
   return (
@@ -180,12 +178,10 @@ const CharacterRow = ({ character }: { character: RosterCharacter }) => {
       </td>
       <td className="text-foreground/90 px-3 py-2 text-sm">{character.itemLevel}</td>
 
-      {/* M+ 점수 — Raider.IO */}
       <td className="px-3 py-2 font-mono text-sm">
         <ScoreColor score={score} />
       </td>
 
-      {/* 로그 H / M — Warcraft Logs (hover: 보스별 파싱 상세) */}
       <td className="px-3 py-2 font-mono text-sm">
         <ParseCell zone={character.warcraftLogs?.heroic} />
       </td>
@@ -193,7 +189,6 @@ const CharacterRow = ({ character }: { character: RosterCharacter }) => {
         <ParseCell zone={character.warcraftLogs?.mythic} />
       </td>
 
-      {/* 레이드 진행 — Raider.IO */}
       <td className="px-3 py-2 text-xs">
         {progression ? (
           <div className="flex flex-col gap-0.5">
@@ -209,13 +204,25 @@ const CharacterRow = ({ character }: { character: RosterCharacter }) => {
         )}
       </td>
 
+      {/* 액션 버튼: 새로고침 + 제거 */}
       <td className="px-3 py-2">
-        <button
-          className="text-muted-foreground/60 text-xs transition-colors hover:text-red-400"
-          onClick={() => removeCharacter(character.id)}
-        >
-          제거
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            aria-label="최신화"
+            className="text-muted-foreground/40 text-xs transition-colors hover:text-sky-400 disabled:cursor-not-allowed"
+            disabled={isRefreshing}
+            onClick={onRefresh}
+            title="최신화"
+          >
+            <span className={`inline-block ${isRefreshing ? "animate-spin" : ""}`}>↻</span>
+          </button>
+          <button
+            className="text-muted-foreground/60 text-xs transition-colors hover:text-red-400"
+            onClick={() => removeCharacter(character.id)}
+          >
+            제거
+          </button>
+        </div>
       </td>
     </tr>
   )
@@ -224,6 +231,15 @@ const CharacterRow = ({ character }: { character: RosterCharacter }) => {
 export const RosterList = () => {
   const characters = useRosterStore((s) => s.characters)
   const clearRoster = useRosterStore((s) => s.clearRoster)
+  const { copyShareUrl, isRefreshing, refreshAll, refreshingIds, refreshOne } = useRosterSync()
+
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = () => {
+    copyShareUrl()
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   if (characters.length === 0) {
     return (
@@ -256,12 +272,35 @@ export const RosterList = () => {
             ))}
           </div>
         </div>
-        <button
-          className="text-muted-foreground/60 text-xs transition-colors hover:text-red-400"
-          onClick={clearRoster}
-        >
-          전체 초기화
-        </button>
+
+        {/* 헤더 액션 버튼 */}
+        <div className="flex items-center gap-2">
+          {/* 전체 최신화 */}
+          <button
+            className="flex items-center gap-1 rounded px-2 py-1 text-xs text-sky-400/80 transition-colors hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-40"
+            disabled={isRefreshing}
+            onClick={refreshAll}
+          >
+            <span className={`text-sm ${isRefreshing ? "animate-spin" : ""}`}>↻</span>
+            {isRefreshing ? "최신화 중…" : "전체 최신화"}
+          </button>
+
+          {/* 링크 복사 */}
+          <button
+            className="flex items-center gap-1 rounded px-2 py-1 text-xs text-emerald-400/80 transition-colors hover:bg-emerald-400/10 hover:text-emerald-400"
+            onClick={handleCopy}
+          >
+            {copied ? "✓ 복사됨" : "🔗 링크 복사"}
+          </button>
+
+          {/* 전체 초기화 */}
+          <button
+            className="text-muted-foreground/60 text-xs transition-colors hover:text-red-400"
+            onClick={clearRoster}
+          >
+            전체 초기화
+          </button>
+        </div>
       </div>
 
       <div className="border-border/40 bg-card/60 overflow-x-auto rounded-md border">
@@ -283,7 +322,12 @@ export const RosterList = () => {
           </thead>
           <tbody>
             {sorted.map((c) => (
-              <CharacterRow character={c} key={c.id} />
+              <CharacterRow
+                character={c}
+                isRefreshing={refreshingIds.has(c.id)}
+                key={c.id}
+                onRefresh={() => refreshOne(c.id)}
+              />
             ))}
           </tbody>
         </table>
