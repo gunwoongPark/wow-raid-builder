@@ -513,22 +513,22 @@
 
 .wc-orc-cursor,
 .wc-orc-cursor * {
-  cursor: url("../assets/cursors/orc.cur"), auto;
+  cursor: url("https://warcraftcn.com/warcraftcn/cursors/orc.cur"), auto;
 }
 
 .wc-human-cursor,
 .wc-human-cursor * {
-  cursor: url("../assets/cursors/human.cur"), auto;
+  cursor: url("https://warcraftcn.com/warcraftcn/cursors/human.cur"), auto;
 }
 
 .wc-elf-cursor,
 .wc-elf-cursor * {
-  cursor: url("../assets/cursors/elf.cur"), auto;
+  cursor: url("https://warcraftcn.com/warcraftcn/cursors/elf.cur"), auto;
 }
 
 .wc-undead-cursor,
 .wc-undead-cursor * {
-  cursor: url("../assets/cursors/undead.cur"), auto;
+  cursor: url("https://warcraftcn.com/warcraftcn/cursors/undead.cur"), auto;
 }
 
 /* checkbox.css */
@@ -561,42 +561,42 @@
 }
 
 .wc-checkbox-default {
-  background-image: url("../assets/checkbox-default.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/checkbox-default.webp");
 }
 .wc-checkbox-default[data-state="checked"] {
-  background-image: url("../assets/checkbox-default-checked.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/checkbox-default-checked.webp");
 }
 
 /* Human faction */
 .wc-checkbox-human {
-  background-image: url("../assets/checkbox-human.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/checkbox-human.webp");
 }
 .wc-checkbox-human[data-state="checked"] {
-  background-image: url("../assets/checkbox-human-checked.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/checkbox-human-checked.webp");
 }
 
 /* Orc faction */
 .wc-checkbox-orc {
-  background-image: url("../assets/checkbox-orc.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/checkbox-orc.webp");
 }
 .wc-checkbox-orc[data-state="checked"] {
-  background-image: url("../assets/checkbox-orc-checked.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/checkbox-orc-checked.webp");
 }
 
 /* Elf faction */
 .wc-checkbox-elf {
-  background-image: url("../assets/checkbox-elf.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/checkbox-elf.webp");
 }
 .wc-checkbox-elf[data-state="checked"] {
-  background-image: url("../assets/checkbox-elf-checked.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/checkbox-elf-checked.webp");
 }
 
 /* Undead faction */
 .wc-checkbox-undead {
-  background-image: url("../assets/checkbox-undead.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/checkbox-undead.webp");
 }
 .wc-checkbox-undead[data-state="checked"] {
-  background-image: url("../assets/checkbox-undead-checked.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/checkbox-undead-checked.webp");
 }
 
 /* ============================================
@@ -709,19 +709,19 @@
    ============================================ */
 
 .wc-accordion-medieval-icon--sword {
-  background-image: url("../assets/svg/sword.svg");
+  background-image: url("https://warcraftcn.com/warcraftcn/svg/sword.svg");
   filter: brightness(0) saturate(100%) invert(83%) sepia(38%) saturate(1148%) hue-rotate(349deg)
     brightness(102%) contrast(101%);
 }
 
 .wc-accordion-medieval-icon--shield {
-  background-image: url("../assets/svg/shield.svg");
+  background-image: url("https://warcraftcn.com/warcraftcn/svg/shield.svg");
   filter: brightness(0) saturate(100%) invert(66%) sepia(30%) saturate(965%) hue-rotate(171deg)
     brightness(92%) contrast(88%);
 }
 
 .wc-accordion-medieval-icon--rune-stone {
-  background-image: url("../assets/svg/rune-stone.svg");
+  background-image: url("https://warcraftcn.com/warcraftcn/svg/rune-stone.svg");
   filter: brightness(0) saturate(100%) invert(66%) sepia(18%) saturate(951%) hue-rotate(253deg)
     brightness(94%) contrast(91%);
 }
@@ -756,17 +756,17 @@
 }
 
 .wc-accordion-content-border {
-  border-image-source: url("../assets/accordion-content-bg.webp");
+  border-image-source: url("https://warcraftcn.com/warcraftcn/accordion-content-bg.webp");
 }
 
 .wc-accordion-header-border {
-  border-image-source: url("../assets/accordion-header.webp");
+  border-image-source: url("https://warcraftcn.com/warcraftcn/accordion-header.webp");
 }
 /* Default Tab Faction */
 
 /* TAB BUTTON */
 .wc-tabs-default .wc-tab-trigger {
-  background-image: url("../assets/tabs/tab-list.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-list.webp");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   text-overflow: ellipsis;
@@ -785,12 +785,12 @@
 
 /* ACTIVE TAB */
 .wc-tabs-default .wc-tab-trigger[data-state="active"] {
-  background-image: url("../assets/tabs/tab-list-active.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-list-active.webp");
 }
 
 /* CONTENT PANEL */
 .wc-tabs-default .wc-tab-content {
-  background-image: url("../assets/tabs/tab-content.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-content.webp");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   height: 300px;
@@ -800,7 +800,7 @@
 
 /* TAB BUTTON */
 .wc-tabs-human .wc-tab-trigger {
-  background-image: url("../assets/tabs/tab-list-human.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-list-human.webp");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   text-overflow: ellipsis;
@@ -808,12 +808,12 @@
 
 /* ACTIVE TAB */
 .wc-tabs-human .wc-tab-trigger[data-state="active"] {
-  background-image: url("../assets/tabs/tab-list-active-human.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-list-active-human.webp");
 }
 
 /* CONTENT PANEL */
 .wc-tabs-human .wc-tab-content {
-  background-image: url("../assets/tabs/tab-content-human.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-content-human.webp");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   height: 300px;
@@ -823,7 +823,7 @@
 
 /* TAB BUTTON */
 .wc-tabs-orc .wc-tab-trigger {
-  background-image: url("../assets/tabs/tab-list-orc.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-list-orc.webp");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   text-overflow: ellipsis;
@@ -831,12 +831,12 @@
 
 /* ACTIVE TAB */
 .wc-tabs-orc .wc-tab-trigger[data-state="active"] {
-  background-image: url("../assets/tabs/tab-list-active-orc.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-list-active-orc.webp");
 }
 
 /* CONTENT PANEL */
 .wc-tabs-orc .wc-tab-content {
-  background-image: url("../assets/tabs/tab-content-orc.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-content-orc.webp");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   height: 300px;
@@ -846,7 +846,7 @@
 
 /* TAB BUTTON */
 .wc-tabs-elf .wc-tab-trigger {
-  background-image: url("../assets/tabs/tab-list-elf.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-list-elf.webp");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   text-overflow: ellipsis;
@@ -855,12 +855,12 @@
 
 /* ACTIVE TAB */
 .wc-tabs-elf .wc-tab-trigger[data-state="active"] {
-  background-image: url("../assets/tabs/tab-list-active-elf.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-list-active-elf.webp");
 }
 
 /* CONTENT PANEL */
 .wc-tabs-elf .wc-tab-content {
-  background-image: url("../assets/tabs/tab-content-elf.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-content-elf.webp");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   height: 300px;
@@ -870,7 +870,7 @@
 
 /* TAB BUTTON */
 .wc-tabs-undead .wc-tab-trigger {
-  background-image: url("../assets/tabs/tab-list-undead.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-list-undead.webp");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   text-overflow: ellipsis;
@@ -879,12 +879,12 @@
 
 /* ACTIVE TAB */
 .wc-tabs-undead .wc-tab-trigger[data-state="active"] {
-  background-image: url("../assets/tabs/tab-list-active-undead.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-list-active-undead.webp");
 }
 
 /* CONTENT PANEL */
 .wc-tabs-undead .wc-tab-content {
-  background-image: url("../assets/tabs/tab-content-undead.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/tabs/tab-content-undead.webp");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   height: 300px;
@@ -919,27 +919,27 @@
 }
 
 .scroll-handle-default {
-  background-image: url("../assets/toast/scroll-handle.png");
+  background-image: url("https://warcraftcn.com/warcraftcn/toast/scroll-handle.png");
   background-size: 100% 100%;
 }
 
 .scroll-handle-human {
-  background-image: url("../assets/toast/scroll-handle-human.png");
+  background-image: url("https://warcraftcn.com/warcraftcn/toast/scroll-handle-human.png");
   background-size: 100% 100%;
 }
 
 .scroll-handle-undead {
-  background-image: url("../assets/toast/scroll-handle-undead.png");
+  background-image: url("https://warcraftcn.com/warcraftcn/toast/scroll-handle-undead.png");
   background-size: 100% 100%;
 }
 
 .scroll-handle-orc {
-  background-image: url("../assets/toast/scroll-handle-orc.png");
+  background-image: url("https://warcraftcn.com/warcraftcn/toast/scroll-handle-orc.png");
   background-size: 100% 100%;
 }
 
 .scroll-handle-elf {
-  background-image: url("../assets/toast/scroll-handle-elf.png");
+  background-image: url("https://warcraftcn.com/warcraftcn/toast/scroll-handle-elf.png");
   background-size: 100% 100%;
 }
 
@@ -948,26 +948,26 @@
 }
 
 .scroll-center-default {
-  background-image: url("../assets/toast/scroll-content.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/toast/scroll-content.webp");
   background-size: 100% 100%;
 }
 
 .scroll-center-human {
-  background-image: url("../assets/toast/scroll-content-human.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/toast/scroll-content-human.webp");
   background-size: 100% 100%;
 }
 
 .scroll-center-undead {
-  background-image: url("../assets/toast/scroll-content-undead.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/toast/scroll-content-undead.webp");
   background-size: 100% 100%;
 }
 
 .scroll-center-orc {
-  background-image: url("../assets/toast/scroll-content-orc.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/toast/scroll-content-orc.webp");
   background-size: 100% 100%;
 }
 
 .scroll-center-elf {
-  background-image: url("../assets/toast/scroll-content-elf.webp");
+  background-image: url("https://warcraftcn.com/warcraftcn/toast/scroll-content-elf.webp");
   background-size: 100% 100%;
 }

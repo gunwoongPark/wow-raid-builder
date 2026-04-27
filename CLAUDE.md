@@ -335,6 +335,28 @@ GitHub Actions CI에서는 저장소 Secrets에 동일한 키 등록 필요.
 
 ---
 
+## 작업 완료 체크리스트
+
+**매 작업 완료 후 반드시 순서대로 실행:**
+
+```bash
+# 1. 타입 체크
+node node_modules/typescript/lib/tsc.js --noEmit
+
+# 2. 린트
+node node_modules/eslint/bin/eslint.js src/ --fix
+
+# 3. 빌드 검증 (반드시 통과해야 커밋 가능)
+npm run build
+
+# 4. 커밋 & 푸시 (develop 브랜치)
+git add -A && git commit -m "..." && git push origin develop
+```
+
+- 빌드가 실패하면 커밋하지 않는다. 반드시 빌드 통과 후 커밋.
+- 작업 중에도 의미 있는 단위마다 주기적으로 커밋 & 푸시한다.
+- 브랜치는 항상 `develop`. `main`은 PR로만.
+
 ## 코드 규칙 (전역 CLAUDE.md 보완)
 
 - `export default`는 Next.js page/layout에서만 허용 (라우팅 필수 요건)
