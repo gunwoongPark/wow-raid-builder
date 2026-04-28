@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
         hostname: "kr.battle.net",
         protocol: "https",
       },
+      {
+        hostname: "wow.zamimg.com",
+        pathname: "/images/wow/icons/**",
+        protocol: "https",
+      },
     ],
   },
 }

@@ -117,6 +117,7 @@ export interface CharacterSearchResult {
 export interface RosterCharacter {
   classId: number
   className: string
+  faction: "alliance" | "horde"
   id: string // `${realmSlug}-${name}` 고유키
   itemLevel: number
   name: string

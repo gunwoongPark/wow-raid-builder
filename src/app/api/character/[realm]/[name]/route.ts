@@ -27,6 +27,7 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
     const character: RosterCharacter = {
       classId: summary.character_class.id,
       className: summary.character_class.name,
+      faction: summary.faction.type.toLowerCase() as "alliance" | "horde",
       id: `${realmSlug}-${name.toLowerCase()}`,
       itemLevel: summary.equipped_item_level,
       name: summary.name,

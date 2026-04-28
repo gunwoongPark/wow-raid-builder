@@ -1,0 +1,53 @@
+name: PR Auto Label
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  auto-label:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const PREFIX_TO_LABEL = {
+              feat:     "feature",
+              fix:      "bug",
+              hotfix:   "hotfix",
+              refactor: "refactor",
+              release:  "release",
+              style:    "style or typo",
+              chore:    "style or typo",
+              docs:     "docs",
+              typo:     "style or typo",
+            };
+
+            const { data: commits } = await github.rest.pulls.listCommits({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+
+            const labelsToAdd = new Set();
+            for (const commit of commits) {
+              const firstLine = commit.commit.message.split("\n")[0];
+              for (const [prefix, label] of Object.entries(PREFIX_TO_LABEL)) {
+                if (firstLine.startsWith(`${prefix}:`)) {
+                  labelsToAdd.add(label);
+                }
+              }
+            }
+
+            if (labelsToAdd.size > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                labels: [...labelsToAdd],
+              });
+            }

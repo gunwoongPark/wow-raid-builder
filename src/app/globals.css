@@ -44,6 +44,7 @@
 
 /* WoW 라이트 테마 */
 :root {
+  --wc-tooltip-bg: linear-gradient(180deg, oklch(0.97 0.01 80) 0%, oklch(0.93 0.015 75) 100%);
   --background: oklch(0.97 0.01 80); /* 따뜻한 양피지 */
   --foreground: oklch(0.18 0.02 60);
   --card: oklch(0.94 0.015 75);
@@ -62,6 +63,7 @@
 
 /* WoW 다크 테마 */
 .dark {
+  --wc-tooltip-bg: linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
   --background: oklch(0.1 0.01 60);
   --foreground: oklch(0.92 0.04 80);
   --card: oklch(0.14 0.015 60);
@@ -76,6 +78,44 @@
   --input: oklch(0.18 0.015 60);
   --ring: oklch(0.75 0.12 80 / 50%);
   --radius: 0.375rem;
+}
+
+/* 툴팁 라이트 모드 테두리 override */
+:root {
+  --wc-tooltip-border: hsl(45 50% 50%);
+  --wc-tooltip-uncommon-border: hsl(120 35% 45%);
+  --wc-tooltip-rare-border: hsl(220 50% 52%);
+  --wc-tooltip-epic-border: hsl(280 40% 52%);
+  --wc-tooltip-legendary-border: hsl(30 70% 50%);
+  --wc-tooltip-shadow: 0 4px 20px hsl(0 0% 0% / 0.15);
+}
+.dark {
+  --wc-tooltip-border: hsl(45 60% 35%);
+  --wc-tooltip-uncommon-border: hsl(120 35% 32%);
+  --wc-tooltip-rare-border: hsl(220 50% 42%);
+  --wc-tooltip-epic-border: hsl(280 40% 42%);
+  --wc-tooltip-legendary-border: hsl(30 70% 40%);
+  --wc-tooltip-shadow: 0 4px 20px hsl(0 0% 0% / 0.7);
+}
+.wc-tooltip {
+  border-color: var(--wc-tooltip-border);
+  box-shadow: var(--wc-tooltip-shadow);
+}
+.wc-tooltip-uncommon {
+  border-color: var(--wc-tooltip-uncommon-border);
+  box-shadow: var(--wc-tooltip-shadow);
+}
+.wc-tooltip-rare {
+  border-color: var(--wc-tooltip-rare-border);
+  box-shadow: var(--wc-tooltip-shadow);
+}
+.wc-tooltip-epic {
+  border-color: var(--wc-tooltip-epic-border);
+  box-shadow: var(--wc-tooltip-shadow);
+}
+.wc-tooltip-legendary {
+  border-color: var(--wc-tooltip-legendary-border);
+  box-shadow: var(--wc-tooltip-shadow);
 }
 
 @layer base {
