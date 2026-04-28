@@ -119,20 +119,43 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     spellId: 20484,
   },
 
-  // ─── 시너지 ───────────────────────────────────────────────────────────
-  arcaneIntellect: {
-    category: "시너지",
-    icon: "spell_holy_magicalsentry",
-    label: "신비한 지능 (법사) — 지능 3% 증가",
-    specIds: [62, 63, 64],
-    spellId: 1459,
-  },
+  // ─── 시너지 — 적에게 적용되는 디버프 ────────────────────────────────────
   atrophicPoison: {
     category: "시너지",
     icon: "ability_rogue_nervesofsteel",
     label: "위축의 독 (도적) — 적 공격력 3% 감소",
     specIds: [259, 260, 261],
     spellId: 381637,
+  },
+  chaosBrand: {
+    category: "시너지",
+    icon: "ability_demonhunter_empowerwards",
+    label: "혼돈의 낙인 (악마사냥꾼) — 마법 피해 3% 증가",
+    specIds: [577, 581],
+    spellId: 255260,
+  },
+  huntersMark: {
+    category: "시너지",
+    icon: "ability_hunter_markedfordeath",
+    label: "사냥꾼의 징표 (사냥꾼) — 대상 받는 피해 3% 증가",
+    specIds: [253, 254, 255],
+    spellId: 257284,
+  },
+  mysticTouch: {
+    category: "시너지",
+    icon: "ability_monk_sparring",
+    label: "신비한 손길 (수도사) — 물리 피해 5% 증가",
+    specIds: [268, 269, 270],
+    spellId: 8647,
+  },
+
+  // ─── 시너지 — 아군 스탯 버프 ───────────────────────────────────────────
+  arcaneIntellect: {
+    category: "시너지",
+    icon: "spell_holy_magicalsentry",
+    label: "신비한 지능 (법사) — 지능 3% 증가",
+    specIds: [62, 63, 64],
+    spellId: 1459,
   },
   battleShout: {
     category: "시너지",
@@ -148,13 +171,29 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     specIds: [1467, 1468, 1473],
     spellId: 364342,
   },
-  chaosBrand: {
+  markOfTheWild: {
     category: "시너지",
-    icon: "ability_demonhunter_empowerwards",
-    label: "혼돈의 낙인 (악마사냥꾼) — 마법 피해 3% 증가",
-    specIds: [577, 581],
-    spellId: 255260,
+    icon: "spell_nature_regeneration",
+    label: "야생의 징표 (드루이드) — 유연성 3% 증가",
+    specIds: [102, 103, 104, 105],
+    spellId: 1126,
   },
+  powerWordFortitude: {
+    category: "시너지",
+    icon: "spell_holy_wordfortitude",
+    label: "신의 권능: 인내 (사제) — 체력 5% 증가",
+    specIds: [256, 257, 258],
+    spellId: 21562,
+  },
+  skyfury: {
+    category: "시너지",
+    icon: "achievement_raidprimalist_windelemental",
+    label: "하늘의 격노 (주술사) — 특화 3% 증가, 치명타 시 추가 공격 발동",
+    specIds: [262, 263, 264],
+    spellId: 462854,
+  },
+
+  // ─── 시너지 — 오라 ────────────────────────────────────────────────────
   concentrationAura: {
     category: "시너지",
     icon: "spell_holy_mindsooth",
@@ -177,43 +216,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     spellId: 465,
   },
 
-  huntersMark: {
-    category: "시너지",
-    icon: "ability_hunter_markedfordeath",
-    label: "사냥꾼의 징표 (사냥꾼) — 대상 받는 피해 3% 증가",
-    specIds: [253, 254, 255],
-    spellId: 257284,
-  },
-  markOfTheWild: {
-    category: "시너지",
-    icon: "spell_nature_regeneration",
-    label: "야생의 징표 (드루이드) — 유연성 3% 증가",
-    specIds: [102, 103, 104, 105],
-    spellId: 1126,
-  },
-  mysticTouch: {
-    category: "시너지",
-    icon: "ability_monk_sparring",
-    label: "신비한 손길 (수도사) — 물리 피해 5% 증가",
-    specIds: [268, 269, 270],
-    spellId: 8647,
-  },
-  powerWordFortitude: {
-    category: "시너지",
-    icon: "spell_holy_wordfortitude",
-    label: "신의 권능: 인내 (사제) — 체력 5% 증가",
-    specIds: [256, 257, 258],
-    spellId: 21562,
-  },
-  skyfury: {
-    category: "시너지",
-    icon: "achievement_raidprimalist_windelemental",
-    label: "하늘의 격노 (주술사) — 특화 2% + 자동공격 연타",
-    specIds: [262, 263, 264],
-    spellId: 462854,
-  },
-
-  // ─── 외생기 ───────────────────────────────────────────────────────────
+  // ─── 외생기 — 피해 감소·면역 ────────────────────────────────────────
   blessingOfProtection: {
     category: "외생기",
     icon: "spell_holy_sealofprotection",
@@ -221,40 +224,12 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     specIds: [65, 66, 70],
     spellId: 41450,
   },
-  blessingOfSacrifice: {
-    category: "외생기",
-    icon: "spell_holy_sealofsacrifice",
-    label: "희생의 축복 (성기사) — 대상 피해 30% 감소 (자신에게 전가, 12초)",
-    specIds: [65, 66, 70],
-    spellId: 6940,
-  },
-  guardianSpirit: {
-    category: "외생기",
-    icon: "spell_holy_guardianspirit",
-    label: "수호 영혼 (신성 사제) — 치유량 60%↑ + 치사 시 생명력 40% 소생 (10초)",
-    specIds: [257],
-    spellId: 47788,
-  },
-  innervate: {
-    category: "외생기",
-    icon: "spell_nature_lightning",
-    label: "정신 자극 (드루이드) — 8초간 마나 소모 없이 주문 시전",
-    specIds: [102, 103, 104, 105],
-    spellId: 29166,
-  },
   ironBark: {
     category: "외생기",
     icon: "spell_druid_ironbark",
     label: "무쇠껍질 (드루이드) — 대상 피해 20% 감소",
     specIds: [102, 103, 104, 105],
     spellId: 102342,
-  },
-  layOnHands: {
-    category: "외생기",
-    icon: "spell_holy_layonhands",
-    label: "신의 축복 (성기사) — 아군 최대 생명력 100% 즉시 회복 (10분 재사용)",
-    specIds: [65, 66, 70],
-    spellId: 633,
   },
   lifeCocoon: {
     category: "외생기",
@@ -270,6 +245,38 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     specIds: [256],
     spellId: 33206,
   },
+
+  // ─── 외생기 — 생존·응급 치유 ─────────────────────────────────────────
+  blessingOfSacrifice: {
+    category: "외생기",
+    icon: "spell_holy_sealofsacrifice",
+    label: "희생의 축복 (성기사) — 대상 피해 30% 감소 (자신에게 전가, 12초)",
+    specIds: [65, 66, 70],
+    spellId: 6940,
+  },
+  guardianSpirit: {
+    category: "외생기",
+    icon: "spell_holy_guardianspirit",
+    label: "수호 영혼 (신성 사제) — 치유량 60%↑ + 치사 시 생명력 40% 소생 (10초)",
+    specIds: [257],
+    spellId: 47788,
+  },
+  layOnHands: {
+    category: "외생기",
+    icon: "spell_holy_layonhands",
+    label: "신의 축복 (성기사) — 아군 최대 생명력 100% 즉시 회복 (10분 재사용)",
+    specIds: [65, 66, 70],
+    spellId: 633,
+  },
+
+  // ─── 외생기 — 마나·가속 강화 ─────────────────────────────────────────
+  innervate: {
+    category: "외생기",
+    icon: "spell_nature_lightning",
+    label: "정신 자극 (드루이드) — 8초간 마나 소모 없이 주문 시전",
+    specIds: [102, 103, 104, 105],
+    spellId: 29166,
+  },
   powerInfusion: {
     category: "외생기",
     icon: "spell_holy_powerinfusion",
@@ -278,7 +285,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     spellId: 10060,
   },
 
-  // ─── 공생기 ───────────────────────────────────────────────────────────
+  // ─── 공생기 — 마법 피해 방어 ─────────────────────────────────────────
   antiMagicZone: {
     category: "공생기",
     icon: "spell_deathknight_antimagiczone",
@@ -293,19 +300,21 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     specIds: [65],
     spellId: 31821,
   },
-  darkness: {
-    category: "공생기",
-    icon: "ability_demonhunter_darkness",
-    label: "어둠 (악마사냥꾼) — 구역 내 피해 회피 15% 확률 (8초)",
-    specIds: [577, 581],
-    spellId: 196718,
-  },
   powerWordBarrier: {
     category: "공생기",
     icon: "spell_holy_powerwordbarrier",
     label: "신의 권능: 방벽 (수양 사제) — 구역 내 피해 20% 감소 (10초)",
     specIds: [256],
     spellId: 62618,
+  },
+
+  // ─── 공생기 — 체력·생존 강화 ─────────────────────────────────────────
+  darkness: {
+    category: "공생기",
+    icon: "ability_demonhunter_darkness",
+    label: "어둠 (악마사냥꾼) — 구역 내 피해 회피 15% 확률 (8초)",
+    specIds: [577, 581],
+    spellId: 196718,
   },
   rallying: {
     category: "공생기",
@@ -329,27 +338,13 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     spellId: 363534,
   },
 
-  // ─── 유틸 ─────────────────────────────────────────────────────────────
+  // ─── 유틸 — 적 컨트롤 (끌어당기기) ─────────────────────────────────
   abominationLimb: {
     category: "유틸",
     icon: "ability_maldraxxus_deathknight",
     label: "흉물의 사지 (죽음의 기사) — 주변 적을 12초간 주기적으로 끌어당기며 이동 속도 감소",
     specIds: [250, 251, 252],
     spellId: 383269,
-  },
-  conjureRefreshment: {
-    category: "유틸",
-    icon: "inv_misc_food_15",
-    label: "원기 회복의 식탁 창조 (법사) — 공격대 음식 제공",
-    specIds: [62, 63, 64],
-    spellId: 43987,
-  },
-  curseOfTongues: {
-    category: "유틸",
-    icon: "spell_shadow_curseoftounges",
-    label: "언어의 저주 (흑마법사) — 적 주문 시전 시간 30% 증가",
-    specIds: [265, 266, 267],
-    spellId: 1714,
   },
   deathGrip: {
     category: "유틸",
@@ -358,13 +353,6 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     specIds: [250, 251, 252],
     spellId: 49576,
   },
-  demonicGateway: {
-    category: "유틸",
-    icon: "spell_warlock_demonicportal_green",
-    label: "악마의 관문 (흑마법사) — 공격대 이동 포탈 설치",
-    specIds: [265, 266, 267],
-    spellId: 111771,
-  },
   gorefiendGrasp: {
     category: "유틸",
     icon: "ability_deathknight_aoedeathgrip",
@@ -372,12 +360,14 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     specIds: [250],
     spellId: 108199,
   },
-  healthstone: {
+
+  // ─── 유틸 — 이동·위치 ───────────────────────────────────────────────
+  demonicGateway: {
     category: "유틸",
-    icon: "warlock_-healthstone",
-    label: "생명석 (흑마법사) — 체력 25% 즉시 회복 아이템 지급",
+    icon: "spell_warlock_demonicportal_green",
+    label: "악마의 관문 (흑마법사) — 공격대 이동 포탈 설치",
     specIds: [265, 266, 267],
-    spellId: 6262,
+    spellId: 111771,
   },
   leapOfFaith: {
     category: "유틸",
@@ -400,26 +390,12 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     specIds: [1467, 1468, 1473],
     spellId: 370665,
   },
-  ritualOfSummoning: {
-    category: "유틸",
-    icon: "spell_shadow_twilight",
-    label: "소환의 문 (흑마법사) — 공격대원 원격 소환 (시전 2회 도움 필요)",
-    specIds: [265, 266, 267],
-    spellId: 698,
-  },
   shroudOfConcealment: {
     category: "유틸",
     icon: "ability_rogue_shroudofconcealment",
     label: "은폐의 장막 (도적) — 공격대 15초 그룹 은신",
     specIds: [259, 260, 261],
     spellId: 114018,
-  },
-  soulstone: {
-    category: "유틸",
-    icon: "spell_shadow_soulgem",
-    label: "영혼석 (흑마법사) — 사전 부활 1명 (전투 부활과 별개)",
-    specIds: [265, 266, 267],
-    spellId: 20707,
   },
   stampedingRoar: {
     category: "유틸",
@@ -428,19 +404,56 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     specIds: [102, 103, 104, 105],
     spellId: 106898,
   },
-  tremorTotem: {
-    category: "유틸",
-    icon: "spell_nature_tremortotem",
-    label: "정기의 토템 (주술사) — 주변 아군의 공포·매혹·수면 효과 제거",
-    specIds: [262, 263, 264],
-    spellId: 8143,
-  },
   windRush: {
     category: "유틸",
     icon: "ability_shaman_windwalktotem",
     label: "바람 질주 토템 (주술사) — 공격대 이동속도 40% 증가 (5초)",
     specIds: [262, 263, 264],
     spellId: 192077,
+  },
+
+  // ─── 유틸 — 아이템·소환·디버프 ──────────────────────────────────────
+  conjureRefreshment: {
+    category: "유틸",
+    icon: "inv_misc_food_15",
+    label: "원기 회복의 식탁 창조 (법사) — 공격대 음식 제공",
+    specIds: [62, 63, 64],
+    spellId: 43987,
+  },
+  curseOfTongues: {
+    category: "유틸",
+    icon: "spell_shadow_curseoftounges",
+    label: "언어의 저주 (흑마법사) — 적 주문 시전 시간 30% 증가",
+    specIds: [265, 266, 267],
+    spellId: 1714,
+  },
+  healthstone: {
+    category: "유틸",
+    icon: "warlock_-healthstone",
+    label: "생명석 (흑마법사) — 체력 25% 즉시 회복 아이템 지급",
+    specIds: [265, 266, 267],
+    spellId: 6262,
+  },
+  ritualOfSummoning: {
+    category: "유틸",
+    icon: "spell_shadow_twilight",
+    label: "소환의 문 (흑마법사) — 공격대원 원격 소환 (시전 2회 도움 필요)",
+    specIds: [265, 266, 267],
+    spellId: 698,
+  },
+  soulstone: {
+    category: "유틸",
+    icon: "spell_shadow_soulgem",
+    label: "영혼석 (흑마법사) — 사전 부활 1명 (전투 부활과 별개)",
+    specIds: [265, 266, 267],
+    spellId: 20707,
+  },
+  tremorTotem: {
+    category: "유틸",
+    icon: "spell_nature_tremortotem",
+    label: "정기의 토템 (주술사) — 주변 아군의 공포·매혹·수면 효과 제거",
+    specIds: [262, 263, 264],
+    spellId: 8143,
   },
 } satisfies Record<BuffKey, BuffSource>
 
