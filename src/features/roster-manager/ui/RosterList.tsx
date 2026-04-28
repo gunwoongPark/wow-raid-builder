@@ -104,7 +104,7 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
 
   // 렌더
   return (
-    <tr className="border-border/30 border-b transition-colors hover:bg-black/[0.03] dark:hover:bg-white/5">
+    <tr className="border-border/30 h-[52px] border-b transition-colors hover:bg-black/[0.03] dark:hover:bg-white/5">
       {/* 썸네일 + 이름(아머리) + Raider.IO 링크 */}
       <td className="px-3 py-2">
         <div className="flex items-center gap-2">
