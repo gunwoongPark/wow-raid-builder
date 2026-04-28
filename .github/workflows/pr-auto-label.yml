@@ -2,7 +2,7 @@ name: PR Auto Label
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   auto-label:
@@ -23,7 +23,7 @@ jobs:
               release:  "release",
               style:    "style or typo",
               chore:    "style or typo",
-              docs:     "style or typo",
+              docs:     "docs",
               typo:     "style or typo",
             };
 
