@@ -303,7 +303,7 @@ export const RosterList = () => {
 
   const handleRefreshAll = async () => {
     await refreshAll()
-    toast.success("최신화 완료!", { description: "모든 공대원 데이터가 업데이트됐습니다." })
+    toast.success("최신화 완료!", { description: "모든 공격대원 데이터가 업데이트됐습니다." })
   }
 
   // 빈 상태
@@ -311,7 +311,7 @@ export const RosterList = () => {
     return (
       <section className="border-border/40 bg-card/40 min-w-0 rounded-lg border p-5">
         <p className="text-muted-foreground py-4 text-center text-sm">
-          아직 추가된 공대원이 없습니다.
+          아직 추가된 공격대원이 없습니다.
         </p>
       </section>
     )

@@ -47,9 +47,12 @@ export type BuffKey =
   | "deathGrip" // 죽음의 손아귀 — 죽음의 기사
   | "demonicGateway" // 악마의 관문 — 흑마법사
   | "healthstone" // 생명석 — 흑마법사
+  | "leapOfFaith" // 도약 — 사제
+  | "magePortal" // 포탈 창조 — 법사
   | "shroudOfConcealment" // 은폐의 장막 — 도적
   | "soulstone" // 영혼석 — 흑마법사
   | "stampedingRoar" // 쇄도의 포효 — 드루이드
+  | "tremorTotem" // 정기의 토템 — 주술사
   | "windRush" // 바람 질주 토템 — 주술사
 
 interface BuffSource {
@@ -318,6 +321,20 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     specIds: [265, 266, 267],
     spellId: 6262,
   },
+  leapOfFaith: {
+    category: "유틸",
+    icon: "priest_spell_leapoffaith_a",
+    label: "도약 (사제) — 아군 1명을 자신에게 끌어당기기",
+    specIds: [256, 257, 258],
+    spellId: 73325,
+  },
+  magePortal: {
+    category: "유틸",
+    icon: "spell_arcane_portalstormwind",
+    label: "포탈 창조 (법사) — 주요 도시 포탈 생성으로 빠른 이동 지원",
+    specIds: [62, 63, 64],
+    spellId: 10059,
+  },
   shroudOfConcealment: {
     category: "유틸",
     icon: "ability_rogue_shroudofconcealment",
@@ -338,6 +355,13 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     label: "쇄도의 포효 (드루이드) — 공격대 이동속도 60% 증가 (8초)",
     specIds: [102, 103, 104, 105],
     spellId: 106898,
+  },
+  tremorTotem: {
+    category: "유틸",
+    icon: "spell_nature_tremortotem",
+    label: "정기의 토템 (주술사) — 주변 아군의 공포·매혹·수면 효과 제거",
+    specIds: [262, 263, 264],
+    spellId: 8143,
   },
   windRush: {
     category: "유틸",
