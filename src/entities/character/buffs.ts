@@ -15,7 +15,7 @@ export type BuffKey =
   // === 전투 부활 ===
   | "battleRez" // 환생·아군 되살리기·구제 등
   // === 시너지 (공격대 전체 통계 버프) ===
-  | "arcaneIntellect" // 신비한 지능 — 법사
+  | "arcaneIntellect" // 신비한 지능 — 마법사
   | "atrophicPoison" // 위축의 독 — 도적
   | "battleShout" // 전투의 외침 — 전사
   | "blessingOfTheBronze" // 청동용군단의 축복 — 기원사
@@ -48,14 +48,14 @@ export type BuffKey =
   | "rewind" // 되돌리기 — 보존 기원사
   // === 유틸 ===
   | "abominationLimb" // 흉물의 사지 — 죽음의 기사 (주기 광역 끌어당기기)
-  | "conjureRefreshment" // 원기 회복의 식탁 창조 — 법사
+  | "conjureRefreshment" // 원기 회복의 식탁 창조 — 마법사
   | "curseOfTongues" // 언어의 저주 — 흑마법사
   | "deathGrip" // 죽음의 손아귀 — 죽음의 기사
   | "demonicGateway" // 악마의 관문 — 흑마법사
   | "gorefiendGrasp" // 고어핀드의 손아귀 — 혈기 죽음의 기사 (광역 끌어당기기)
   | "healthstone" // 생명석 — 흑마법사
   | "leapOfFaith" // 도약 — 사제
-  | "magePortal" // 포탈 창조 — 법사
+  | "magePortal" // 포탈 창조 — 마법사
   | "rescue" // 구출 — 기원사
   | "ritualOfSummoning" // 소환의 문 — 흑마법사
   | "shroudOfConcealment" // 은폐의 장막 — 도적
@@ -84,7 +84,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
       264, // 주술사 전체
       62,
       63,
-      64, // 법사 전체
+      64, // 마법사 전체
       1467,
       1468,
       1473, // 기원사 전체
@@ -153,7 +153,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   arcaneIntellect: {
     category: "시너지",
     icon: "spell_holy_magicalsentry",
-    label: "신비한 지능 (법사) — 지능 3% 증가",
+    label: "신비한 지능 (마법사) — 지능 3% 증가",
     specIds: [62, 63, 64],
     spellId: 1459,
   },
@@ -379,7 +379,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   magePortal: {
     category: "유틸",
     icon: "spell_arcane_portalstormwind",
-    label: "포탈 창조 (법사) — 주요 도시 포탈 생성으로 빠른 이동 지원",
+    label: "포탈 창조 (마법사) — 주요 도시 포탈 생성으로 빠른 이동 지원",
     specIds: [62, 63, 64],
     spellId: 10059,
   },
@@ -416,7 +416,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   conjureRefreshment: {
     category: "유틸",
     icon: "inv_misc_food_15",
-    label: "원기 회복의 식탁 창조 (법사) — 공격대 음식 제공",
+    label: "원기 회복의 식탁 창조 (마법사) — 공격대 음식 제공",
     specIds: [62, 63, 64],
     spellId: 43987,
   },
