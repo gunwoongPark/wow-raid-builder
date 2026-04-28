@@ -1,15 +1,17 @@
 "use client"
 
+import { useTheme } from "next-themes"
 import Image from "next/image"
 
 import {
   analyzeBuffCoverage,
   BUFF_CATEGORIES,
   type BuffCategory,
+  type CandidateProvider,
   COUNTABLE_CATEGORIES,
   wowheadIconUrl,
 } from "@/entities/character"
-import { getClassColor } from "@/shared/config/class-colors"
+import { getClassColor, getClassColorLight } from "@/shared/config/class-colors"
 import { useRosterStore } from "@/shared/model/roster-store"
 
 const CATEGORY_LABEL: Record<BuffCategory, string> = {
@@ -24,12 +26,35 @@ const CATEGORY_LABEL: Record<BuffCategory, string> = {
 // 블러드와 전투부활은 한 행에 나란히 표시
 const INLINE_CATEGORIES = new Set<BuffCategory>(["블러드", "전투부활"])
 
+interface ProviderBadgeProps {
+  isDark: boolean
+  provider: CandidateProvider
+}
+
+const ProviderBadge = ({ isDark, provider }: ProviderBadgeProps) => {
+  const color = isDark ? getClassColor(provider.className) : getClassColorLight(provider.className)
+
+  return (
+    <span
+      className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold"
+      key={provider.label}
+      style={{
+        backgroundColor: `${color}22`,
+        color,
+      }}
+    >
+      {provider.label}
+    </span>
+  )
+}
+
 interface BuffCardProps {
   buff: ReturnType<typeof analyzeBuffCoverage>[number]
+  isDark: boolean
   isCountable: boolean
 }
 
-const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
+const BuffCard = ({ buff, isCountable, isDark }: BuffCardProps) => (
   <div
     className={`flex min-h-14 items-center gap-2.5 rounded p-2 text-sm ${
       buff.covered
@@ -76,16 +101,7 @@ const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
       {!buff.covered && buff.candidateProviders.length > 0 && (
         <div className="mt-1.5 flex gap-1 overflow-hidden">
           {buff.candidateProviders.map((provider) => (
-            <span
-              className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold"
-              key={provider.label}
-              style={{
-                backgroundColor: `${getClassColor(provider.className)}22`,
-                color: getClassColor(provider.className),
-              }}
-            >
-              {provider.label}
-            </span>
+            <ProviderBadge isDark={isDark} key={provider.label} provider={provider} />
           ))}
         </div>
       )}
@@ -96,10 +112,10 @@ const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
 export const BuffAnalysis = () => {
   const characters = useRosterStore((store) => store.characters)
   const coverage = analyzeBuffCoverage(characters)
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
 
   if (characters.length === 0) return null
-
-  // 이하 렌더는 characters가 있을 때만 도달
 
   const byCategory = BUFF_CATEGORIES.map((category) => ({
     buffs: coverage.filter((buff) => buff.category === category),
@@ -146,7 +162,9 @@ export const BuffAnalysis = () => {
           </div>
           <div className="grid grid-cols-2 gap-1">
             {inlineGroup.flatMap(({ buffs, isCountable }) =>
-              buffs.map((buff) => <BuffCard buff={buff} isCountable={isCountable} key={buff.key} />)
+              buffs.map((buff) => (
+                <BuffCard buff={buff} isCountable={isCountable} isDark={isDark} key={buff.key} />
+              ))
             )}
           </div>
         </div>
@@ -166,7 +184,7 @@ export const BuffAnalysis = () => {
               </div>
               <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
                 {buffs.map((buff) => (
-                  <BuffCard buff={buff} isCountable={isCountable} key={buff.key} />
+                  <BuffCard buff={buff} isCountable={isCountable} isDark={isDark} key={buff.key} />
                 ))}
               </div>
             </div>
