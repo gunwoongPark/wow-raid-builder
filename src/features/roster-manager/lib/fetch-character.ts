@@ -1,11 +1,4 @@
-import { characterApi, type RaiderIOProfile, type RosterCharacter } from "@/entities/character"
-
-const buildRaiderIO = (data: RaiderIOProfile) => ({
-  profileUrl: data.profile_url,
-  raidProgression: data.raid_progression ?? {},
-  score: data.mythic_plus_scores_by_season?.[0]?.scores.all ?? 0,
-  thumbnailUrl: data.thumbnail_url,
-})
+import { buildRaiderIOProfile, characterApi, type RosterCharacter } from "@/entities/character"
 
 /** 3개 API 병렬 조회 후 RosterCharacter 조립 — 새로고침·URL 로드 공용 */
 export const fetchCharacter = async (
@@ -24,7 +17,7 @@ export const fetchCharacter = async (
     ...characterResult.value,
     raiderIO:
       raiderIOResult.status === "fulfilled" && raiderIOResult.value
-        ? buildRaiderIO(raiderIOResult.value)
+        ? buildRaiderIOProfile(raiderIOResult.value)
         : null,
     warcraftLogs: warcraftLogsResult.status === "fulfilled" ? warcraftLogsResult.value : null,
   }

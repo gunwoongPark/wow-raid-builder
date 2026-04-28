@@ -9,10 +9,10 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
 import {
+  buildRaiderIOProfile,
   characterApi,
   characterQueries,
   type CharacterSearchResult,
-  type RosterCharacter,
 } from "@/entities/character"
 import { useDebounce } from "@/shared/lib/use-debounce"
 import { MAX_ROSTER_SIZE, useRosterStore } from "@/shared/model/roster-store"
@@ -22,7 +22,10 @@ import { characterSearchSchema, type CharacterSearchSchema } from "../schema"
 export const CharacterSearchForm = () => {
   // 변수부 — 스토어
   const addCharacter = useRosterStore((store) => store.addCharacter)
+  const updateCharacter = useRosterStore((store) => store.updateCharacter)
   const characters = useRosterStore((store) => store.characters)
+  const setPendingRaiderIO = useRosterStore((store) => store.setPendingRaiderIO)
+  const setPendingWCL = useRosterStore((store) => store.setPendingWCL)
 
   // 변수부 — 로컬 상태
   const [query, setQuery] = useState("")
@@ -62,45 +65,42 @@ export const CharacterSearchForm = () => {
     setErrorMessage(null)
 
     try {
-      const [characterResult, raiderIOResult, warcraftLogsResult] = await Promise.allSettled([
-        characterApi.getSummary(result.realmSlug, result.name),
-        characterApi.getRaiderIO(result.realmSlug, result.name),
-        characterApi.getWarcraftLogs(result.realmSlug, result.name),
-      ])
-
-      if (characterResult.status === "rejected") {
-        const status = characterResult.reason?.response?.status as number | undefined
-        const message =
-          status === 404
-            ? `"${result.name}" 캐릭터를 블리자드 서버에서 찾을 수 없습니다. 이름 변경이나 서버 이전이 있었을 수 있어요.`
-            : status !== null && status !== undefined && status >= 500
-              ? "블리자드 서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요."
-              : ((characterResult.reason?.response?.data?.error as string | undefined) ??
-                characterResult.reason?.message ??
-                "캐릭터 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.")
-        setErrorMessage(message)
-        return
-      }
-
-      const added: RosterCharacter = {
-        ...characterResult.value,
-        raiderIO:
-          raiderIOResult.status === "fulfilled"
-            ? {
-                profileUrl: raiderIOResult.value.profile_url,
-                raidProgression: raiderIOResult.value.raid_progression ?? {},
-                score: raiderIOResult.value.mythic_plus_scores_by_season?.[0]?.scores.all ?? 0,
-                thumbnailUrl: raiderIOResult.value.thumbnail_url,
-              }
-            : null,
-        warcraftLogs: warcraftLogsResult.status === "fulfilled" ? warcraftLogsResult.value : null,
-      }
-
-      addCharacter(added)
+      const characterData = await characterApi.getSummary(result.realmSlug, result.name)
+      addCharacter({ ...characterData, raiderIO: null, warcraftLogs: null })
+      setPendingRaiderIO(characterId, true)
+      setPendingWCL(characterId, true)
       setQuery("")
       inputRef.current?.blur()
+
+      characterApi
+        .getRaiderIO(result.realmSlug, result.name)
+        .then((data) => updateCharacter(characterId, { raiderIO: buildRaiderIOProfile(data) }))
+        .catch(() =>
+          toast.error("Raider.IO 데이터 로드 실패", {
+            description: `${result.name}의 M+ 점수·레이드 진행도를 불러오지 못했습니다.`,
+          })
+        )
+        .finally(() => setPendingRaiderIO(characterId, false))
+
+      characterApi
+        .getWarcraftLogs(result.realmSlug, result.name)
+        .then((data) => updateCharacter(characterId, { warcraftLogs: data }))
+        .catch(() =>
+          toast.error("Warcraft Logs 데이터 로드 실패", {
+            description: `${result.name}의 로그 %를 불러오지 못했습니다.`,
+          })
+        )
+        .finally(() => setPendingWCL(characterId, false))
     } catch (error) {
-      const message = error instanceof Error ? error.message : "오류가 발생했습니다."
+      const axiosStatus = (error as { response?: { status?: number } }).response?.status
+      const message =
+        axiosStatus === 404
+          ? `"${result.name}" 캐릭터를 블리자드 서버에서 찾을 수 없습니다. 이름 변경이나 서버 이전이 있었을 수 있어요.`
+          : axiosStatus !== undefined && axiosStatus >= 500
+            ? "블리자드 서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요."
+            : error instanceof Error
+              ? error.message
+              : "캐릭터 정보를 불러오지 못했습니다."
       setErrorMessage(message)
     } finally {
       setIsAdding(false)

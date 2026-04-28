@@ -3,6 +3,7 @@
 import Image from "next/image"
 import { toast } from "sonner"
 
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
   TooltipContent,
@@ -91,6 +92,8 @@ interface CharacterRowProps {
 const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps) => {
   // 변수부
   const removeCharacter = useRosterStore((store) => store.removeCharacter)
+  const isPendingRaiderIO = useRosterStore((store) => store.pendingRaiderIOIds.has(character.id))
+  const isPendingWCL = useRosterStore((store) => store.pendingWCLIds.has(character.id))
   const classColor = getClassColor(character.className)
   const score = character.raiderIO?.score ?? 0
   const progression = character.raiderIO?.raidProgression
@@ -105,7 +108,9 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
       {/* 썸네일 + 이름(아머리) + Raider.IO 링크 */}
       <td className="px-3 py-2">
         <div className="flex items-center gap-2">
-          {character.raiderIO?.thumbnailUrl ? (
+          {isPendingRaiderIO ? (
+            <Skeleton className="size-8 rounded" />
+          ) : character.raiderIO?.thumbnailUrl ? (
             <Image
               alt={character.name}
               className="border-border/50 size-8 rounded border"
@@ -126,15 +131,19 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
             >
               {character.name}
             </a>
-            {character.raiderIO?.profileUrl && (
-              <a
-                className="text-muted-foreground/50 hover:text-muted-foreground text-[10px] transition-colors"
-                href={character.raiderIO.profileUrl}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                Raider.IO ↗
-              </a>
+            {isPendingRaiderIO ? (
+              <Skeleton className="mt-0.5 h-2.5 w-14 rounded" />
+            ) : (
+              character.raiderIO?.profileUrl && (
+                <a
+                  className="text-muted-foreground/50 hover:text-muted-foreground text-[10px] transition-colors"
+                  href={character.raiderIO.profileUrl}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Raider.IO ↗
+                </a>
+              )
             )}
           </div>
         </div>
@@ -162,18 +171,35 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
       <td className="text-foreground/90 px-3 py-2 text-sm">{character.itemLevel}</td>
 
       <td className="px-3 py-2 font-mono text-sm">
-        <ScoreCell score={score} />
+        {isPendingRaiderIO ? (
+          <Skeleton className="h-4 w-12 rounded" />
+        ) : (
+          <ScoreCell score={score} />
+        )}
       </td>
 
       <td className="px-3 py-2 font-mono text-sm">
-        <LogCell zone={character.warcraftLogs?.heroic} />
+        {isPendingWCL ? (
+          <Skeleton className="h-4 w-8 rounded" />
+        ) : (
+          <LogCell zone={character.warcraftLogs?.heroic} />
+        )}
       </td>
       <td className="px-3 py-2 font-mono text-sm">
-        <LogCell zone={character.warcraftLogs?.mythic} />
+        {isPendingWCL ? (
+          <Skeleton className="h-4 w-8 rounded" />
+        ) : (
+          <LogCell zone={character.warcraftLogs?.mythic} />
+        )}
       </td>
 
       <td className="px-3 py-2 text-xs">
-        {progression ? (
+        {isPendingRaiderIO ? (
+          <div className="flex flex-col gap-1">
+            <Skeleton className="h-3 w-16 rounded" />
+            <Skeleton className="h-3 w-16 rounded" />
+          </div>
+        ) : progression ? (
           <div className="flex flex-col gap-0.5">
             <span className="text-blue-400">
               H {progression.heroic_bosses_killed}/{progression.total_bosses}
