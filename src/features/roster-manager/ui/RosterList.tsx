@@ -211,7 +211,7 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
         {isPendingRaiderIO ? (
           <Skeleton className="h-4 w-12 rounded" />
         ) : (
-          <ScoreCell profileUrl={character.raiderIO?.profileUrl} score={score} />
+          <ScoreCell profileUrl={wclBaseUrl} score={score} />
         )}
       </td>
 
