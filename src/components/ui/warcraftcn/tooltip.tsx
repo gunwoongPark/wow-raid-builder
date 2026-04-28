@@ -13,7 +13,7 @@ type TooltipVariant = "default" | "uncommon" | "rare" | "epic" | "legendary"
 const TooltipVariantContext = React.createContext<TooltipVariant>("default")
 
 const tooltipContentVariants = cva(
-  "fantasy z-50 w-fit max-w-xs rounded px-4 py-3 text-sm text-amber-100 wc-tooltip-base",
+  "fantasy z-50 w-fit max-w-xs rounded px-4 py-3 text-sm text-stone-800 dark:text-amber-100 wc-tooltip-base",
   {
     variants: {
       variant: {
@@ -31,11 +31,11 @@ const tooltipContentVariants = cva(
 )
 
 const TOOLTIP_TITLE_COLORS: Record<TooltipVariant, string> = {
-  default: "text-amber-400",
-  uncommon: "text-green-400",
-  rare: "text-blue-400",
-  epic: "text-purple-400",
-  legendary: "text-orange-400",
+  default: "text-amber-700 dark:text-amber-400",
+  uncommon: "text-green-700 dark:text-green-400",
+  rare: "text-blue-700 dark:text-blue-400",
+  epic: "text-purple-700 dark:text-purple-400",
+  legendary: "text-orange-600 dark:text-orange-400",
 }
 
 function TooltipProvider({
@@ -108,7 +108,7 @@ function TooltipBody({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
       data-slot="tooltip-body"
-      className={cn("mt-1 text-xs text-amber-100/80", className)}
+      className={cn("mt-1 text-xs text-stone-600 dark:text-amber-100/80", className)}
       {...props}
     />
   )

@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 import { Cinzel, Geist, Geist_Mono } from "next/font/google"
-import { Toaster } from "sonner"
 
 import { QueryProvider } from "@/shared/lib/query-provider"
 import { AppThemeProvider } from "@/shared/lib/theme-provider"
+import { AppToaster } from "@/shared/ui/AppToaster"
 import { ThemeToggle } from "@/shared/ui/ThemeToggle"
 
 import "./globals.css"
@@ -44,19 +44,7 @@ export const RootLayout = ({
         <AppThemeProvider>
           <QueryProvider>{children}</QueryProvider>
           <ThemeToggle />
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              classNames: {
-                description: "text-amber-100/60 text-xs",
-                error: "!bg-[#1a0808] !border-red-800/60",
-                success: "!bg-[#081a0a] !border-emerald-700/60",
-                title: "!text-amber-400 !font-bold !text-sm",
-                toast:
-                  "fantasy !bg-[#120d06] !border !border-amber-800/50 !text-amber-100 !shadow-2xl !rounded-md",
-              },
-            }}
-          />
+          <AppToaster />
         </AppThemeProvider>
       </body>
     </html>

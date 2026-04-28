@@ -24,11 +24,11 @@ import { useRosterSync } from "../model/useRosterSync"
 const ScoreCell = ({ score }: { score: number }) => {
   const colorClass =
     score >= 3000
-      ? "text-orange-400 font-bold"
+      ? "text-orange-500 dark:text-orange-400 font-bold"
       : score >= 2000
-        ? "text-purple-400"
+        ? "text-purple-600 dark:text-purple-400"
         : score >= 1000
-          ? "text-blue-400"
+          ? "text-blue-700 dark:text-blue-400"
           : "text-muted-foreground"
   return <span className={colorClass}>{score > 0 ? score.toLocaleString() : "—"}</span>
 }
@@ -58,12 +58,12 @@ const LogCell = ({ zone }: { zone: WCLZoneRankings | null | undefined }) => {
           {percent}
         </span>
       </TooltipTrigger>
-      <TooltipContent side="left" variant={variant}>
+      <TooltipContent className="min-w-[220px]" side="left" variant={variant}>
         <TooltipTitle>보스별 로그 (평균 {percent})</TooltipTitle>
         <div className="mt-2 flex flex-col gap-1">
           {rankings.map((ranking) => (
-            <div className="flex items-center justify-between gap-4" key={ranking.encounter.id}>
-              <span className="max-w-[140px] truncate text-[11px] text-amber-100/70">
+            <div className="flex items-center justify-between gap-3" key={ranking.encounter.id}>
+              <span className="flex-1 text-[11px] text-stone-600 dark:text-amber-100/70">
                 {ranking.encounter.name}
               </span>
               <span
@@ -104,7 +104,7 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
 
   // 렌더
   return (
-    <tr className="border-border/30 border-b transition-colors hover:bg-white/5">
+    <tr className="border-border/30 border-b transition-colors hover:bg-black/[0.03] dark:hover:bg-white/5">
       {/* 썸네일 + 이름(아머리) + Raider.IO 링크 */}
       <td className="px-3 py-2">
         <div className="flex items-center gap-2">
@@ -158,8 +158,8 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
         <span
           className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${
             character.faction === "alliance"
-              ? "bg-blue-500/15 text-blue-400"
-              : "bg-red-500/15 text-red-400"
+              ? "bg-blue-500/15 text-blue-700 dark:text-blue-400"
+              : "bg-red-500/15 text-red-700 dark:text-red-400"
           }`}
         >
           {character.faction === "alliance" ? "얼라" : "호드"}
@@ -201,10 +201,10 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
           </div>
         ) : progression ? (
           <div className="flex flex-col gap-0.5">
-            <span className="text-blue-400">
+            <span className="text-blue-700 dark:text-blue-400">
               H {progression.heroic_bosses_killed}/{progression.total_bosses}
             </span>
-            <span className="text-yellow-500">
+            <span className="text-yellow-600 dark:text-yellow-500">
               M {progression.mythic_bosses_killed}/{progression.total_bosses}
             </span>
           </div>
@@ -337,8 +337,8 @@ export const RosterList = () => {
               <th className="px-3 py-2">역할</th>
               <th className="px-3 py-2">아이템레벨</th>
               <th className="px-3 py-2">M+ 점수</th>
-              <th className="px-3 py-2 text-blue-400/70">로그 H</th>
-              <th className="px-3 py-2 text-yellow-500/70">로그 M</th>
+              <th className="px-3 py-2 text-blue-600/80 dark:text-blue-400/70">로그 H</th>
+              <th className="px-3 py-2 text-yellow-600/80 dark:text-yellow-500/70">로그 M</th>
               <th className="px-3 py-2">레이드 진행</th>
               <th className="px-3 py-2" />
             </tr>

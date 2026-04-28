@@ -43,6 +43,7 @@ export type BuffKey =
   | "rallying" // 재집결의 함성 — 전사
   // === 유틸 ===
   | "conjureRefreshment" // 원기 회복의 식탁 창조 — 법사
+  | "curseOfTongues" // 언어의 저주 — 흑마법사
   | "deathGrip" // 죽음의 손아귀 — 죽음의 기사
   | "demonicGateway" // 악마의 관문 — 흑마법사
   | "healthstone" // 생명석 — 흑마법사
@@ -288,6 +289,13 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     label: "원기 회복의 식탁 창조 (법사) — 공격대 음식 제공",
     specIds: [62, 63, 64],
     spellId: 43987,
+  },
+  curseOfTongues: {
+    category: "유틸",
+    icon: "spell_shadow_curseoftounges",
+    label: "언어의 저주 (흑마법사) — 적 주문 시전 시간 30% 증가",
+    specIds: [265, 266, 267],
+    spellId: 1714,
   },
   deathGrip: {
     category: "유틸",
