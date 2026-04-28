@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import { useState } from "react"
 import { toast } from "sonner"
 
 import { Skeleton } from "@/components/ui/skeleton"
@@ -17,6 +18,7 @@ import { useRosterStore } from "@/shared/model/roster-store"
 
 import { ROLE_COLOR, ROLE_LABEL, ROLE_SORT_ORDER } from "../config/roster-display"
 import { logColorClass, logVariant } from "../lib/log-color"
+import { type SortColumn, type SortDirection, sortRoster } from "../lib/sort-roster"
 import { useRosterSync } from "../model/useRosterSync"
 
 // ─── M+ 점수 색상 표시 컴포넌트 ──────────────────────────────────────────────
@@ -241,6 +243,23 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
   )
 }
 
+// ─── 정렬 아이콘 ─────────────────────────────────────────────────────────────
+
+interface SortIconProps {
+  column: SortColumn
+  sortColumn: SortColumn | null
+  sortDirection: SortDirection
+}
+
+const SortIcon = ({ column, sortColumn, sortDirection }: SortIconProps) => {
+  if (sortColumn !== column) {
+    return <span className="text-muted-foreground/30 ml-0.5 text-[10px]">↕</span>
+  }
+  return (
+    <span className="text-primary ml-0.5 text-[10px]">{sortDirection === "asc" ? "↑" : "↓"}</span>
+  )
+}
+
 // ─── 공격대 목록 (메인 컴포넌트) ─────────────────────────────────────────────
 
 export const RosterList = () => {
@@ -248,10 +267,23 @@ export const RosterList = () => {
   const characters = useRosterStore((store) => store.characters)
   const clearRoster = useRosterStore((store) => store.clearRoster)
 
+  // 변수부 — 정렬 상태
+  const [sortColumn, setSortColumn] = useState<SortColumn | null>(null)
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
+
   // 변수부 — 커스텀 훅
   const { copyShareUrl, isRefreshing, refreshAll, refreshingIds, refreshOne } = useRosterSync()
 
   // 함수
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      setSortDirection((previous) => (previous === "desc" ? "asc" : "desc"))
+    } else {
+      setSortColumn(column)
+      setSortDirection("desc")
+    }
+  }
+
   const handleCopyLink = () => {
     copyShareUrl()
     toast.success("링크 복사됨!", {
@@ -276,9 +308,11 @@ export const RosterList = () => {
   }
 
   // 파생 데이터 (훅 이후)
-  const sorted = [...characters].sort(
-    (a, b) => ROLE_SORT_ORDER.indexOf(a.role) - ROLE_SORT_ORDER.indexOf(b.role)
-  )
+  const sorted = sortColumn
+    ? sortRoster(characters, sortColumn, sortDirection)
+    : [...characters].sort(
+        (a, b) => ROLE_SORT_ORDER.indexOf(a.role) - ROLE_SORT_ORDER.indexOf(b.role)
+      )
 
   const roleCounts = sorted.reduce<Record<string, number>>((accumulator, character) => {
     accumulator[character.role] = (accumulator[character.role] ?? 0) + 1
@@ -333,20 +367,43 @@ export const RosterList = () => {
             <thead>
               <tr className="border-border/40 text-muted-foreground border-b text-xs">
                 <th className="min-w-[160px] px-3 py-2">캐릭터</th>
-                <th className="min-w-[90px] px-3 py-2">서버</th>
-                <th className="min-w-[90px] px-3 py-2">직업</th>
-                <th className="min-w-[80px] px-3 py-2">특성</th>
-                <th className="min-w-[56px] px-3 py-2">진영</th>
-                <th className="min-w-[56px] px-3 py-2">역할</th>
-                <th className="min-w-[80px] px-3 py-2">아이템레벨</th>
-                <th className="min-w-[72px] px-3 py-2">M+ 점수</th>
-                <th className="min-w-[60px] px-3 py-2 text-blue-600/80 dark:text-blue-400/70">
-                  로그 H
-                </th>
-                <th className="min-w-[60px] px-3 py-2 text-yellow-600/80 dark:text-yellow-500/70">
-                  로그 M
-                </th>
-                <th className="min-w-[96px] px-3 py-2">레이드 진행</th>
+                {(
+                  [
+                    { className: "min-w-[90px]", column: "realm", label: "서버" },
+                    { className: "min-w-[90px]", column: "className", label: "직업" },
+                    { className: "min-w-[80px]", column: "specName", label: "특성" },
+                    { className: "min-w-[56px]", column: "faction", label: "진영" },
+                    { className: "min-w-[56px]", column: "role", label: "역할" },
+                    { className: "min-w-[80px]", column: "itemLevel", label: "아이템레벨" },
+                    { className: "min-w-[72px]", column: "score", label: "M+ 점수" },
+                    {
+                      className: "min-w-[60px] text-blue-600/80 dark:text-blue-400/70",
+                      column: "logHeroic",
+                      label: "로그 H",
+                    },
+                    {
+                      className: "min-w-[60px] text-yellow-600/80 dark:text-yellow-500/70",
+                      column: "logMythic",
+                      label: "로그 M",
+                    },
+                    { className: "min-w-[96px]", column: "raidProgress", label: "레이드 진행" },
+                  ] satisfies { column: SortColumn; label: string; className: string }[]
+                ).map(({ className, column, label }) => (
+                  <th
+                    className={`hover:text-foreground cursor-pointer px-3 py-2 transition-colors select-none ${className} ${sortColumn === column ? "text-foreground" : ""}`}
+                    key={column}
+                    onClick={() => handleSort(column)}
+                  >
+                    <span className="inline-flex items-center gap-0.5">
+                      {label}
+                      <SortIcon
+                        column={column}
+                        sortColumn={sortColumn}
+                        sortDirection={sortDirection}
+                      />
+                    </span>
+                  </th>
+                ))}
                 <th className="min-w-[64px] px-3 py-2" />
               </tr>
             </thead>
