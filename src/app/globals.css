@@ -45,45 +45,45 @@
 /* ─── 라이트 테마 — WoW 양피지/황금 ────────────────────────────────────────── */
 :root {
   --wc-tooltip-bg: linear-gradient(180deg, oklch(0.97 0.01 80) 0%, oklch(0.93 0.015 75) 100%);
-  --background: oklch(0.97 0.01 80);
-  --foreground: oklch(0.18 0.02 60);
-  --card: oklch(0.94 0.015 75);
-  --card-foreground: oklch(0.18 0.02 60);
-  --popover: oklch(0.96 0.01 80);
-  --popover-foreground: oklch(0.18 0.02 60);
-  --primary: oklch(0.55 0.12 75);
-  --primary-foreground: oklch(0.98 0.01 80);
-  --muted: oklch(0.9 0.015 75);
-  --muted-foreground: oklch(0.45 0.02 70);
-  --border: oklch(0.68 0.05 70 / 65%);
-  --input: oklch(0.92 0.015 75);
-  --ring: oklch(0.55 0.12 75 / 50%);
+  --background: oklch(0.95 0.015 80);
+  --foreground: oklch(0.16 0.025 55);
+  --card: oklch(0.91 0.02 74);
+  --card-foreground: oklch(0.16 0.025 55);
+  --popover: oklch(0.94 0.015 78);
+  --popover-foreground: oklch(0.16 0.025 55);
+  --primary: oklch(0.52 0.13 70);
+  --primary-foreground: oklch(0.98 0.005 80);
+  --muted: oklch(0.88 0.018 74);
+  --muted-foreground: oklch(0.42 0.025 68);
+  --border: oklch(0.62 0.07 68 / 70%);
+  --input: oklch(0.9 0.018 74);
+  --ring: oklch(0.52 0.13 70 / 50%);
   --radius: 0.375rem;
 
-  --wc-tooltip-border: hsl(45 55% 48%);
-  --wc-tooltip-uncommon-border: hsl(120 38% 42%);
-  --wc-tooltip-rare-border: hsl(220 52% 50%);
-  --wc-tooltip-epic-border: hsl(280 42% 50%);
-  --wc-tooltip-legendary-border: hsl(30 72% 48%);
-  --wc-tooltip-shadow: 0 4px 20px hsl(0 0% 0% / 0.15);
+  --wc-tooltip-border: hsl(45 55% 46%);
+  --wc-tooltip-uncommon-border: hsl(120 38% 40%);
+  --wc-tooltip-rare-border: hsl(220 52% 48%);
+  --wc-tooltip-epic-border: hsl(280 42% 48%);
+  --wc-tooltip-legendary-border: hsl(30 72% 46%);
+  --wc-tooltip-shadow: 0 4px 20px hsl(0 0% 0% / 0.18);
 }
 
 /* ─── 다크 테마 — 한밤(Midnight) 심야 석조 ──────────────────────────────────── */
 .dark {
   --wc-tooltip-bg: linear-gradient(180deg, hsl(235 20% 7%) 0%, hsl(240 15% 4%) 100%);
-  --background: oklch(0.08 0.022 268);
+  --background: oklch(0.065 0.018 268);
   --foreground: oklch(0.93 0.04 82);
-  --card: oklch(0.12 0.02 262);
+  --card: oklch(0.135 0.022 260);
   --card-foreground: oklch(0.93 0.04 82);
-  --popover: oklch(0.1 0.018 262);
+  --popover: oklch(0.11 0.018 262);
   --popover-foreground: oklch(0.93 0.04 82);
-  --primary: oklch(0.8 0.15 82);
-  --primary-foreground: oklch(0.08 0.022 268);
-  --muted: oklch(0.17 0.016 258);
-  --muted-foreground: oklch(0.62 0.03 82);
-  --border: oklch(0.38 0.07 78 / 55%);
-  --input: oklch(0.16 0.02 262);
-  --ring: oklch(0.8 0.15 82 / 50%);
+  --primary: oklch(0.82 0.18 82);
+  --primary-foreground: oklch(0.065 0.018 268);
+  --muted: oklch(0.18 0.016 258);
+  --muted-foreground: oklch(0.6 0.03 82);
+  --border: oklch(0.4 0.09 78 / 60%);
+  --input: oklch(0.17 0.02 262);
+  --ring: oklch(0.82 0.18 82 / 50%);
   --radius: 0.375rem;
 
   --wc-tooltip-border: hsl(45 65% 30%);
@@ -107,18 +107,30 @@
     @apply bg-background text-foreground;
     min-height: 100vh;
   }
+
+  /* 다크 — 심야 창공에서 아래로 짙어지는 배경 */
   .dark body {
-    background-image: radial-gradient(
-      ellipse at top,
-      oklch(0.16 0.04 272) 0%,
-      oklch(0.06 0.02 265) 100%
-    );
+    background-image:
+      radial-gradient(ellipse 120% 60% at 50% 0%, oklch(0.19 0.055 272) 0%, transparent 70%),
+      radial-gradient(ellipse 80% 40% at 20% 100%, oklch(0.1 0.03 255) 0%, transparent 60%);
+    background-color: oklch(0.065 0.018 268);
   }
+
   html {
     @apply font-sans;
   }
-  /* 다크 모드 — Cinzel 골드 텍스트에 은은한 광채 */
+
+  /* 다크 — WoW 골드 헤딩 광채 */
   .dark .fantasy {
-    text-shadow: 0 0 28px oklch(0.8 0.15 82 / 0.3);
+    text-shadow: 0 0 24px oklch(0.82 0.18 82 / 0.35);
+  }
+
+  /* 다크 — WoW 석판 패널 (section 전용) */
+  .dark .wow-panel {
+    box-shadow:
+      inset 0 1px 0 oklch(0.55 0.08 80 / 0.18),
+      inset 0 -1px 0 oklch(0 0 0 / 0.35),
+      0 8px 32px oklch(0 0 0 / 0.65),
+      0 2px 8px oklch(0 0 0 / 0.45);
   }
 }

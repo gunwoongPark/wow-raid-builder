@@ -58,8 +58,8 @@ const BuffCard = ({ buff, isCountable, isDark }: BuffCardProps) => (
   <div
     className={`flex min-h-14 items-center gap-2.5 rounded p-2 text-sm ${
       buff.covered
-        ? "border border-emerald-500/40 bg-emerald-500/10 dark:border-emerald-500/30"
-        : "border border-red-400/30 bg-red-500/5 dark:border-red-500/20"
+        ? "border border-emerald-500/50 bg-emerald-500/10 dark:border-emerald-400/35 dark:bg-emerald-950/40"
+        : "border border-red-400/35 bg-red-500/5 dark:border-red-500/25 dark:bg-red-950/30"
     }`}
   >
     <div className="relative shrink-0">
@@ -130,7 +130,7 @@ export const BuffAnalysis = () => {
   const total = coverage.length
 
   return (
-    <section className="border-border/40 bg-card/40 rounded-lg border p-5">
+    <section className="wow-panel border-border/60 bg-card/90 rounded-lg border p-5">
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <span className="text-primary font-semibold">버프 / 유틸 커버리지</span>

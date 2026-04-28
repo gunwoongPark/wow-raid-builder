@@ -142,7 +142,7 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
 
   // 렌더
   return (
-    <tr className="border-border/30 h-[52px] border-b transition-colors hover:bg-black/3 dark:hover:bg-white/5">
+    <tr className="border-border/30 hover:bg-primary/5 dark:hover:bg-primary/[0.07] h-[52px] border-b transition-colors">
       {/* 썸네일 + 이름(아머리) + Raider.IO 링크 */}
       <td className="px-3 py-2">
         <div className="flex items-center gap-2">
@@ -356,7 +356,7 @@ export const RosterList = () => {
   // 빈 상태
   if (characters.length === 0) {
     return (
-      <section className="border-border/40 bg-card/40 min-w-0 rounded-lg border p-5">
+      <section className="wow-panel border-border/60 bg-card/90 min-w-0 rounded-lg border p-5">
         <p className="text-muted-foreground py-4 text-center text-sm">
           아직 추가된 공격대원이 없습니다.
         </p>
@@ -378,7 +378,7 @@ export const RosterList = () => {
 
   // 렌더
   return (
-    <section className="border-border/40 bg-card/40 rounded-lg border p-5">
+    <section className="wow-panel border-border/60 bg-card/90 rounded-lg border p-5">
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -419,10 +419,10 @@ export const RosterList = () => {
           </div>
         </div>
 
-        <div className="border-border/40 bg-card/60 overflow-x-auto rounded-md border">
+        <div className="border-border/60 bg-card/95 overflow-x-auto rounded-md border">
           <table className="w-full min-w-[900px] text-left">
             <thead>
-              <tr className="border-border/40 text-muted-foreground border-b text-xs">
+              <tr className="border-border/50 text-muted-foreground border-b text-xs dark:bg-black/30">
                 <th className="min-w-[160px] px-3 py-2">캐릭터</th>
                 {(
                   [
