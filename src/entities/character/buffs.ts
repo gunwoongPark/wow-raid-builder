@@ -20,36 +20,39 @@ export type BuffKey =
   | "battleShout" // 전투의 외침 — 전사
   | "blessingOfTheBronze" // 청동용군단의 축복 — 기원사
   | "chaosBrand" // 혼돈의 낙인 — 악마사냥꾼
-  | "concentrationAura" // 집중의 오라 — 팔라딘
-  | "devoutionAura" // 헌신의 오라 — 팔라딘
+  | "concentrationAura" // 집중의 오라 — 성기사
+  | "crusaderAura" // 성전사의 오라 — 성기사 (탈것 이동속도)
+  | "devoutionAura" // 헌신의 오라 — 성기사
   | "huntersMark" // 사냥꾼의 징표 — 사냥꾼
   | "markOfTheWild" // 야생의 징표 — 드루이드
   | "mysticTouch" // 신비한 손길 — 수도사
   | "powerWordFortitude" // 신의 권능: 인내 — 사제
   | "skyfury" // 하늘의 격노 — 주술사
   // === 외생기 (개인 방어 쿨기) ===
-  | "blessingOfProtection" // 보호의 축복 — 팔라딘 (물리 면역)
-  | "blessingOfSacrifice" // 희생의 축복 — 팔라딘
+  | "blessingOfProtection" // 보호의 축복 — 성기사 (물리 면역)
+  | "blessingOfSacrifice" // 희생의 축복 — 성기사
   | "guardianSpirit" // 수호 영혼 — 신성 사제
   | "innervate" // 정신 자극 — 드루이드 (힐러 마나)
   | "ironBark" // 무쇠껍질 — 드루이드
-  | "layOnHands" // 신의 축복 — 팔라딘 (체력 100% 응급 치유)
-  | "lifeCocoon" // 기의 고치 — 안개술사
+  | "layOnHands" // 신의 축복 — 성기사 (체력 100% 응급 치유)
+  | "lifeCocoon" // 기의 고치 — 운무 수도사
   | "painSuppression" // 고통 억제 — 수양 사제
   | "powerInfusion" // 마력 주입 — 사제
   // === 공생기 (공격대 광역 방어 쿨기) ===
   | "antiMagicZone" // 대마법 지대 — 죽음의 기사
-  | "auraMastery" // 오라 숙련 — 신기 팔라딘
+  | "auraMastery" // 오라 숙련 — 신성 성기사
   | "darkness" // 어둠 — 악마사냥꾼
   | "powerWordBarrier" // 신의 권능: 방벽 — 수양 사제
   | "rallying" // 재집결의 함성 — 전사
-  | "revival" // 재활 — 안개술사
-  | "rewind" // 되돌리기 — 보존술사
+  | "revival" // 재활 — 운무 수도사
+  | "rewind" // 되돌리기 — 보존 기원사
   // === 유틸 ===
+  | "abominationLimb" // 흉물의 사지 — 죽음의 기사 (주기 광역 끌어당기기)
   | "conjureRefreshment" // 원기 회복의 식탁 창조 — 법사
   | "curseOfTongues" // 언어의 저주 — 흑마법사
   | "deathGrip" // 죽음의 손아귀 — 죽음의 기사
   | "demonicGateway" // 악마의 관문 — 흑마법사
+  | "gorefiendGrasp" // 고어핀드의 손아귀 — 혈기 죽음의 기사 (광역 끌어당기기)
   | "healthstone" // 생명석 — 흑마법사
   | "leapOfFaith" // 도약 — 사제
   | "magePortal" // 포탈 창조 — 법사
@@ -105,7 +108,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
       252, // 죽음의 기사 전체 (아군 되살리기)
       65,
       66,
-      70, // 팔라딘 전체 (구제)
+      70, // 성기사 전체 (구제)
       268,
       269,
       270, // 수도사 전체 (소생의 차)
@@ -134,7 +137,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   battleShout: {
     category: "시너지",
     icon: "ability_warrior_battleshout",
-    label: "전투의 외침 (전사) — 공격력 5% 증가",
+    label: "전투의 외침 (전사) — 전투력 5% 증가",
     specIds: [71, 72, 73],
     spellId: 6673,
   },
@@ -155,14 +158,21 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   concentrationAura: {
     category: "시너지",
     icon: "spell_holy_mindsooth",
-    label: "집중의 오라 (팔라딘) — 침묵·방해 효과 30% 단축",
+    label: "집중의 오라 (성기사) — 침묵·방해 효과 30% 단축",
     specIds: [65, 66, 70],
     spellId: 317920,
+  },
+  crusaderAura: {
+    category: "시너지",
+    icon: "spell_holy_crusaderaura",
+    label: "성전사의 오라 (성기사) — 탈것 이동속도 20% 증가",
+    specIds: [65, 66, 70],
+    spellId: 32223,
   },
   devoutionAura: {
     category: "시너지",
     icon: "spell_holy_devotionaura",
-    label: "헌신의 오라 (팔라딘) — 받는 피해 3% 감소",
+    label: "헌신의 오라 (성기사) — 받는 피해 3% 감소",
     specIds: [65, 66, 70],
     spellId: 465,
   },
@@ -198,7 +208,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   skyfury: {
     category: "시너지",
     icon: "achievement_raidprimalist_windelemental",
-    label: "하늘의 격노 (주술사) — 특기 2% + 자동공격 연타",
+    label: "하늘의 격노 (주술사) — 특화 2% + 자동공격 연타",
     specIds: [262, 263, 264],
     spellId: 462854,
   },
@@ -207,14 +217,14 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   blessingOfProtection: {
     category: "외생기",
     icon: "spell_holy_sealofprotection",
-    label: "보호의 축복 (팔라딘) — 대상 파티원 물리 공격 면역 (15초)",
+    label: "보호의 축복 (성기사) — 대상 파티원 물리 공격 면역 (15초)",
     specIds: [65, 66, 70],
     spellId: 41450,
   },
   blessingOfSacrifice: {
     category: "외생기",
     icon: "spell_holy_sealofsacrifice",
-    label: "희생의 축복 (팔라딘) — 대상 피해 30% 감소 (자신에게 전가, 12초)",
+    label: "희생의 축복 (성기사) — 대상 피해 30% 감소 (자신에게 전가, 12초)",
     specIds: [65, 66, 70],
     spellId: 6940,
   },
@@ -242,14 +252,14 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   layOnHands: {
     category: "외생기",
     icon: "spell_holy_layonhands",
-    label: "신의 축복 (팔라딘) — 아군 최대 생명력 100% 즉시 회복 (10분 재사용)",
+    label: "신의 축복 (성기사) — 아군 최대 생명력 100% 즉시 회복 (10분 재사용)",
     specIds: [65, 66, 70],
     spellId: 633,
   },
   lifeCocoon: {
     category: "외생기",
     icon: "ability_monk_chicocoon",
-    label: "기의 고치 (안개술사) — 대형 흡수 보호막 + 주기 치유 50%↑ (12초)",
+    label: "기의 고치 (운무 수도사) — 대형 흡수 보호막 + 주기 치유 50%↑ (12초)",
     specIds: [270],
     spellId: 116849,
   },
@@ -279,7 +289,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   auraMastery: {
     category: "공생기",
     icon: "spell_holy_auramastery",
-    label: "오라 숙련 (신기 팔라딘) — 헌신의 오라 12% / 집중의 오라 침묵 면역 (8초)",
+    label: "오라 숙련 (신성 성기사) — 헌신의 오라 12% / 집중의 오라 침묵 면역 (8초)",
     specIds: [65],
     spellId: 31821,
   },
@@ -304,8 +314,29 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     specIds: [71, 72, 73],
     spellId: 97462,
   },
+  revival: {
+    category: "공생기",
+    icon: "spell_monk_revival",
+    label: "재활 (운무 수도사) — 반경 40m 공격대 전체 대량 치유 + 해로운 마법·독·질병 제거",
+    specIds: [270],
+    spellId: 115310,
+  },
+  rewind: {
+    category: "공생기",
+    icon: "ability_evoker_rewind",
+    label: "되돌리기 (보존 기원사) — 40m 내 아군이 지난 5초간 받은 피해 30% 회복",
+    specIds: [1468],
+    spellId: 363534,
+  },
 
   // ─── 유틸 ─────────────────────────────────────────────────────────────
+  abominationLimb: {
+    category: "유틸",
+    icon: "ability_maldraxxus_deathknight",
+    label: "흉물의 사지 (죽음의 기사) — 주변 적을 12초간 주기적으로 끌어당기며 이동 속도 감소",
+    specIds: [250, 251, 252],
+    spellId: 383269,
+  },
   conjureRefreshment: {
     category: "유틸",
     icon: "inv_misc_food_15",
@@ -334,6 +365,13 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     specIds: [265, 266, 267],
     spellId: 111771,
   },
+  gorefiendGrasp: {
+    category: "유틸",
+    icon: "ability_deathknight_aoedeathgrip",
+    label: "고어핀드의 손아귀 (혈기 죽음의 기사) — 주변 모든 적 광역 끌어당기기",
+    specIds: [250],
+    spellId: 108199,
+  },
   healthstone: {
     category: "유틸",
     icon: "warlock_-healthstone",
@@ -354,6 +392,20 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     label: "포탈 창조 (법사) — 주요 도시 포탈 생성으로 빠른 이동 지원",
     specIds: [62, 63, 64],
     spellId: 10059,
+  },
+  rescue: {
+    category: "유틸",
+    icon: "ability_evoker_flywithme",
+    label: "구출 (기원사) — 아군에게 강하하여 대상 위치까지 함께 비행, 이동 방해 효과 제거",
+    specIds: [1467, 1468, 1473],
+    spellId: 370665,
+  },
+  ritualOfSummoning: {
+    category: "유틸",
+    icon: "spell_shadow_twilight",
+    label: "소환의 문 (흑마법사) — 공격대원 원격 소환 (시전 2회 도움 필요)",
+    specIds: [265, 266, 267],
+    spellId: 698,
   },
   shroudOfConcealment: {
     category: "유틸",
