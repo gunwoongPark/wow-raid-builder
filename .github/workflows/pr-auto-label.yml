@@ -1,11 +1,11 @@
-name: PR Auto Label & Assign
+name: PR Auto Label
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  auto-label-assign:
+  auto-label:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -27,7 +27,6 @@ jobs:
               typo:     "style or typo",
             };
 
-            // PR에 포함된 커밋 목록을 가져와 prefix 파싱
             const { data: commits } = await github.rest.pulls.listCommits({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -52,11 +51,3 @@ jobs:
                 labels: [...labelsToAdd],
               });
             }
-
-            // PR 작성자를 assignee로 자동 등록
-            await github.rest.issues.addAssignees({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              assignees: [context.payload.pull_request.user.login],
-            });
