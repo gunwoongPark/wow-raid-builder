@@ -28,10 +28,12 @@ export type BuffKey =
   | "powerWordFortitude" // 신의 권능: 인내 — 사제
   | "skyfury" // 하늘의 격노 — 주술사
   // === 외생기 (개인 방어 쿨기) ===
+  | "blessingOfProtection" // 보호의 축복 — 팔라딘 (물리 면역)
   | "blessingOfSacrifice" // 희생의 축복 — 팔라딘
   | "guardianSpirit" // 수호 영혼 — 신성 사제
   | "innervate" // 정신 자극 — 드루이드 (힐러 마나)
   | "ironBark" // 무쇠껍질 — 드루이드
+  | "layOnHands" // 신의 축복 — 팔라딘 (체력 100% 응급 치유)
   | "lifeCocoon" // 기의 고치 — 안개술사
   | "painSuppression" // 고통 억제 — 수양 사제
   | "powerInfusion" // 마력 주입 — 사제
@@ -41,6 +43,8 @@ export type BuffKey =
   | "darkness" // 어둠 — 악마사냥꾼
   | "powerWordBarrier" // 신의 권능: 방벽 — 수양 사제
   | "rallying" // 재집결의 함성 — 전사
+  | "revival" // 재활 — 안개술사
+  | "rewind" // 되돌리기 — 보존술사
   // === 유틸 ===
   | "conjureRefreshment" // 원기 회복의 식탁 창조 — 법사
   | "curseOfTongues" // 언어의 저주 — 흑마법사
@@ -49,6 +53,8 @@ export type BuffKey =
   | "healthstone" // 생명석 — 흑마법사
   | "leapOfFaith" // 도약 — 사제
   | "magePortal" // 포탈 창조 — 법사
+  | "rescue" // 구출 — 기원사
+  | "ritualOfSummoning" // 소환의 문 — 흑마법사
   | "shroudOfConcealment" // 은폐의 장막 — 도적
   | "soulstone" // 영혼석 — 흑마법사
   | "stampedingRoar" // 쇄도의 포효 — 드루이드
@@ -198,6 +204,13 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   },
 
   // ─── 외생기 ───────────────────────────────────────────────────────────
+  blessingOfProtection: {
+    category: "외생기",
+    icon: "spell_holy_sealofprotection",
+    label: "보호의 축복 (팔라딘) — 대상 파티원 물리 공격 면역 (15초)",
+    specIds: [65, 66, 70],
+    spellId: 41450,
+  },
   blessingOfSacrifice: {
     category: "외생기",
     icon: "spell_holy_sealofsacrifice",
@@ -225,6 +238,13 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     label: "무쇠껍질 (드루이드) — 대상 피해 20% 감소",
     specIds: [102, 103, 104, 105],
     spellId: 102342,
+  },
+  layOnHands: {
+    category: "외생기",
+    icon: "spell_holy_layonhands",
+    label: "신의 축복 (팔라딘) — 아군 최대 생명력 100% 즉시 회복 (10분 재사용)",
+    specIds: [65, 66, 70],
+    spellId: 633,
   },
   lifeCocoon: {
     category: "외생기",
@@ -280,7 +300,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   rallying: {
     category: "공생기",
     icon: "ability_warrior_rallyingcry",
-    label: "재집결의 함성 (전사) — 공격대 최대 체력 10% 증가 (10초)",
+    label: "재집결의 함성 (전사) — 공격대 최대 체력 10%↑ (10초)",
     specIds: [71, 72, 73],
     spellId: 97462,
   },

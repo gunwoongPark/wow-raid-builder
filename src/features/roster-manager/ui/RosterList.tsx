@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useEffect } from "react"
 import { toast } from "sonner"
 
 import { Skeleton } from "@/components/ui/skeleton"
@@ -278,6 +279,17 @@ export const RosterList = () => {
       ? (rawSortColumn as SortColumn)
       : null
   const sortDirection: SortDirection = searchParams.get("dir") === "asc" ? "asc" : "desc"
+
+  // 공격대원이 없어지면 정렬 쿼리스트링 초기화
+  useEffect(() => {
+    if (characters.length === 0 && (searchParams.get("sort") || searchParams.get("dir"))) {
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete("sort")
+      params.delete("dir")
+      const query = params.toString()
+      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
+    }
+  }, [characters.length, pathname, router, searchParams])
 
   // 변수부 — 커스텀 훅
   const { copyShareUrl, isRefreshing, refreshAll, refreshingIds, refreshOne } = useRosterSync()
