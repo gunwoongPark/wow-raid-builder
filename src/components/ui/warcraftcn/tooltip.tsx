@@ -13,7 +13,7 @@ type TooltipVariant = "default" | "uncommon" | "rare" | "epic" | "legendary"
 const TooltipVariantContext = React.createContext<TooltipVariant>("default")
 
 const tooltipContentVariants = cva(
-  "fantasy z-50 w-fit max-w-xs rounded px-4 py-3 text-sm text-stone-800 dark:text-amber-100 wc-tooltip-base",
+  "fantasy z-50 w-fit max-w-xs rounded px-4 py-3 text-sm text-stone-800 dark:text-amber-100 [background:var(--wc-tooltip-bg)]",
   {
     variants: {
       variant: {
