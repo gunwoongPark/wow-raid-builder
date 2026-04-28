@@ -47,7 +47,7 @@ export type BuffKey =
   | "revival" // 재활 — 운무 수도사
   | "rewind" // 되돌리기 — 보존 기원사
   // === 유틸 ===
-  | "abominationLimb" // 흉물의 사지 — 죽음의 기사 (주기 광역 끌어당기기)
+  | "abominationLimb" // 흉물 사지 — 혈기 죽음의 기사 (주기 광역 끌어당기기)
   | "conjureRefreshment" // 원기 회복의 식탁 창조 — 마법사
   | "curseOfTongues" // 언어의 저주 — 흑마법사
   | "deathGrip" // 죽음의 손아귀 — 죽음의 기사
@@ -233,28 +233,28 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   atrophicPoison: {
     category: "시너지",
     icon: "ability_rogue_nervesofsteel",
-    label: "위축의 독 (도적) — 적 공격력 3% 감소",
+    label: "위축의 독 — 적 공격력 3% 감소",
     specIds: [259, 260, 261],
     spellId: 381637,
   },
   chaosBrand: {
     category: "시너지",
     icon: "ability_demonhunter_empowerwards",
-    label: "혼돈의 낙인 (악마사냥꾼) — 마법 피해 3% 증가",
+    label: "혼돈의 낙인 — 마법 피해 3% 증가",
     specIds: [577, 581],
     spellId: 255260,
   },
   huntersMark: {
     category: "시너지",
     icon: "ability_hunter_markedfordeath",
-    label: "사냥꾼의 징표 (사냥꾼) — 대상 받는 피해 3% 증가",
+    label: "사냥꾼의 징표 — 대상 받는 피해 3% 증가",
     specIds: [253, 254, 255],
     spellId: 257284,
   },
   mysticTouch: {
     category: "시너지",
     icon: "ability_monk_sparring",
-    label: "신비한 손길 (수도사) — 물리 피해 5% 증가",
+    label: "신비한 손길 — 물리 피해 5% 증가",
     specIds: [268, 269, 270],
     spellId: 8647,
   },
@@ -263,7 +263,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   arcaneIntellect: {
     category: "시너지",
     icon: "spell_holy_magicalsentry",
-    label: "신비한 지능 (마법사) — 지능 3% 증가",
+    label: "신비한 지능 — 지능 3% 증가",
     specIds: [62, 63, 64],
     spellId: 1459,
   },
@@ -452,8 +452,8 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   abominationLimb: {
     category: "유틸",
     icon: "ability_maldraxxus_deathknight",
-    label: "흉물의 사지 (죽음의 기사) — 주변 적을 12초간 주기적으로 끌어당기며 이동 속도 감소",
-    specIds: [250, 251, 252],
+    label: "흉물 사지 (혈기 죽음의 기사) — 주변 적을 12초간 주기적으로 끌어당기며 이동 속도 감소",
+    specIds: [250],
     spellId: 383269,
   },
   deathGrip: {
