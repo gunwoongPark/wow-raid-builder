@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react"
 
 import { buildShareUrl, extractRealmSlug, type RosterUrlEntry } from "@/shared/lib/roster-url"
-import { useRosterStore } from "@/shared/model/roster-store"
+import { MAX_ROSTER_SIZE, useRosterStore } from "@/shared/model/roster-store"
 
 import { fetchCharacter } from "../lib/fetch-character"
 
@@ -83,7 +83,7 @@ export const useRosterSync = () => {
             const { characters: current } = useRosterStore.getState()
             if (current.some((character) => character.id === id)) {
               updateCharacter(id, fresh)
-            } else {
+            } else if (current.length < MAX_ROSTER_SIZE) {
               addCharacter(fresh)
             }
           })

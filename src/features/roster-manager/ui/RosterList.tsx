@@ -141,10 +141,21 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
       </td>
 
       <td className="text-muted-foreground px-3 py-2 text-sm">{character.realm}</td>
+      <td className="text-foreground/80 px-3 py-2 text-sm">{character.className}</td>
       <td className="px-3 py-2 text-sm" style={{ color: classColor }}>
         {character.specName}
       </td>
-      <td className="text-foreground/80 px-3 py-2 text-sm">{character.className}</td>
+      <td className="px-3 py-2 text-sm">
+        <span
+          className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${
+            character.faction === "alliance"
+              ? "bg-blue-500/15 text-blue-400"
+              : "bg-red-500/15 text-red-400"
+          }`}
+        >
+          {character.faction === "alliance" ? "얼라" : "호드"}
+        </span>
+      </td>
       <td className={`px-3 py-2 text-sm font-medium ${ROLE_COLOR[character.role] ?? ""}`}>
         {ROLE_LABEL[character.role] ?? character.role}
       </td>
@@ -294,8 +305,9 @@ export const RosterList = () => {
             <tr className="border-border/40 text-muted-foreground border-b text-xs">
               <th className="px-3 py-2">캐릭터</th>
               <th className="px-3 py-2">서버</th>
-              <th className="px-3 py-2">특성</th>
               <th className="px-3 py-2">직업</th>
+              <th className="px-3 py-2">특성</th>
+              <th className="px-3 py-2">진영</th>
               <th className="px-3 py-2">역할</th>
               <th className="px-3 py-2">아이템레벨</th>
               <th className="px-3 py-2">M+ 점수</th>

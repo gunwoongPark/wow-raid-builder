@@ -3,6 +3,8 @@ import { persist } from "zustand/middleware"
 
 import { type RosterCharacter } from "@/entities/character"
 
+export const MAX_ROSTER_SIZE = 30
+
 interface RosterState {
   characters: RosterCharacter[]
   addCharacter: (character: RosterCharacter) => void

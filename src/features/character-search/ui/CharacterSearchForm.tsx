@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 import {
   characterApi,
@@ -14,7 +15,7 @@ import {
   type RosterCharacter,
 } from "@/entities/character"
 import { useDebounce } from "@/shared/lib/use-debounce"
-import { useRosterStore } from "@/shared/model/roster-store"
+import { MAX_ROSTER_SIZE, useRosterStore } from "@/shared/model/roster-store"
 
 import { characterSearchSchema, type CharacterSearchSchema } from "../schema"
 
@@ -47,6 +48,13 @@ export const CharacterSearchForm = () => {
     const characterId = `${result.realmSlug}-${result.name.toLowerCase()}`
     if (characters.some((character) => character.id === characterId)) {
       setErrorMessage("이미 로스터에 추가된 캐릭터입니다.")
+      return
+    }
+
+    if (characters.length >= MAX_ROSTER_SIZE) {
+      toast.warning("공격대 인원 초과", {
+        description: `공격대원은 최대 ${MAX_ROSTER_SIZE}명까지 추가할 수 있습니다.`,
+      })
       return
     }
 
