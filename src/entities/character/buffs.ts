@@ -359,11 +359,14 @@ export interface BuffCoverage {
   spellId: number
 }
 
-// 개수를 표시하는 카테고리
-// - 블러드: 유무만 (중복 의미 없음)
-// - 시너지: 유무만 (직업당 1개)
-// - 유틸: 유무만
-export const COUNTABLE_CATEGORIES: BuffCategory[] = ["전투부활", "외생기", "공생기"]
+export const COUNTABLE_CATEGORIES: BuffCategory[] = [
+  "블러드",
+  "전투부활",
+  "시너지",
+  "외생기",
+  "공생기",
+  "유틸",
+]
 
 export const BUFF_CATEGORIES: BuffCategory[] = [
   "블러드",

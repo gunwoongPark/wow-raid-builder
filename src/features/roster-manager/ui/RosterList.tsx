@@ -314,7 +314,7 @@ export const RosterList = () => {
         (a, b) => ROLE_SORT_ORDER.indexOf(a.role) - ROLE_SORT_ORDER.indexOf(b.role)
       )
 
-  const roleCounts = sorted.reduce<Record<string, number>>((accumulator, character) => {
+  const roleCounts = characters.reduce<Record<string, number>>((accumulator, character) => {
     accumulator[character.role] = (accumulator[character.role] ?? 0) + 1
     return accumulator
   }, {})
@@ -327,9 +327,9 @@ export const RosterList = () => {
           <div className="flex items-center gap-3">
             <span className="text-primary font-semibold">공격대 ({characters.length}명)</span>
             <div className="flex gap-2 text-xs">
-              {Object.entries(roleCounts).map(([role, count]) => (
+              {ROLE_SORT_ORDER.filter((role) => roleCounts[role]).map((role) => (
                 <span className={ROLE_COLOR[role] ?? ""} key={role}>
-                  {ROLE_LABEL[role]} {count}
+                  {ROLE_LABEL[role]} {roleCounts[role]}
                 </span>
               ))}
             </div>
