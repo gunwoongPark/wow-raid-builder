@@ -56,7 +56,6 @@ export type BuffKey =
   | "healthstone" // 생명석 — 흑마법사
   | "leapOfFaith" // 도약 — 사제
   | "magePortal" // 포탈 창조 — 마법사
-  | "massDispel" // 대규모 무효화 — 사제 (범위 마법 해제)
   | "rescue" // 구출 — 기원사
   | "ritualOfSummoning" // 소환의 문 — 흑마법사
   | "shroudOfConcealment" // 은폐의 장막 — 도적
@@ -544,13 +543,6 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     label: "생명석 (흑마법사) — 체력 25% 즉시 회복 아이템 지급",
     specIds: [265, 266, 267],
     spellId: 6262,
-  },
-  massDispel: {
-    category: "유틸",
-    icon: "spell_holy_massdispel",
-    label: "대규모 무효화 (사제) — 반경 15야드 아군 해로운 마법 / 적 이로운 마법 제거",
-    specIds: [256, 257, 258],
-    spellId: 32375,
   },
   ritualOfSummoning: {
     category: "유틸",
