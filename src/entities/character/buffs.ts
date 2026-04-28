@@ -557,7 +557,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   soulstone: {
     category: "유틸",
     icon: "spell_shadow_soulgem",
-    label: "영혼석 (흑마법사) — 전투 부활 겸용, 사전 배치 시 자동 소생",
+    label: "영혼석 — 전투 부활 겸용, 사전 배치 시 자동 소생",
     specIds: [265, 266, 267],
     spellId: 20707,
   },
