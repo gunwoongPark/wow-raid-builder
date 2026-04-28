@@ -191,14 +191,14 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
     specIds: [
       262,
       263,
-      264, // 주술사 전체
+      264, // 주술사 전체 — 피의 욕망·영웅심
       62,
       63,
-      64, // 마법사 전체
+      64, // 마법사 전체 — 시간 왜곡
       1467,
       1468,
-      1473, // 기원사 전체
-      253, // 야수조련사 사냥꾼 (외래 야수 펫 필요)
+      1473, // 기원사 전체 — 용군단의 분노
+      253, // 야수조련사 사냥꾼 — 원초적 분노 (외래 야수 펫 필요)
     ],
     spellId: 32182,
   },
@@ -485,14 +485,14 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   leapOfFaith: {
     category: "유틸",
     icon: "priest_spell_leapoffaith_a",
-    label: "도약 — 아군 1명을 자신에게 끌어당기기",
+    label: "신의의 도약 — 아군 1명을 자신에게 끌어당기기",
     specIds: [256, 257, 258],
     spellId: 73325,
   },
   magePortal: {
     category: "유틸",
     icon: "spell_arcane_portalstormwind",
-    label: "포탈 창조 — 주요 도시 포탈 생성으로 빠른 이동 지원",
+    label: "차원의 문 — 주요 도시 포탈 생성으로 빠른 이동 지원",
     specIds: [62, 63, 64],
     spellId: 10059,
   },
