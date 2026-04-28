@@ -50,7 +50,9 @@ export const CharacterSearchForm = () => {
 
     const characterId = `${result.realmSlug}-${result.name.toLowerCase()}`
     if (characters.some((character) => character.id === characterId)) {
-      setErrorMessage("이미 로스터에 추가된 캐릭터입니다.")
+      toast.error("이미 공격대에 추가된 캐릭터입니다.", {
+        description: `${result.name}은(는) 이미 공격대 목록에 있습니다.`,
+      })
       return
     }
 
@@ -131,7 +133,7 @@ export const CharacterSearchForm = () => {
             </span>
           )}
 
-          {searchResults.length > 0 && (
+          {searchResults.length > 0 && debouncedQuery.length >= 2 && (
             <ComboboxOptions className="border-border/60 bg-popover absolute z-[9999] mt-1 max-h-64 w-full overflow-auto rounded-md border shadow-xl [background:var(--popover)]">
               {searchResults.map((result) => (
                 <ComboboxOption

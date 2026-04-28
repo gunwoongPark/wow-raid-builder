@@ -62,13 +62,13 @@ const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
           {buff.label}
         </p>
         {isCountable && buff.covered && buff.count > 0 && (
-          <span className="shrink-0 rounded bg-emerald-500/20 px-1 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">
+          <span className="shrink-0 rounded bg-emerald-500/20 px-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
             ×{buff.count}
           </span>
         )}
       </div>
       {buff.covered && (
-        <p className="mt-0.5 truncate text-[10px] text-emerald-700 dark:text-emerald-400/70">
+        <p className="mt-0.5 truncate text-[10px] text-emerald-600 dark:text-emerald-400/70">
           {buff.providers.join(", ")}
         </p>
       )}
