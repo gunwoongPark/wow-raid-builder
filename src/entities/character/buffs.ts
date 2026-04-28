@@ -273,7 +273,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   battleShout: {
     category: "시너지",
     icon: "ability_warrior_battleshout",
-    label: "전투의 외침 — 전투력 5% 증가",
+    label: "전투의 외침 — 공격력 5% 증가",
     specIds: [71, 72, 73],
     spellId: 6673,
   },
@@ -301,7 +301,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   skyfury: {
     category: "시너지",
     icon: "achievement_raidprimalist_windelemental",
-    label: "하늘의 격노 — 특화 3% 증가, 치명타 시 추가 공격 발동",
+    label: "하늘의 격노 — 특화 2% 증가, 자동 공격 시 20% 확률로 즉시 추가 공격",
     specIds: [262, 263, 264],
     spellId: 462854,
   },
@@ -333,14 +333,14 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   blessingOfProtection: {
     category: "외생기",
     icon: "spell_holy_sealofprotection",
-    label: "보호의 축복 — 대상 파티원 물리 공격 면역 (15초)",
+    label: "보호의 축복 — 대상 파티원 물리 공격 면역 (10초)",
     specIds: [65, 66, 70],
     spellId: 41450,
   },
   ironBark: {
     category: "외생기",
     icon: "spell_druid_ironbark",
-    label: "무쇠껍질 — 대상 피해 20% 감소",
+    label: "무쇠껍질 — 대상 피해 20% 감소 (12초)",
     specIds: [102, 103, 104, 105],
     spellId: 102342,
   },
@@ -363,7 +363,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   blessingOfSacrifice: {
     category: "외생기",
     icon: "spell_holy_sealofsacrifice",
-    label: "희생의 축복 — 대상 피해 30% 감소 (자신에게 전가, 12초)",
+    label: "희생의 축복 — 대상 피해 30%를 시전자가 대신 받음 (12초)",
     specIds: [65, 66, 70],
     spellId: 6940,
   },
@@ -386,7 +386,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   innervate: {
     category: "외생기",
     icon: "spell_nature_lightning",
-    label: "정신 자극 — 8초간 마나 소모 없이 주문 시전",
+    label: "정신 자극 — 대상이 8초간 마나 소모 없이 주문 시전",
     specIds: [102, 103, 104, 105],
     spellId: 29166,
   },
