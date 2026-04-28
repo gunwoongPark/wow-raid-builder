@@ -2,17 +2,20 @@ import { type RosterCharacter } from "@/entities/character"
 
 import { ROLE_SORT_ORDER } from "../config/roster-display"
 
-export type SortColumn =
-  | "realm"
-  | "className"
-  | "specName"
-  | "faction"
-  | "role"
-  | "itemLevel"
-  | "score"
-  | "logHeroic"
-  | "logMythic"
-  | "raidProgress"
+export const SORT_COLUMNS = [
+  "realm",
+  "className",
+  "specName",
+  "faction",
+  "role",
+  "itemLevel",
+  "score",
+  "logHeroic",
+  "logMythic",
+  "raidProgress",
+] as const
+
+export type SortColumn = (typeof SORT_COLUMNS)[number]
 
 export type SortDirection = "asc" | "desc"
 

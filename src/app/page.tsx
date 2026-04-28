@@ -25,7 +25,15 @@ const HomePage = () => {
         <CharacterSearchForm />
       </section>
 
-      <RosterList />
+      <Suspense
+        fallback={
+          <section className="border-border/40 bg-card/40 min-w-0 rounded-lg border p-5">
+            <p className="text-muted-foreground py-4 text-center text-sm">불러오는 중…</p>
+          </section>
+        }
+      >
+        <RosterList />
+      </Suspense>
 
       <BuffAnalysis />
     </main>

@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 
 import { Skeleton } from "@/components/ui/skeleton"
@@ -18,7 +18,7 @@ import { useRosterStore } from "@/shared/model/roster-store"
 
 import { ROLE_COLOR, ROLE_LABEL, ROLE_SORT_ORDER } from "../config/roster-display"
 import { logColorClass, logVariant } from "../lib/log-color"
-import { type SortColumn, type SortDirection, sortRoster } from "../lib/sort-roster"
+import { SORT_COLUMNS, type SortColumn, type SortDirection, sortRoster } from "../lib/sort-roster"
 import { useRosterSync } from "../model/useRosterSync"
 
 // ─── M+ 점수 색상 표시 컴포넌트 ──────────────────────────────────────────────
@@ -267,21 +267,31 @@ export const RosterList = () => {
   const characters = useRosterStore((store) => store.characters)
   const clearRoster = useRosterStore((store) => store.clearRoster)
 
-  // 변수부 — 정렬 상태
-  const [sortColumn, setSortColumn] = useState<SortColumn | null>(null)
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
+  // 변수부 — 정렬 상태 (URL 쿼리스트링)
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const rawSortColumn = searchParams.get("sort")
+  const sortColumn: SortColumn | null =
+    rawSortColumn && (SORT_COLUMNS as readonly string[]).includes(rawSortColumn)
+      ? (rawSortColumn as SortColumn)
+      : null
+  const sortDirection: SortDirection = searchParams.get("dir") === "asc" ? "asc" : "desc"
 
   // 변수부 — 커스텀 훅
   const { copyShareUrl, isRefreshing, refreshAll, refreshingIds, refreshOne } = useRosterSync()
 
   // 함수
   const handleSort = (column: SortColumn) => {
+    const params = new URLSearchParams(searchParams.toString())
     if (sortColumn === column) {
-      setSortDirection((previous) => (previous === "desc" ? "asc" : "desc"))
+      params.set("dir", sortDirection === "desc" ? "asc" : "desc")
     } else {
-      setSortColumn(column)
-      setSortDirection("desc")
+      params.set("sort", column)
+      params.set("dir", "desc")
     }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
   const handleCopyLink = () => {
