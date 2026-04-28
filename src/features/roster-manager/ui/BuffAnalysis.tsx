@@ -31,7 +31,7 @@ interface BuffCardProps {
 
 const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
   <div
-    className={`flex items-start gap-2.5 rounded p-2 text-sm ${
+    className={`flex min-h-18 items-start gap-2.5 rounded p-2 text-sm ${
       buff.covered
         ? "border border-emerald-500/40 bg-emerald-500/10 dark:border-emerald-500/30"
         : "border border-red-400/30 bg-red-500/5 dark:border-red-500/20"
@@ -56,7 +56,7 @@ const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
     <div className="min-w-0 flex-1">
       <div className="flex items-baseline gap-1.5">
         <p
-          className={`min-w-0 flex-1 text-xs leading-snug font-medium ${
+          className={`line-clamp-2 min-w-0 flex-1 text-xs leading-snug font-medium ${
             buff.covered ? "text-foreground" : "text-foreground/50"
           }`}
         >
@@ -74,10 +74,10 @@ const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
         </p>
       )}
       {!buff.covered && buff.candidateProviders.length > 0 && (
-        <div className="mt-1.5 flex flex-wrap gap-1">
+        <div className="mt-1.5 flex gap-1 overflow-hidden">
           {buff.candidateProviders.map((provider) => (
             <span
-              className="rounded px-1.5 py-0.5 text-[10px] font-semibold"
+              className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold"
               key={provider.label}
               style={{
                 backgroundColor: `${getClassColor(provider.className)}22`,
