@@ -32,8 +32,8 @@ const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
   <div
     className={`flex items-start gap-2.5 rounded p-2 text-sm ${
       buff.covered
-        ? "border border-emerald-500/30 bg-emerald-500/10"
-        : "border border-red-500/20 bg-red-500/5"
+        ? "border border-emerald-500/40 bg-emerald-500/10 dark:border-emerald-500/30"
+        : "border border-red-400/30 bg-red-500/5 dark:border-red-500/20"
     }`}
   >
     <div className="relative mt-0.5 shrink-0">
@@ -62,13 +62,13 @@ const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
           {buff.label}
         </p>
         {isCountable && buff.covered && buff.count > 0 && (
-          <span className="shrink-0 rounded bg-emerald-500/20 px-1 text-[10px] font-semibold text-emerald-400">
+          <span className="shrink-0 rounded bg-emerald-500/20 px-1 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">
             ×{buff.count}
           </span>
         )}
       </div>
       {buff.covered && (
-        <p className="mt-0.5 truncate text-[10px] text-emerald-400/70">
+        <p className="mt-0.5 truncate text-[10px] text-emerald-700 dark:text-emerald-400/70">
           {buff.providers.join(", ")}
         </p>
       )}
