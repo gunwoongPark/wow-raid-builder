@@ -255,7 +255,7 @@ export const RosterList = () => {
   const handleCopyLink = () => {
     copyShareUrl()
     toast.success("링크 복사됨!", {
-      description: `공격대 ${characters.length}명 로스터 링크가 클립보드에 복사됐습니다.`,
+      description: `공격대 ${characters.length}명 링크가 클립보드에 복사됐습니다.`,
     })
   }
 
@@ -267,9 +267,11 @@ export const RosterList = () => {
   // 빈 상태
   if (characters.length === 0) {
     return (
-      <p className="text-muted-foreground py-6 text-center text-sm">
-        아직 추가된 공대원이 없습니다.
-      </p>
+      <section className="border-border/40 bg-card/40 rounded-lg border p-5">
+        <p className="text-muted-foreground py-4 text-center text-sm">
+          아직 추가된 공대원이 없습니다.
+        </p>
+      </section>
     )
   }
 
@@ -285,76 +287,78 @@ export const RosterList = () => {
 
   // 렌더
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-primary font-semibold">공격대 ({characters.length}명)</span>
-          <div className="flex gap-2 text-xs">
-            {Object.entries(roleCounts).map(([role, count]) => (
-              <span className={ROLE_COLOR[role] ?? ""} key={role}>
-                {ROLE_LABEL[role]} {count}
-              </span>
-            ))}
+    <section className="border-border/40 bg-card/40 rounded-lg border p-5">
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-primary font-semibold">공격대 ({characters.length}명)</span>
+            <div className="flex gap-2 text-xs">
+              {Object.entries(roleCounts).map(([role, count]) => (
+                <span className={ROLE_COLOR[role] ?? ""} key={role}>
+                  {ROLE_LABEL[role]} {count}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* 헤더 액션 버튼 */}
+          <div className="flex items-center gap-2">
+            <button
+              className="flex items-center gap-1 rounded px-2 py-1 text-xs text-sky-400/80 transition-colors hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-40"
+              disabled={isRefreshing}
+              onClick={handleRefreshAll}
+            >
+              <span className={`text-sm ${isRefreshing ? "animate-spin" : ""}`}>↻</span>
+              {isRefreshing ? "최신화 중…" : "전체 최신화"}
+            </button>
+
+            <button
+              className="flex items-center gap-1 rounded px-2 py-1 text-xs text-emerald-400/80 transition-colors hover:bg-emerald-400/10 hover:text-emerald-400"
+              onClick={handleCopyLink}
+            >
+              🔗 링크 복사
+            </button>
+
+            <button
+              className="text-muted-foreground/60 text-xs transition-colors hover:text-red-400"
+              onClick={clearRoster}
+            >
+              전체 초기화
+            </button>
           </div>
         </div>
 
-        {/* 헤더 액션 버튼 */}
-        <div className="flex items-center gap-2">
-          <button
-            className="flex items-center gap-1 rounded px-2 py-1 text-xs text-sky-400/80 transition-colors hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-40"
-            disabled={isRefreshing}
-            onClick={handleRefreshAll}
-          >
-            <span className={`text-sm ${isRefreshing ? "animate-spin" : ""}`}>↻</span>
-            {isRefreshing ? "최신화 중…" : "전체 최신화"}
-          </button>
-
-          <button
-            className="flex items-center gap-1 rounded px-2 py-1 text-xs text-emerald-400/80 transition-colors hover:bg-emerald-400/10 hover:text-emerald-400"
-            onClick={handleCopyLink}
-          >
-            🔗 링크 복사
-          </button>
-
-          <button
-            className="text-muted-foreground/60 text-xs transition-colors hover:text-red-400"
-            onClick={clearRoster}
-          >
-            전체 초기화
-          </button>
+        <div className="border-border/40 bg-card/60 overflow-x-auto rounded-md border">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-border/40 text-muted-foreground border-b text-xs">
+                <th className="px-3 py-2">캐릭터</th>
+                <th className="px-3 py-2">서버</th>
+                <th className="px-3 py-2">직업</th>
+                <th className="px-3 py-2">특성</th>
+                <th className="px-3 py-2">진영</th>
+                <th className="px-3 py-2">역할</th>
+                <th className="px-3 py-2">아이템레벨</th>
+                <th className="px-3 py-2">M+ 점수</th>
+                <th className="px-3 py-2 text-blue-600/80 dark:text-blue-400/70">로그 H</th>
+                <th className="px-3 py-2 text-yellow-600/80 dark:text-yellow-500/70">로그 M</th>
+                <th className="px-3 py-2">레이드 진행</th>
+                <th className="px-3 py-2" />
+              </tr>
+            </thead>
+            <tbody>
+              {sorted.map((character) => (
+                <CharacterRow
+                  character={character}
+                  isRefreshing={refreshingIds.has(character.id)}
+                  key={character.id}
+                  onRefresh={() => refreshOne(character.id)}
+                />
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
-
-      <div className="border-border/40 bg-card/60 overflow-x-auto rounded-md border">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-border/40 text-muted-foreground border-b text-xs">
-              <th className="px-3 py-2">캐릭터</th>
-              <th className="px-3 py-2">서버</th>
-              <th className="px-3 py-2">직업</th>
-              <th className="px-3 py-2">특성</th>
-              <th className="px-3 py-2">진영</th>
-              <th className="px-3 py-2">역할</th>
-              <th className="px-3 py-2">아이템레벨</th>
-              <th className="px-3 py-2">M+ 점수</th>
-              <th className="px-3 py-2 text-blue-600/80 dark:text-blue-400/70">로그 H</th>
-              <th className="px-3 py-2 text-yellow-600/80 dark:text-yellow-500/70">로그 M</th>
-              <th className="px-3 py-2">레이드 진행</th>
-              <th className="px-3 py-2" />
-            </tr>
-          </thead>
-          <tbody>
-            {sorted.map((character) => (
-              <CharacterRow
-                character={character}
-                isRefreshing={refreshingIds.has(character.id)}
-                key={character.id}
-                onRefresh={() => refreshOne(character.id)}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    </section>
   )
 }

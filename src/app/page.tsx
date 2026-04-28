@@ -3,17 +3,6 @@ import { Suspense } from "react"
 import { CharacterSearchForm } from "@/features/character-search"
 import { BuffAnalysis, RosterList, RosterUrlLoader } from "@/features/roster-manager"
 
-const Section = ({ children, title }: { children: React.ReactNode; title?: string }) => (
-  <section className="border-border/40 bg-card/40 rounded-lg border p-5">
-    {title && (
-      <h2 className="fantasy text-primary/80 mb-4 text-sm font-semibold tracking-widest uppercase">
-        {title}
-      </h2>
-    )}
-    {children}
-  </section>
-)
-
 const HomePage = () => {
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-6 p-6">
@@ -29,20 +18,16 @@ const HomePage = () => {
         </p>
       </div>
 
-      <div className="border-border/40 bg-card/40 rounded-lg border p-5">
+      <section className="border-border/40 bg-card/40 rounded-lg border p-5">
         <h2 className="fantasy text-primary/80 mb-4 text-sm font-semibold tracking-widest uppercase">
           캐릭터 추가
         </h2>
         <CharacterSearchForm />
-      </div>
+      </section>
 
-      <Section>
-        <RosterList />
-      </Section>
+      <RosterList />
 
-      <Section>
-        <BuffAnalysis />
-      </Section>
+      <BuffAnalysis />
     </main>
   )
 }
