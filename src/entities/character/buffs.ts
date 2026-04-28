@@ -548,7 +548,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   massDispel: {
     category: "유틸",
     icon: "spell_holy_massdispel",
-    label: "대규모 무효화 (사제) — 범위 내 아군 해로운 마법 및 적의 이로운 마법 최대 5개 제거",
+    label: "대규모 무효화 (사제) — 반경 15야드 아군 해로운 마법 / 적 이로운 마법 제거",
     specIds: [256, 257, 258],
     spellId: 32375,
   },

@@ -56,7 +56,7 @@ const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
     <div className="min-w-0 flex-1">
       <div className="flex items-baseline gap-1.5">
         <p
-          className={`text-xs leading-snug font-medium ${
+          className={`min-w-0 flex-1 text-xs leading-snug font-medium ${
             buff.covered ? "text-foreground" : "text-foreground/50"
           }`}
         >
