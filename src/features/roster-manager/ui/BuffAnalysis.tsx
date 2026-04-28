@@ -31,13 +31,13 @@ interface BuffCardProps {
 
 const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
   <div
-    className={`flex min-h-18 items-start gap-2.5 rounded p-2 text-sm ${
+    className={`flex min-h-18 items-center gap-2.5 rounded p-2 text-sm ${
       buff.covered
         ? "border border-emerald-500/40 bg-emerald-500/10 dark:border-emerald-500/30"
         : "border border-red-400/30 bg-red-500/5 dark:border-red-500/20"
     }`}
   >
-    <div className="relative mt-0.5 shrink-0">
+    <div className="relative shrink-0">
       <Image
         alt={buff.label}
         className={`rounded ${buff.covered ? "" : "opacity-30 grayscale"}`}
