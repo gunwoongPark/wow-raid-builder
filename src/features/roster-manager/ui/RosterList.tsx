@@ -135,7 +135,9 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
     : null
   const realmSlug = extractRealmSlug(character.id, character.name)
   const armoryUrl = `https://worldofwarcraft.blizzard.com/ko-kr/character/kr/${realmSlug}/${encodeURIComponent(character.name)}`
-  const wclUrl = `https://www.warcraftlogs.com/character/kr/${realmSlug}/${encodeURIComponent(character.name.toLowerCase())}`
+  const wclBaseUrl = `https://www.warcraftlogs.com/character/kr/${realmSlug}/${encodeURIComponent(character.name.toLowerCase())}`
+  const wclHeroicUrl = `${wclBaseUrl}#difficulty=4`
+  const wclMythicUrl = `${wclBaseUrl}#difficulty=5`
 
   // 렌더
   return (
@@ -217,14 +219,14 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
         {isPendingWCL ? (
           <Skeleton className="h-4 w-8 rounded" />
         ) : (
-          <LogCell wclUrl={wclUrl} zone={character.warcraftLogs?.heroic} />
+          <LogCell wclUrl={wclHeroicUrl} zone={character.warcraftLogs?.heroic} />
         )}
       </td>
       <td className="px-3 py-2 font-mono text-sm">
         {isPendingWCL ? (
           <Skeleton className="h-4 w-8 rounded" />
         ) : (
-          <LogCell wclUrl={wclUrl} zone={character.warcraftLogs?.mythic} />
+          <LogCell wclUrl={wclMythicUrl} zone={character.warcraftLogs?.mythic} />
         )}
       </td>
 
