@@ -1,0 +1,62 @@
+name: PR Auto Label & Assign
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  auto-label-assign:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const PREFIX_TO_LABEL = {
+              feat:     "feature",
+              fix:      "bug",
+              hotfix:   "hotfix",
+              refactor: "refactor",
+              release:  "release",
+              style:    "style or typo",
+              chore:    "style or typo",
+              docs:     "style or typo",
+              typo:     "style or typo",
+            };
+
+            // PR에 포함된 커밋 목록을 가져와 prefix 파싱
+            const { data: commits } = await github.rest.pulls.listCommits({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+
+            const labelsToAdd = new Set();
+            for (const commit of commits) {
+              const firstLine = commit.commit.message.split("\n")[0];
+              for (const [prefix, label] of Object.entries(PREFIX_TO_LABEL)) {
+                if (firstLine.startsWith(`${prefix}:`)) {
+                  labelsToAdd.add(label);
+                }
+              }
+            }
+
+            if (labelsToAdd.size > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                labels: [...labelsToAdd],
+              });
+            }
+
+            // PR 작성자를 assignee로 자동 등록
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              assignees: [context.payload.pull_request.user.login],
+            });
