@@ -9,6 +9,7 @@ import {
   COUNTABLE_CATEGORIES,
   wowheadIconUrl,
 } from "@/entities/character"
+import { getClassColor } from "@/shared/config/class-colors"
 import { useRosterStore } from "@/shared/model/roster-store"
 
 const CATEGORY_LABEL: Record<BuffCategory, string> = {
@@ -21,7 +22,7 @@ const CATEGORY_LABEL: Record<BuffCategory, string> = {
 }
 
 // 블러드와 전투부활은 한 행에 나란히 표시
-const INLINE_CATEGORIES: BuffCategory[] = ["블러드", "전투부활"]
+const INLINE_CATEGORIES = new Set<BuffCategory>(["블러드", "전투부활"])
 
 interface BuffCardProps {
   buff: ReturnType<typeof analyzeBuffCoverage>[number]
@@ -72,6 +73,22 @@ const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
           {buff.providers.join(", ")}
         </p>
       )}
+      {!buff.covered && buff.candidateProviders.length > 0 && (
+        <div className="mt-1.5 flex flex-wrap gap-1">
+          {buff.candidateProviders.map((provider) => (
+            <span
+              className="rounded px-1.5 py-0.5 text-[10px] font-semibold"
+              key={provider.label}
+              style={{
+                backgroundColor: `${getClassColor(provider.className)}22`,
+                color: getClassColor(provider.className),
+              }}
+            >
+              {provider.label}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   </div>
 )
@@ -90,8 +107,8 @@ export const BuffAnalysis = () => {
     isCountable: (COUNTABLE_CATEGORIES as string[]).includes(category),
   }))
 
-  const inlineGroup = byCategory.filter(({ category }) => INLINE_CATEGORIES.includes(category))
-  const regularGroups = byCategory.filter(({ category }) => !INLINE_CATEGORIES.includes(category))
+  const inlineGroup = byCategory.filter(({ category }) => INLINE_CATEGORIES.has(category))
+  const regularGroups = byCategory.filter(({ category }) => !INLINE_CATEGORIES.has(category))
 
   const totalCovered = coverage.filter((buff) => buff.covered).length
   const total = coverage.length

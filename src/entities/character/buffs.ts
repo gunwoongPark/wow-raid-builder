@@ -72,6 +72,116 @@ interface BuffSource {
   specIds: number[]
 }
 
+// ─── 스펙 ID → 직업/특성명 매핑 ─────────────────────────────────────────────
+
+const SPEC_INFO: Record<number, { className: string; specName: string }> = {
+  // 마법사
+  62: { className: "마법사", specName: "비전" },
+  63: { className: "마법사", specName: "화염" },
+  64: { className: "마법사", specName: "냉기" },
+  // 성기사
+  65: { className: "성기사", specName: "신성" },
+  66: { className: "성기사", specName: "보호" },
+  70: { className: "성기사", specName: "징벌" },
+  // 전사
+  71: { className: "전사", specName: "무기" },
+  72: { className: "전사", specName: "분노" },
+  73: { className: "전사", specName: "방어" },
+  // 드루이드
+  102: { className: "드루이드", specName: "조화" },
+  103: { className: "드루이드", specName: "야성" },
+  104: { className: "드루이드", specName: "수호" },
+  105: { className: "드루이드", specName: "회복" },
+  // 죽음의 기사
+  250: { className: "죽음의 기사", specName: "혈기" },
+  251: { className: "죽음의 기사", specName: "냉기" },
+  252: { className: "죽음의 기사", specName: "부정" },
+  // 사냥꾼
+  253: { className: "사냥꾼", specName: "야수조련사" },
+  254: { className: "사냥꾼", specName: "사격" },
+  255: { className: "사냥꾼", specName: "생존" },
+  // 사제
+  256: { className: "사제", specName: "수양" },
+  257: { className: "사제", specName: "신성" },
+  258: { className: "사제", specName: "암흑" },
+  // 도적
+  259: { className: "도적", specName: "암살" },
+  260: { className: "도적", specName: "무법" },
+  261: { className: "도적", specName: "잠행" },
+  // 주술사
+  262: { className: "주술사", specName: "원소" },
+  263: { className: "주술사", specName: "향상" },
+  264: { className: "주술사", specName: "복원" },
+  // 흑마법사
+  265: { className: "흑마법사", specName: "고통" },
+  266: { className: "흑마법사", specName: "악마소환사" },
+  267: { className: "흑마법사", specName: "파괴" },
+  // 수도사
+  268: { className: "수도사", specName: "양조" },
+  269: { className: "수도사", specName: "풍운" },
+  270: { className: "수도사", specName: "운무" },
+  // 악마사냥꾼
+  577: { className: "악마사냥꾼", specName: "파멸" },
+  581: { className: "악마사냥꾼", specName: "복수" },
+  // 기원사
+  1467: { className: "기원사", specName: "황폐" },
+  1468: { className: "기원사", specName: "보존" },
+  1473: { className: "기원사", specName: "증강" },
+}
+
+// 직업 → 해당 직업의 전체 스펙 ID 목록
+const CLASS_ALL_SPEC_IDS: Record<string, number[]> = {
+  기원사: [1467, 1468, 1473],
+  도적: [259, 260, 261],
+  드루이드: [102, 103, 104, 105],
+  마법사: [62, 63, 64],
+  사냥꾼: [253, 254, 255],
+  사제: [256, 257, 258],
+  성기사: [65, 66, 70],
+  수도사: [268, 269, 270],
+  악마사냥꾼: [577, 581],
+  전사: [71, 72, 73],
+  주술사: [262, 263, 264],
+  죽음의기사: [250, 251, 252],
+  흑마법사: [265, 266, 267],
+}
+
+export interface CandidateProvider {
+  /** 직업 색상 조회 및 key로 사용되는 기본 직업명 */
+  className: string
+  /** 표시용 레이블 (전 특성 제공 시 직업명만, 일부 특성만 시 "특성 직업명") */
+  label: string
+}
+
+/**
+ * specIds 배열을 직업 단위로 묶어, 표시용 CandidateProvider 목록을 반환한다.
+ * - 직업의 모든 특성이 포함되면 직업명만 반환
+ * - 일부 특성만 포함되면 "특성 직업명" 형태로 반환
+ */
+const getBuffCandidateProviders = (specIds: number[]): CandidateProvider[] => {
+  const byClass: Record<string, number[]> = {}
+
+  for (const specId of specIds) {
+    const info = SPEC_INFO[specId]
+    if (!info) continue
+    const key = info.className.replaceAll(" ", "")
+    if (!byClass[key]) byClass[key] = []
+    byClass[key].push(specId)
+  }
+
+  return Object.entries(byClass).flatMap(([classKey, classSpecIds]) => {
+    const className = SPEC_INFO[classSpecIds[0]]?.className ?? classKey
+    const allSpecIds = CLASS_ALL_SPEC_IDS[classKey] ?? []
+    if (allSpecIds.every((id) => classSpecIds.includes(id))) {
+      return [{ className, label: className }]
+    }
+    return classSpecIds.map((id) => ({
+      className,
+      label: `${SPEC_INFO[id]?.specName} ${className}`,
+    }))
+  })
+}
+
 const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   // ─── 블러드 ───────────────────────────────────────────────────────────
   heroism: {
@@ -458,6 +568,8 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
 } satisfies Record<BuffKey, BuffSource>
 
 export interface BuffCoverage {
+  /** 이 버프를 제공할 수 있는 직업/특성 목록 (로스터 여부 무관) */
+  candidateProviders: CandidateProvider[]
   category: BuffCategory
   count: number
   covered: boolean
@@ -497,6 +609,7 @@ export const analyzeBuffCoverage = (characters: RosterCharacter[]): BuffCoverage
     const isCountable = (COUNTABLE_CATEGORIES as string[]).includes(source.category)
 
     return {
+      candidateProviders: getBuffCandidateProviders(source.specIds),
       category: source.category,
       count: isCountable ? matchingCharacters.length : 0,
       covered: providers.length > 0,
