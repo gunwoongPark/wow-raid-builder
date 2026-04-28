@@ -267,7 +267,7 @@ export const RosterList = () => {
   // 빈 상태
   if (characters.length === 0) {
     return (
-      <section className="border-border/40 bg-card/40 rounded-lg border p-5">
+      <section className="border-border/40 bg-card/40 min-w-0 rounded-lg border p-5">
         <p className="text-muted-foreground py-4 text-center text-sm">
           아직 추가된 공대원이 없습니다.
         </p>
@@ -329,21 +329,25 @@ export const RosterList = () => {
         </div>
 
         <div className="border-border/40 bg-card/60 overflow-x-auto rounded-md border">
-          <table className="w-full text-left">
+          <table className="w-full min-w-[900px] text-left">
             <thead>
               <tr className="border-border/40 text-muted-foreground border-b text-xs">
-                <th className="px-3 py-2">캐릭터</th>
-                <th className="px-3 py-2">서버</th>
-                <th className="px-3 py-2">직업</th>
-                <th className="px-3 py-2">특성</th>
-                <th className="px-3 py-2">진영</th>
-                <th className="px-3 py-2">역할</th>
-                <th className="px-3 py-2">아이템레벨</th>
-                <th className="px-3 py-2">M+ 점수</th>
-                <th className="px-3 py-2 text-blue-600/80 dark:text-blue-400/70">로그 H</th>
-                <th className="px-3 py-2 text-yellow-600/80 dark:text-yellow-500/70">로그 M</th>
-                <th className="px-3 py-2">레이드 진행</th>
-                <th className="px-3 py-2" />
+                <th className="min-w-[160px] px-3 py-2">캐릭터</th>
+                <th className="min-w-[90px] px-3 py-2">서버</th>
+                <th className="min-w-[90px] px-3 py-2">직업</th>
+                <th className="min-w-[80px] px-3 py-2">특성</th>
+                <th className="min-w-[56px] px-3 py-2">진영</th>
+                <th className="min-w-[56px] px-3 py-2">역할</th>
+                <th className="min-w-[80px] px-3 py-2">아이템레벨</th>
+                <th className="min-w-[72px] px-3 py-2">M+ 점수</th>
+                <th className="min-w-[60px] px-3 py-2 text-blue-600/80 dark:text-blue-400/70">
+                  로그 H
+                </th>
+                <th className="min-w-[60px] px-3 py-2 text-yellow-600/80 dark:text-yellow-500/70">
+                  로그 M
+                </th>
+                <th className="min-w-[96px] px-3 py-2">레이드 진행</th>
+                <th className="min-w-[64px] px-3 py-2" />
               </tr>
             </thead>
             <tbody>
