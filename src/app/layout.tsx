@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Cinzel, Geist, Geist_Mono } from "next/font/google"
+import { Cinzel, Geist_Mono } from "next/font/google"
 
 import { QueryProvider } from "@/shared/lib/query-provider"
 import { AppThemeProvider } from "@/shared/lib/theme-provider"
@@ -7,11 +7,6 @@ import { AppToaster } from "@/shared/ui/AppToaster"
 import { ThemeToggle } from "@/shared/ui/ThemeToggle"
 
 import "./globals.css"
-
-const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-})
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
@@ -37,7 +32,7 @@ export const RootLayout = ({
   return (
     <html
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${cinzel.variable} h-full antialiased`}
+      className={`${geistMono.variable} ${cinzel.variable} h-full antialiased`}
       lang="ko"
     >
       <body className="flex min-h-full flex-col">

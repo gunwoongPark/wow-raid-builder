@@ -115,7 +115,7 @@ export const CharacterSearchForm = () => {
       <Combobox immediate onChange={onSelect}>
         <div className="relative">
           <ComboboxInput
-            className="border-border/60 bg-input text-foreground placeholder:text-muted-foreground focus:border-primary/60 focus:ring-primary/30 w-full rounded-md border px-3 py-2.5 pr-24 text-sm outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+            className="wow-input border-border/60 bg-input text-foreground placeholder:text-muted-foreground w-full rounded-md border px-3 py-2.5 pr-24 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isAdding}
             displayValue={() => query}
             placeholder="캐릭터명 검색 (예: 액흑)"

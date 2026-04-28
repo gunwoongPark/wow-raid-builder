@@ -56,10 +56,10 @@ interface BuffCardProps {
 
 const BuffCard = ({ buff, isCountable, isDark }: BuffCardProps) => (
   <div
-    className={`flex min-h-14 items-center gap-2.5 rounded p-2 text-sm ${
+    className={`flex min-h-14 items-center gap-2.5 rounded border-l-2 p-2 pl-2.5 text-sm ${
       buff.covered
-        ? "border border-emerald-500/50 bg-emerald-500/10 dark:border-emerald-400/35 dark:bg-emerald-950/40"
-        : "border border-red-400/35 bg-red-500/5 dark:border-red-500/25 dark:bg-red-950/30"
+        ? "border border-emerald-500/40 border-l-emerald-500 bg-emerald-500/8 dark:border-emerald-400/30 dark:border-l-emerald-400 dark:bg-emerald-950/35"
+        : "border border-red-400/30 border-l-red-500/60 bg-red-500/5 dark:border-red-500/20 dark:border-l-red-500/50 dark:bg-red-950/25"
     }`}
   >
     <div className="relative shrink-0">
@@ -129,38 +129,57 @@ export const BuffAnalysis = () => {
   const totalCovered = coverage.filter((buff) => buff.covered).length
   const total = coverage.length
 
+  const pct = Math.round((totalCovered / total) * 100)
+
   return (
     <section className="wow-panel border-border/60 bg-card/90 rounded-lg border p-5">
       <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <span className="text-primary font-semibold">버프 / 유틸 커버리지</span>
-          <span className="text-muted-foreground text-xs">
-            {totalCovered} / {total} 커버됨
+        {/* 헤더 */}
+        <div className="flex items-center justify-between gap-4">
+          <span className="fantasy text-primary text-base font-bold tracking-wide">
+            버프 / 유틸 커버리지
           </span>
+          <div className="flex items-center gap-2">
+            <span
+              className={`rounded px-1.5 py-0.5 text-[10px] font-bold tabular-nums ${
+                pct >= 80
+                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                  : pct >= 50
+                    ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                    : "bg-red-500/15 text-red-600 dark:text-red-400"
+              }`}
+            >
+              {pct}%
+            </span>
+            <span className="text-muted-foreground/60 text-xs">
+              {totalCovered} / {total}
+            </span>
+          </div>
         </div>
 
-        <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">
+        {/* WoW 스타일 프로그레스 바 */}
+        <div className="relative h-2 w-full overflow-hidden rounded-sm border border-black/10 bg-black/5 shadow-[inset_0_1px_3px_rgba(0,0,0,0.15)] dark:border-white/5 dark:bg-black/40 dark:shadow-[inset_0_1px_4px_rgba(0,0,0,0.5)]">
           <div
-            className="bg-primary h-full rounded-full transition-all duration-500"
-            style={{ width: `${Math.round((totalCovered / total) * 100)}%` }}
+            className="h-full rounded-sm bg-linear-to-r from-amber-600 to-yellow-400 transition-[width] duration-700 ease-out dark:from-amber-500 dark:to-yellow-300 dark:shadow-[0_0_10px_rgba(250,200,50,0.5)]"
+            style={{ width: `${pct}%` }}
           />
         </div>
 
         {/* 블러드 + 전투부활 — 같은 행에 나란히 */}
         <div>
-          <div className="mb-2 flex items-center gap-4">
+          <div className="mb-2 flex items-center gap-6">
             {inlineGroup.map(({ buffs, category }) => (
               <div className="flex items-center gap-1.5" key={category}>
-                <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                <p className="text-muted-foreground/80 text-[10px] font-bold tracking-widest uppercase">
                   {CATEGORY_LABEL[category]}
                 </p>
-                <span className="text-muted-foreground/60 text-xs">
+                <span className="bg-primary/10 text-primary/70 rounded px-1 text-[9px] font-semibold tabular-nums">
                   {buffs.filter((b) => b.covered).length}/{buffs.length}
                 </span>
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-2 gap-1">
+          <div className="grid grid-cols-2 gap-1.5">
             {inlineGroup.flatMap(({ buffs, isCountable }) =>
               buffs.map((buff) => (
                 <BuffCard buff={buff} isCountable={isCountable} isDark={isDark} key={buff.key} />
@@ -174,15 +193,13 @@ export const BuffAnalysis = () => {
           const coveredCount = buffs.filter((buff) => buff.covered).length
           return (
             <div key={category}>
-              <div className="mb-2 flex items-center gap-2">
-                <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                  {CATEGORY_LABEL[category]}
-                </p>
-                <span className="text-muted-foreground/60 text-xs">
+              <p className="wow-section-title text-muted-foreground/80 mb-2">
+                {CATEGORY_LABEL[category]}
+                <span className="ml-1 text-[10px] font-normal tracking-normal normal-case opacity-55">
                   {coveredCount}/{buffs.length}
                 </span>
-              </div>
-              <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
+              </p>
+              <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
                 {buffs.map((buff) => (
                   <BuffCard buff={buff} isCountable={isCountable} isDark={isDark} key={buff.key} />
                 ))}

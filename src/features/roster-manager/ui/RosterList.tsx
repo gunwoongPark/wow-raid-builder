@@ -256,7 +256,7 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
         <div className="flex items-center gap-2">
           <button
             aria-label="최신화"
-            className="text-muted-foreground/50 rounded p-1.5 transition-colors hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-30"
+            className="text-muted-foreground/40 rounded border border-transparent p-1.5 transition-all hover:border-sky-400/25 hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-30"
             disabled={isRefreshing}
             onClick={onRefresh}
             title="최신화"
@@ -267,7 +267,7 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
           </button>
           <div className="bg-border/40 h-4 w-px" />
           <button
-            className="text-muted-foreground/50 rounded p-1.5 text-xs transition-colors hover:bg-red-400/10 hover:text-red-400"
+            className="text-muted-foreground/40 rounded border border-transparent p-1.5 text-xs transition-all hover:border-red-400/25 hover:bg-red-400/10 hover:text-red-400"
             onClick={() => removeCharacter(character.id)}
             title="제거"
           >
@@ -382,7 +382,10 @@ export const RosterList = () => {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-primary font-semibold">공격대 ({characters.length}명)</span>
+            <span className="fantasy text-primary font-bold tracking-wide">
+              공격대{" "}
+              <span className="text-primary/60 text-sm font-normal">({characters.length}명)</span>
+            </span>
             <div className="flex gap-2 text-xs">
               {ROLE_SORT_ORDER.filter((role) => roleCounts[role]).map((role) => (
                 <span className={ROLE_COLOR[role] ?? ""} key={role}>
@@ -393,25 +396,27 @@ export const RosterList = () => {
           </div>
 
           {/* 헤더 액션 버튼 */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <button
-              className="flex items-center gap-1 rounded px-2 py-1 text-xs text-sky-400/80 transition-colors hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex items-center gap-1 rounded border border-transparent px-2 py-1 text-xs text-sky-500/70 transition-all hover:border-sky-400/30 hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-40 dark:text-sky-400/70"
               disabled={isRefreshing}
               onClick={handleRefreshAll}
             >
-              <span className={`text-sm ${isRefreshing ? "animate-spin" : ""}`}>↻</span>
+              <span className={`text-sm leading-none ${isRefreshing ? "animate-spin" : ""}`}>
+                ↻
+              </span>
               {isRefreshing ? "최신화 중…" : "전체 최신화"}
             </button>
 
             <button
-              className="flex items-center gap-1 rounded px-2 py-1 text-xs text-emerald-400/80 transition-colors hover:bg-emerald-400/10 hover:text-emerald-400"
+              className="flex items-center gap-1 rounded border border-transparent px-2 py-1 text-xs text-emerald-600/70 transition-all hover:border-emerald-400/30 hover:bg-emerald-400/10 hover:text-emerald-500 dark:text-emerald-400/70 dark:hover:text-emerald-400"
               onClick={handleCopyLink}
             >
-              🔗 링크 복사
+              ⛓ 링크 복사
             </button>
 
             <button
-              className="text-muted-foreground/60 text-xs transition-colors hover:text-red-400"
+              className="rounded border border-transparent px-2 py-1 text-xs text-red-400/40 transition-all hover:border-red-400/25 hover:bg-red-400/8 hover:text-red-400"
               onClick={clearRoster}
             >
               전체 초기화
@@ -422,7 +427,7 @@ export const RosterList = () => {
         <div className="border-border/60 bg-card/95 overflow-x-auto rounded-md border">
           <table className="w-full min-w-[900px] text-left">
             <thead>
-              <tr className="border-border/50 text-muted-foreground border-b text-xs dark:bg-black/30">
+              <tr className="border-border/50 text-muted-foreground border-b bg-black/3 text-xs dark:bg-black/40">
                 <th className="min-w-[160px] px-3 py-2">캐릭터</th>
                 {(
                   [

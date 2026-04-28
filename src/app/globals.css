@@ -2,13 +2,15 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "../components/ui/warcraftcn/styles/warcraft.css";
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-cinzel: var(--font-cinzel);
   --font-mono: var(--font-geist-mono);
   --color-border: var(--border);
@@ -148,12 +150,112 @@
       0 1px 3px oklch(0.55 0.05 68 / 0.12);
   }
 
-  /* 다크 — WoW 석판 패널: 상단 골드 인셋 + 깊은 외부 그림자 */
+  /* 다크 — WoW 석판 패널: 상단 골드 인셋 + 외부 골드 링 + 깊은 그림자 */
   .dark .wow-panel {
     box-shadow:
-      inset 0 1px 0 oklch(0.55 0.08 80 / 0.18),
-      inset 0 -1px 0 oklch(0 0 0 / 0.35),
-      0 8px 32px oklch(0 0 0 / 0.65),
-      0 2px 8px oklch(0 0 0 / 0.45);
+      0 0 0 1px oklch(0.42 0.1 78 / 28%),
+      inset 0 1px 0 oklch(0.6 0.1 82 / 0.22),
+      inset 0 -1px 0 oklch(0 0 0 / 0.4),
+      0 8px 40px oklch(0 0 0 / 0.7),
+      0 2px 8px oklch(0 0 0 / 0.5);
   }
+}
+
+/* ─── WoW UI 유틸리티 ──────────────────────────────────────────────────────── */
+
+/* 섹션 타이틀 — 양쪽 장식 선 */
+.wow-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+.wow-section-title::before,
+.wow-section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+}
+.wow-section-title::before {
+  background: linear-gradient(to right, transparent, oklch(0.62 0.07 68 / 50%));
+}
+.wow-section-title::after {
+  background: linear-gradient(to left, transparent, oklch(0.62 0.07 68 / 50%));
+}
+.dark .wow-section-title::before {
+  background: linear-gradient(to right, transparent, oklch(0.48 0.1 78 / 50%));
+}
+.dark .wow-section-title::after {
+  background: linear-gradient(to left, transparent, oklch(0.48 0.1 78 / 50%));
+}
+
+/* 헤더 장식선 — 중앙 강조, 양쪽 fade */
+.wow-header-divider {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    oklch(0.52 0.13 70 / 60%) 20%,
+    oklch(0.52 0.13 70 / 80%) 50%,
+    oklch(0.52 0.13 70 / 60%) 80%,
+    transparent 100%
+  );
+}
+.dark .wow-header-divider {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    oklch(0.82 0.18 82 / 50%) 20%,
+    oklch(0.82 0.18 82 / 80%) 50%,
+    oklch(0.82 0.18 82 / 50%) 80%,
+    transparent 100%
+  );
+}
+.wow-header-divider::before,
+.wow-header-divider::after {
+  content: "◆";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.35rem;
+  color: oklch(0.52 0.13 70);
+  line-height: 1;
+}
+.dark .wow-header-divider::before,
+.dark .wow-header-divider::after {
+  color: oklch(0.82 0.18 82);
+}
+.wow-header-divider::before {
+  left: 19%;
+}
+.wow-header-divider::after {
+  right: 19%;
+}
+
+/* WoW 스타일 인풋 */
+.wow-input {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.wow-input:focus {
+  border-color: oklch(0.52 0.13 70 / 70%);
+  box-shadow: 0 0 0 2px oklch(0.52 0.13 70 / 0.15);
+  outline: none;
+}
+.dark .wow-input {
+  background-color: oklch(0.1 0.018 262);
+  border-color: oklch(0.35 0.08 78 / 55%);
+}
+.dark .wow-input:focus {
+  border-color: oklch(0.65 0.18 82 / 65%);
+  box-shadow:
+    0 0 0 2px oklch(0.82 0.18 82 / 0.18),
+    0 0 14px oklch(0.82 0.18 82 / 0.1);
 }

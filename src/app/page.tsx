@@ -11,17 +11,23 @@ const HomePage = () => {
         <RosterUrlLoader />
       </Suspense>
 
-      <div className="border-primary/40 flex flex-col gap-1 border-b pb-6">
-        <h1 className="fantasy text-primary text-3xl font-bold">WoW Raid Builder</h1>
+      <header className="flex flex-col gap-3 pb-6">
+        <div className="flex items-end justify-between gap-4">
+          <h1 className="fantasy text-primary text-4xl font-bold tracking-wide">
+            WoW Raid Builder
+          </h1>
+          <span className="text-muted-foreground/50 mb-1 hidden shrink-0 text-[10px] font-semibold tracking-widest uppercase sm:block">
+            한밤 시즌 1
+          </span>
+        </div>
+        <div className="wow-header-divider" />
         <p className="text-muted-foreground text-sm">
           캐릭터를 검색해 공격대를 구성하고 버프 커버리지를 확인하세요.
         </p>
-      </div>
+      </header>
 
       <section className="wow-panel border-border/60 bg-card/90 rounded-lg border p-5">
-        <h2 className="fantasy text-primary/90 mb-4 text-sm font-semibold tracking-widest uppercase">
-          캐릭터 추가
-        </h2>
+        <h2 className="wow-section-title fantasy text-primary/80 mb-4">캐릭터 추가</h2>
         <CharacterSearchForm />
       </section>
 
