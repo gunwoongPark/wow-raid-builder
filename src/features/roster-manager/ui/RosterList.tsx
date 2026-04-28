@@ -136,7 +136,6 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
   const realmSlug = extractRealmSlug(character.id, character.name)
   const armoryUrl = `https://worldofwarcraft.blizzard.com/ko-kr/character/kr/${realmSlug}/${encodeURIComponent(character.name)}`
   const wclBaseUrl = `https://www.warcraftlogs.com/character/kr/${realmSlug}/${encodeURIComponent(character.name.toLowerCase())}`
-  const wclKeystoneUrl = `${wclBaseUrl}#difficulty=10`
   const wclHeroicUrl = `${wclBaseUrl}#difficulty=4`
   const wclMythicUrl = `${wclBaseUrl}#difficulty=5`
 
@@ -212,7 +211,7 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
         {isPendingRaiderIO ? (
           <Skeleton className="h-4 w-12 rounded" />
         ) : (
-          <ScoreCell profileUrl={wclKeystoneUrl} score={score} />
+          <ScoreCell profileUrl={character.raiderIO?.profileUrl} score={score} />
         )}
       </td>
 
