@@ -24,21 +24,47 @@ import { useRosterSync } from "../model/useRosterSync"
 
 // ─── M+ 점수 색상 표시 컴포넌트 ──────────────────────────────────────────────
 
-const ScoreCell = ({ score }: { score: number }) => {
+interface ScoreCellProps {
+  profileUrl?: string
+  score: number
+}
+
+const ScoreCell = ({ profileUrl, score }: ScoreCellProps) => {
   const colorClass =
     score >= 3000
-      ? "text-orange-500 dark:text-orange-400 font-bold"
+      ? "font-bold text-orange-500 dark:text-orange-400"
       : score >= 2000
         ? "text-purple-600 dark:text-purple-400"
         : score >= 1000
           ? "text-blue-700 dark:text-blue-400"
           : "text-muted-foreground"
-  return <span className={colorClass}>{score > 0 ? score.toLocaleString() : "—"}</span>
+
+  const text = score > 0 ? score.toLocaleString() : "—"
+
+  if (!profileUrl || score === 0) {
+    return <span className={colorClass}>{text}</span>
+  }
+
+  return (
+    <a
+      className={`${colorClass} underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70`}
+      href={profileUrl}
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      {text}
+    </a>
+  )
 }
 
-// ─── WCL 로그 % 셀 (호버 시 보스별 상세) ────────────────────────────────────
+// ─── WCL 로그 % 셀 (호버 시 보스별 상세, 클릭 시 WCL 페이지 이동) ──────────
 
-const LogCell = ({ zone }: { zone: WCLZoneRankings | null | undefined }) => {
+interface LogCellProps {
+  wclUrl: string
+  zone: WCLZoneRankings | null | undefined
+}
+
+const LogCell = ({ wclUrl, zone }: LogCellProps) => {
   const average = zone?.bestPerformanceAverage
   if (average === null || average === undefined) {
     return <span className="text-muted-foreground">—</span>
@@ -48,19 +74,24 @@ const LogCell = ({ zone }: { zone: WCLZoneRankings | null | undefined }) => {
   const rankings = zone?.rankings ?? []
   const variant = logVariant(percent)
 
+  const trigger = (
+    <a
+      className={`${logColorClass(percent)} underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70`}
+      href={wclUrl}
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      {percent}
+    </a>
+  )
+
   if (!rankings.length) {
-    return <span className={logColorClass(percent)}>{percent}</span>
+    return trigger
   }
 
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <span
-          className={`${logColorClass(percent)} cursor-pointer underline decoration-dotted underline-offset-2`}
-        >
-          {percent}
-        </span>
-      </TooltipTrigger>
+      <TooltipTrigger asChild>{trigger}</TooltipTrigger>
       <TooltipContent className="min-w-[220px]" side="left" variant={variant}>
         <TooltipTitle>보스별 로그 (평균 {percent})</TooltipTitle>
         <div className="mt-2 flex flex-col gap-1">
@@ -104,10 +135,11 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
     : null
   const realmSlug = extractRealmSlug(character.id, character.name)
   const armoryUrl = `https://worldofwarcraft.blizzard.com/ko-kr/character/kr/${realmSlug}/${encodeURIComponent(character.name)}`
+  const wclUrl = `https://www.warcraftlogs.com/character/kr/${realmSlug}/${encodeURIComponent(character.name.toLowerCase())}`
 
   // 렌더
   return (
-    <tr className="border-border/30 h-[52px] border-b transition-colors hover:bg-black/[0.03] dark:hover:bg-white/5">
+    <tr className="border-border/30 h-[52px] border-b transition-colors hover:bg-black/3 dark:hover:bg-white/5">
       {/* 썸네일 + 이름(아머리) + Raider.IO 링크 */}
       <td className="px-3 py-2">
         <div className="flex items-center gap-2">
@@ -177,7 +209,7 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
         {isPendingRaiderIO ? (
           <Skeleton className="h-4 w-12 rounded" />
         ) : (
-          <ScoreCell score={score} />
+          <ScoreCell profileUrl={character.raiderIO?.profileUrl} score={score} />
         )}
       </td>
 
@@ -185,14 +217,14 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
         {isPendingWCL ? (
           <Skeleton className="h-4 w-8 rounded" />
         ) : (
-          <LogCell zone={character.warcraftLogs?.heroic} />
+          <LogCell wclUrl={wclUrl} zone={character.warcraftLogs?.heroic} />
         )}
       </td>
       <td className="px-3 py-2 font-mono text-sm">
         {isPendingWCL ? (
           <Skeleton className="h-4 w-8 rounded" />
         ) : (
-          <LogCell zone={character.warcraftLogs?.mythic} />
+          <LogCell wclUrl={wclUrl} zone={character.warcraftLogs?.mythic} />
         )}
       </td>
 
