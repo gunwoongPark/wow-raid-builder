@@ -31,7 +31,7 @@ interface BuffCardProps {
 
 const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
   <div
-    className={`flex min-h-18 items-center gap-2.5 rounded p-2 text-sm ${
+    className={`flex min-h-14 items-center gap-2.5 rounded p-2 text-sm ${
       buff.covered
         ? "border border-emerald-500/40 bg-emerald-500/10 dark:border-emerald-500/30"
         : "border border-red-400/30 bg-red-500/5 dark:border-red-500/20"
