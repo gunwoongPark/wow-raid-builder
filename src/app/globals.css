@@ -9,8 +9,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans:
-    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans: "Cinzel", "Pretendard Variable", Pretendard, sans-serif;
   --font-cinzel: var(--font-cinzel);
   --font-mono: var(--font-geist-mono);
   --color-border: var(--border);
