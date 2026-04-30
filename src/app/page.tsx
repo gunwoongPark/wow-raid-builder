@@ -27,7 +27,7 @@ const HomePage = () => {
       </header>
 
       <section className="wow-panel border-border/60 bg-card/90 rounded-lg border p-5">
-        <h2 className="wow-section-title fantasy text-primary/80 mb-4">캐릭터 추가</h2>
+        <h2 className="wow-section-title text-primary/80 mb-4">캐릭터 추가</h2>
         <CharacterSearchForm />
       </section>
 

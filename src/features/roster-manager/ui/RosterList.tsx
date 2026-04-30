@@ -97,7 +97,7 @@ export const RosterList = () => {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="fantasy text-primary font-bold tracking-wide">
+            <span className="text-primary font-bold tracking-wide">
               공격대{" "}
               <span className="text-primary/60 text-sm font-normal">({characters.length}명)</span>
             </span>

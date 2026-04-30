@@ -51,7 +51,7 @@ export const BuffAnalysis = () => {
       <div className="flex flex-col gap-6">
         {/* 헤더 */}
         <div className="flex items-center justify-between gap-4">
-          <span className="fantasy text-primary text-base font-bold tracking-wide">
+          <span className="text-primary text-base font-bold tracking-wide">
             버프 / 유틸 커버리지
           </span>
           <div className="flex items-center gap-2">
