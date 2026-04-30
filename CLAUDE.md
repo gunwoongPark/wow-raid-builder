@@ -61,16 +61,20 @@ app/
   layout.tsx / page.tsx / globals.css
 
 entities/character/
-  api.ts          ← fetch 함수
-  buffs.ts        ← 버프/유틸 정의 (한밤 기준)
+  api.ts              ← fetch 함수
+  buffs.ts            ← 버프/유틸 정의 (한밤 기준)
   config/
-    spec-role.ts  ← 스펙ID→역할 매핑
-  queries.ts      ← TanStack Query 훅
-  types.ts        ← RosterCharacter, BuffSource 등
-  index.ts        ← public API
+    spec-role.ts      ← 스펙ID→역할 매핑
+  lib/
+    roster-url.ts     ← 로스터 URL 인코딩/디코딩, extractRealmSlug
+    wcl-zone-rankings.ts ← WCL GraphQL 쿼리 + parseZoneRankings
+  model/
+    roster-store.ts   ← Zustand persist (MAX_ROSTER_SIZE=30)
+  queries.ts          ← TanStack Query 훅
+  types.ts            ← RosterCharacter, WCLZoneRankings 등
+  index.ts            ← public API (모든 외부 import는 여기서만)
 
 features/character-search/
-  schema.ts                       ← Zod 검색 스키마
   ui/CharacterSearchForm.tsx      ← Combobox (useDebounce 350ms)
   index.ts
 
@@ -80,9 +84,16 @@ features/roster-manager/
   lib/log-color.ts                ← LogVariant, logColorClass, logVariant
   lib/sort-roster.ts              ← 로스터 정렬 로직
   model/useRosterSync.ts          ← URL ↔ 스토어 동기화 훅
-  ui/BuffAnalysis.tsx
-  ui/RosterList.tsx
-  ui/RosterUrlLoader.tsx
+  ui/
+    BuffAnalysis.tsx              ← 커버리지 분석 메인
+    BuffCard.tsx                  ← 버프 카드 (cva 변형)
+    CharacterRow.tsx              ← 캐릭터 테이블 행
+    LogCell.tsx                   ← WCL 로그 % 셀
+    ProviderBadge.tsx             ← 직업 색상 제공자 뱃지
+    RosterList.tsx                ← 테이블 + 정렬/액션 로직
+    RosterUrlLoader.tsx           ← URL ?r= 파라미터 로더
+    ScoreCell.tsx                 ← M+ 점수 셀
+    SortableHeaderCell.tsx        ← 정렬 가능 헤더 셀
   index.ts
 
 shared/
@@ -103,13 +114,9 @@ shared/
     query-client.ts    ← QueryClient 설정
     query-keys.ts      ← query-key-factory 정의
     query-provider.tsx ← QueryClientProvider
-    roster-url.ts      ← 로스터 URL 인코딩/디코딩
     theme-provider.tsx ← 다크모드 Provider
     use-debounce.ts
     wcl-token.ts       ← WCL OAuth 토큰 캐시
-    wcl-zone-rankings.ts
-  model/
-    roster-store.ts    ← Zustand persist (MAX_ROSTER_SIZE=30)
   types/
     blizzard.ts        ← Blizzard API 응답 타입
   ui/
