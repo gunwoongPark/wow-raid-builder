@@ -1,5 +1,5 @@
 .fantasy {
-  font-family: "Cinzel", serif;
+  font-family: "Cinzel", var(--font-pretendard), sans-serif;
   line-height: 1.5;
   letter-spacing: 0.5px;
 }

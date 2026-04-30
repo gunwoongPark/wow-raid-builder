@@ -257,8 +257,3 @@
     0 0 0 2px oklch(0.82 0.18 82 / 0.18),
     0 0 14px oklch(0.82 0.18 82 / 0.1);
 }
-
-/* warcraft.css의 .fantasy는 unlayered이므로 @layer base 밖에서 오버라이드해야 우선순위가 적용됨 */
-.fantasy {
-  font-family: var(--font-cinzel), var(--font-pretendard), sans-serif;
-}
