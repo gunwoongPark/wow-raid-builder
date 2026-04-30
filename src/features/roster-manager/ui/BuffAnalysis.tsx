@@ -74,6 +74,7 @@ export const BuffAnalysis = () => {
         <div>
           <div className="mb-2 flex items-center gap-6">
             {inlineGroup.map(({ buffs, category, isCountable }) => {
+              const isBattleRez = category === "전투부활"
               const totalProviderCount = isCountable
                 ? buffs.reduce((sum, buff) => sum + buff.count, 0)
                 : 0
@@ -82,12 +83,13 @@ export const BuffAnalysis = () => {
                   <p className="text-muted-foreground/80 text-[10px] font-bold tracking-widest uppercase">
                     {CATEGORY_LABEL[category]}
                   </p>
-                  <span className="bg-primary/10 text-primary/70 rounded px-1 text-[9px] font-semibold tabular-nums">
-                    {buffs.filter((buff) => buff.covered).length}/{buffs.length}
-                  </span>
-                  {totalProviderCount > 0 && (
+                  {isBattleRez ? (
                     <span className="rounded bg-emerald-500/20 px-1 text-[9px] font-semibold text-emerald-600 tabular-nums dark:text-emerald-400">
                       ×{totalProviderCount}
+                    </span>
+                  ) : (
+                    <span className="bg-primary/10 text-primary/70 rounded px-1 text-[9px] font-semibold tabular-nums">
+                      {buffs.filter((buff) => buff.covered).length}/{buffs.length}
                     </span>
                   )}
                 </div>
