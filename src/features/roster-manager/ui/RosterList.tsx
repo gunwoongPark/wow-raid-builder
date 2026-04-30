@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { toast } from "sonner"
 
-import { useRosterStore } from "@/shared/model/roster-store"
+import { useRosterStore } from "@/entities/character"
 
 import { ROLE_COLOR, ROLE_LABEL, ROLE_SORT_ORDER } from "../config/roster-display"
 import { SORT_COLUMNS, type SortColumn, type SortDirection, sortRoster } from "../lib/sort-roster"

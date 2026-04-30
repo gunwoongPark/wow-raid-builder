@@ -1,13 +1,16 @@
 import axios from "axios"
 import { NextResponse } from "next/server"
 
-import { type RosterCharacterWCL } from "@/entities/character"
+import {
+  parseZoneRankings,
+  type RosterCharacterWCL,
+  ZONE_RANKINGS_QUERY,
+} from "@/entities/character"
 import { env } from "@/shared/config/env"
 import { toRealmSlug } from "@/shared/config/realms"
 import { WCL_GRAPHQL_URL } from "@/shared/config/warcraftlogs"
 import { handleRouteError } from "@/shared/lib/api-error"
 import { getWCLToken } from "@/shared/lib/wcl-token"
-import { parseZoneRankings, ZONE_RANKINGS_QUERY } from "@/shared/lib/wcl-zone-rankings"
 
 interface Params {
   name: string

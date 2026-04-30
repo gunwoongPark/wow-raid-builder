@@ -3,11 +3,9 @@
 import Image from "next/image"
 
 import { Skeleton } from "@/components/ui/skeleton"
-import { type RosterCharacter } from "@/entities/character"
+import { extractRealmSlug, type RosterCharacter, useRosterStore } from "@/entities/character"
 import { cn } from "@/lib/utils"
 import { getClassColor } from "@/shared/config/class-colors"
-import { extractRealmSlug } from "@/shared/lib/roster-url"
-import { useRosterStore } from "@/shared/model/roster-store"
 
 import { ROLE_COLOR, ROLE_LABEL } from "../config/roster-display"
 import { LogCell } from "./LogCell"

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 
-import { type RosterCharacter } from "@/entities/character"
-import { SPEC_ROLE_MAP } from "@/entities/character/config/spec-role"
+import { type RosterCharacter, SPEC_ROLE_MAP } from "@/entities/character"
 import { toRealmSlug } from "@/shared/config/realms"
 import { handleRouteError } from "@/shared/lib/api-error"
 import { blizzardFetch } from "@/shared/lib/blizzard-fetch"

@@ -12,9 +12,10 @@ import {
   characterApi,
   characterQueries,
   type CharacterSearchResult,
+  MAX_ROSTER_SIZE,
+  useRosterStore,
 } from "@/entities/character"
 import { useDebounce } from "@/shared/lib/use-debounce"
-import { MAX_ROSTER_SIZE, useRosterStore } from "@/shared/model/roster-store"
 
 export const CharacterSearchForm = () => {
   // 변수부 — 스토어

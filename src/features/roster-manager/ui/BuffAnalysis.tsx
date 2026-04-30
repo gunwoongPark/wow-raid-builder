@@ -8,8 +8,8 @@ import {
   BUFF_CATEGORIES,
   type BuffCategory,
   COUNTABLE_CATEGORIES,
+  useRosterStore,
 } from "@/entities/character"
-import { useRosterStore } from "@/shared/model/roster-store"
 
 import { BuffCard } from "./BuffCard"
 

@@ -4,7 +4,7 @@
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useRef } from "react"
 
-import { decodeRosterParam } from "@/shared/lib/roster-url"
+import { decodeRosterParam } from "@/entities/character"
 
 import { useRosterSync } from "../model/useRosterSync"
 

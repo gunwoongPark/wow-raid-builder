@@ -1,7 +1,8 @@
 import { isArray, isNumber, isPlainObject } from "lodash-es"
 
-import { type WCLZoneRankings } from "@/entities/character"
 import { CURRENT_WCL_ZONE_ID } from "@/shared/config/season"
+
+import { type WCLZoneRankings } from "../types"
 
 export const ZONE_RANKINGS_QUERY = `
   query CharacterZoneRankings($name: String!, $serverSlug: String!, $serverRegion: String!) {

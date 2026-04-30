@@ -2,8 +2,13 @@
 
 import { useCallback, useState } from "react"
 
-import { buildShareUrl, extractRealmSlug, type RosterUrlEntry } from "@/shared/lib/roster-url"
-import { MAX_ROSTER_SIZE, useRosterStore } from "@/shared/model/roster-store"
+import {
+  buildShareUrl,
+  extractRealmSlug,
+  MAX_ROSTER_SIZE,
+  type RosterUrlEntry,
+  useRosterStore,
+} from "@/entities/character"
 
 import { fetchCharacter } from "../lib/fetch-character"
 
