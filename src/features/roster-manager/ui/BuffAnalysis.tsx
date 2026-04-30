@@ -11,6 +11,7 @@ import {
 } from "@/entities/character"
 
 import { CATEGORY_LABEL, INLINE_CATEGORIES } from "../config/buff-display"
+import { BuffCard } from "./BuffCard"
 
 const coverageBadgeVariants = cva("rounded px-1.5 py-0.5 text-[10px] font-bold tabular-nums", {
   variants: {
@@ -21,7 +22,6 @@ const coverageBadgeVariants = cva("rounded px-1.5 py-0.5 text-[10px] font-bold t
     },
   },
 })
-import { BuffCard } from "./BuffCard"
 
 export const BuffAnalysis = () => {
   const characters = useRosterStore((store) => store.characters)
