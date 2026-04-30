@@ -136,11 +136,6 @@
     background-repeat: no-repeat;
   }
 
-  /* Cinzel(영문) → Pretendard(한글) 순서로 fallback */
-  .fantasy {
-    font-family: "Cinzel", "Pretendard Variable", Pretendard, sans-serif;
-  }
-
   /* 다크 — WoW 골드 헤딩 광채 */
   .dark .fantasy {
     text-shadow: 0 0 24px oklch(0.82 0.18 82 / 0.35);
@@ -263,4 +258,9 @@
   box-shadow:
     0 0 0 2px oklch(0.82 0.18 82 / 0.18),
     0 0 14px oklch(0.82 0.18 82 / 0.1);
+}
+
+/* warcraft.css의 .fantasy는 unlayered이므로 @layer base 밖에서 오버라이드해야 우선순위가 적용됨 */
+.fantasy {
+  font-family: "Cinzel", "Pretendard Variable", Pretendard, sans-serif;
 }
