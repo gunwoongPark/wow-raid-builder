@@ -61,11 +61,12 @@ app/
   layout.tsx / page.tsx / globals.css
 
 entities/character/
-  api.ts              ← fetch 함수
-  buffs.ts            ← 버프/유틸 정의 (한밤 기준)
+  api.ts              ← fetch 함수, buildRaiderIOProfile
+  buffs.ts            ← 버프/유틸 정의 (한밤 기준), analyzeBuffCoverage
   config/
     spec-role.ts      ← 스펙ID→역할 매핑
   lib/
+    buff-recommendations.ts ← getBuffRecommendations (시너지 우선 추천)
     roster-url.ts     ← 로스터 URL 인코딩/디코딩, extractRealmSlug
     wcl-zone-rankings.ts ← WCL GraphQL 쿼리 + parseZoneRankings
   model/
@@ -79,20 +80,30 @@ features/character-search/
   index.ts
 
 features/roster-manager/
-  config/roster-display.ts        ← ROLE_LABEL, ROLE_COLOR, ROLE_SORT_ORDER
-  lib/fetch-character.ts          ← 캐릭터 데이터 병렬 fetch
-  lib/log-color.ts                ← LogVariant, logColorClass, logVariant
-  lib/sort-roster.ts              ← 로스터 정렬 로직
-  model/useRosterSync.ts          ← URL ↔ 스토어 동기화 훅
+  config/
+    buff-display.ts               ← CATEGORY_LABEL, INLINE_CATEGORIES
+    roster-display.ts             ← ROLE_LABEL, ROLE_COLOR, ROLE_SORT_ORDER
+    table-columns.ts              ← HEADER_COLUMNS (SortColumn 기반)
+  lib/
+    fetch-character.ts            ← 캐릭터 데이터 병렬 fetch
+    log-color.ts                  ← LogVariant, logColorClass, logVariant
+    score-color.ts                ← scoreColorClass (M+ 점수 색상)
+    sort-roster.ts                ← 로스터 정렬 로직
+  model/
+    preset-store.ts               ← 로스터 프리셋 Zustand persist
+    useRosterSync.ts              ← URL ↔ 스토어 동기화 훅
   ui/
     BuffAnalysis.tsx              ← 커버리지 분석 메인
     BuffCard.tsx                  ← 버프 카드 (cva 변형)
+    BuffRecommendations.tsx       ← 버프 추천 (시너지 우선)
     CharacterRow.tsx              ← 캐릭터 테이블 행
     LogCell.tsx                   ← WCL 로그 % 셀
+    PresetManager.tsx             ← 로스터 프리셋 저장/불러오기
     ProviderBadge.tsx             ← 직업 색상 제공자 뱃지
     RosterList.tsx                ← 테이블 + 정렬/액션 로직
     RosterUrlLoader.tsx           ← URL ?r= 파라미터 로더
     ScoreCell.tsx                 ← M+ 점수 셀
+    SortIcon.tsx                  ← 정렬 방향 아이콘
     SortableHeaderCell.tsx        ← 정렬 가능 헤더 셀
   index.ts
 

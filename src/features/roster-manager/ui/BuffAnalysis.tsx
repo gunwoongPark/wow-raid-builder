@@ -34,7 +34,7 @@ export const BuffAnalysis = () => {
   const byCategory = BUFF_CATEGORIES.map((category) => ({
     buffs: coverage.filter((buff) => buff.category === category),
     category,
-    isCountable: (COUNTABLE_CATEGORIES as string[]).includes(category),
+    isCountable: COUNTABLE_CATEGORIES.includes(category),
   }))
 
   const inlineGroup = byCategory.filter(({ category }) => INLINE_CATEGORIES.has(category))

@@ -5,7 +5,48 @@ import { toast } from "sonner"
 
 import { useRosterStore } from "@/entities/character"
 
-import { usePresetStore } from "../model/preset-store"
+import { type RosterPreset, usePresetStore } from "../model/preset-store"
+
+// ─── PresetItem ────────────────────────────────────────────────────────────────
+
+interface PresetItemProps {
+  onDelete: (id: string, name: string) => void
+  onLoad: (id: string, name: string) => void
+  preset: RosterPreset
+}
+
+const PresetItem = ({ onDelete, onLoad, preset }: PresetItemProps) => {
+  const handleLoad = () => onLoad(preset.id, preset.name)
+  const handleDelete = () => onDelete(preset.id, preset.name)
+
+  return (
+    <li className="border-border/40 flex items-center justify-between gap-3 rounded-md border px-3 py-2.5">
+      <div className="min-w-0 flex-1">
+        <p className="text-foreground truncate text-sm font-medium">{preset.name}</p>
+        <p className="text-muted-foreground text-xs">
+          {preset.characters.length}명 · {new Date(preset.createdAt).toLocaleDateString("ko-KR")}
+        </p>
+      </div>
+      <div className="flex shrink-0 gap-1.5">
+        <button
+          className="border-primary/30 text-primary/70 hover:bg-primary/10 rounded border px-2.5 py-1 text-xs transition-colors"
+          onClick={handleLoad}
+        >
+          불러오기
+        </button>
+        <button
+          aria-label={`${preset.name} 프리셋 삭제`}
+          className="rounded border border-transparent px-2.5 py-1 text-xs text-red-400/50 transition-colors hover:border-red-400/25 hover:bg-red-400/10 hover:text-red-400"
+          onClick={handleDelete}
+        >
+          삭제
+        </button>
+      </div>
+    </li>
+  )
+}
+
+// ─── PresetManager ─────────────────────────────────────────────────────────────
 
 export const PresetManager = () => {
   const characters = useRosterStore((store) => store.characters)
@@ -98,33 +139,12 @@ export const PresetManager = () => {
           ) : (
             <ul className="flex flex-col gap-2">
               {presets.map((preset) => (
-                <li
-                  className="border-border/40 flex items-center justify-between gap-3 rounded-md border px-3 py-2.5"
+                <PresetItem
                   key={preset.id}
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="text-foreground truncate text-sm font-medium">{preset.name}</p>
-                    <p className="text-muted-foreground text-xs">
-                      {preset.characters.length}명 ·{" "}
-                      {new Date(preset.createdAt).toLocaleDateString("ko-KR")}
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 gap-1.5">
-                    <button
-                      className="border-primary/30 text-primary/70 hover:bg-primary/10 rounded border px-2.5 py-1 text-xs transition-colors"
-                      onClick={() => handleLoad(preset.id, preset.name)}
-                    >
-                      불러오기
-                    </button>
-                    <button
-                      aria-label={`${preset.name} 프리셋 삭제`}
-                      className="rounded border border-transparent px-2.5 py-1 text-xs text-red-400/50 transition-colors hover:border-red-400/25 hover:bg-red-400/10 hover:text-red-400"
-                      onClick={() => handleDelete(preset.id, preset.name)}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                </li>
+                  onDelete={handleDelete}
+                  onLoad={handleLoad}
+                  preset={preset}
+                />
               ))}
             </ul>
           )}
