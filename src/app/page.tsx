@@ -1,7 +1,13 @@
 import { Suspense } from "react"
 
 import { CharacterSearchForm } from "@/features/character-search"
-import { BuffAnalysis, RosterList, RosterUrlLoader } from "@/features/roster-manager"
+import {
+  BuffAnalysis,
+  BuffRecommendations,
+  PresetManager,
+  RosterList,
+  RosterUrlLoader,
+} from "@/features/roster-manager"
 
 const HomePage = () => {
   return (
@@ -41,7 +47,11 @@ const HomePage = () => {
         <RosterList />
       </Suspense>
 
+      <PresetManager />
+
       <BuffAnalysis />
+
+      <BuffRecommendations />
     </main>
   )
 }
