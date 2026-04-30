@@ -96,13 +96,13 @@ export const RosterList = () => {
   return (
     <section className="wow-panel border-border/60 bg-card/90 rounded-lg border p-5">
       <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-primary font-bold tracking-wide">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <span className="text-primary shrink-0 font-bold tracking-wide">
               공격대{" "}
               <span className="text-primary/60 text-sm font-normal">({characters.length}명)</span>
             </span>
-            <div className="flex gap-2 text-xs">
+            <div className="flex flex-wrap gap-2 text-xs">
               {ROLE_SORT_ORDER.filter((role) => roleCounts[role]).map((role) => (
                 <span className={ROLE_COLOR[role] ?? ""} key={role}>
                   {ROLE_LABEL[role]} {roleCounts[role]}
@@ -112,7 +112,7 @@ export const RosterList = () => {
           </div>
 
           {/* 헤더 액션 버튼 */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex shrink-0 flex-wrap items-center gap-1.5">
             <button
               className="flex items-center gap-1 rounded border border-transparent px-2 py-1 text-xs text-sky-500/70 transition-all hover:border-sky-400/30 hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-40 dark:text-sky-400/70"
               disabled={isRefreshing}
@@ -141,7 +141,7 @@ export const RosterList = () => {
           </div>
         </div>
 
-        <div className="border-border/60 bg-card/95 overflow-x-auto rounded-md border">
+        <div className="border-border/60 bg-card/95 min-w-0 overflow-x-auto rounded-md border">
           <table className="w-full min-w-[900px] text-left">
             <thead>
               <tr className="border-border/50 text-muted-foreground border-b bg-black/3 text-xs dark:bg-black/40">

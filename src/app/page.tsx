@@ -5,7 +5,7 @@ import { BuffAnalysis, RosterList, RosterUrlLoader } from "@/features/roster-man
 
 const HomePage = () => {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-6">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4 sm:p-6">
       {/* ?r= 파라미터로 공유된 로스터를 자동 로드 — useSearchParams는 Suspense 필요 */}
       <Suspense fallback={null}>
         <RosterUrlLoader />
