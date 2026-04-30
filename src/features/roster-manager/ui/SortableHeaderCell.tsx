@@ -27,6 +27,10 @@ export const SortableHeaderCell = ({
   return (
     <th
       onClick={handleClick}
+      scope="col"
+      aria-sort={
+        sortColumn === column ? (sortDirection === "asc" ? "ascending" : "descending") : "none"
+      }
       className={cn(
         "hover:text-foreground cursor-pointer px-3 py-2 transition-colors select-none",
         className,

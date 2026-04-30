@@ -5,6 +5,7 @@ import localFont from "next/font/local"
 import { QueryProvider } from "@/shared/lib/query-provider"
 import { AppThemeProvider } from "@/shared/lib/theme-provider"
 import { AppToaster } from "@/shared/ui/AppToaster"
+import { NetworkStatusMonitor } from "@/shared/ui/NetworkStatusMonitor"
 import { ThemeToggle } from "@/shared/ui/ThemeToggle"
 
 import "./globals.css"
@@ -101,6 +102,7 @@ export const RootLayout = ({
           <QueryProvider>{children}</QueryProvider>
           <ThemeToggle />
           <AppToaster />
+          <NetworkStatusMonitor />
         </AppThemeProvider>
       </body>
     </html>

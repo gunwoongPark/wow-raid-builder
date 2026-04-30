@@ -39,11 +39,9 @@ export const getWCLToken = (): Promise<string> => {
     return Promise.resolve(cachedToken)
   }
 
-  if (!inflightRequest) {
-    inflightRequest = fetchFreshToken().finally(() => {
-      inflightRequest = null
-    })
-  }
+  inflightRequest ??= fetchFreshToken().finally(() => {
+    inflightRequest = null
+  })
 
   return inflightRequest
 }

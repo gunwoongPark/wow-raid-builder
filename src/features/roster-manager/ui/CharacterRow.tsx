@@ -167,6 +167,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
           </button>
           <div className="bg-border/40 h-4 w-px" />
           <button
+            aria-label={`${character.name} 제거`}
             className="text-muted-foreground/40 rounded border border-transparent p-1.5 text-xs transition-all hover:border-red-400/25 hover:bg-red-400/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-30"
             disabled={isRefreshing}
             onClick={handleRemove}
