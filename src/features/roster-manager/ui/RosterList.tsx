@@ -1,5 +1,6 @@
 "use client"
 
+import { Link } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { toast } from "sonner"
@@ -127,7 +128,8 @@ export const RosterList = () => {
               className="flex items-center gap-1 rounded border border-transparent px-2 py-1 text-xs text-emerald-600/70 transition-all hover:border-emerald-400/30 hover:bg-emerald-400/10 hover:text-emerald-500 dark:text-emerald-400/70 dark:hover:text-emerald-400"
               onClick={handleCopyLink}
             >
-              ⛓ 링크 복사
+              <Link className="size-3" />
+              링크 복사
             </button>
 
             <button
