@@ -15,7 +15,7 @@ export const RosterUrlLoader = () => {
   const executed = useRef(false)
 
   useEffect(() => {
-    // StrictMode 이중 실행 방지 + 한 번만 실행
+    // executed.current로 한 번만 실행 — searchParams가 deps에 있어도 재실행 방지
     if (executed.current) return
     const r = searchParams.get("r")
     if (!r) return
@@ -28,7 +28,7 @@ export const RosterUrlLoader = () => {
       // 로드 완료 후 ?r= 제거 — history에 남기지 않음
       router.replace("/", { scroll: false })
     })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loadFromUrl, router, searchParams])
 
   return null
 }

@@ -38,51 +38,103 @@
 
 ## 기술 스택
 
-| 역할       | 선택                                   |
-| ---------- | -------------------------------------- |
-| 프레임워크 | Next.js 16 (App Router, Turbopack)     |
-| 상태       | TanStack Query v5 + Zustand v5 persist |
-| 폼         | React Hook Form + Zod                  |
-| HTTP       | Axios (인스턴스 + interceptor)         |
-| UI         | Tailwind CSS v4 + shadcn + warcraftcn  |
-| 유틸       | lodash-es, sonner(toast)               |
-| 호스팅     | Vercel                                 |
+| 역할   | 선택                                                              |
+| ------ | ----------------------------------------------------------------- |
+| 프레임 | Next.js 16 (App Router, Turbopack)                                |
+| 상태   | TanStack Query v5 (`@lukemorales/query-key-factory`) + Zustand v5 |
+| 폼     | React Hook Form v7 + Zod v4                                       |
+| HTTP   | Axios (인스턴스 + interceptor)                                    |
+| UI     | Tailwind CSS v4 + shadcn/ui + warcraftcn                          |
+| 유틸   | lodash-es, sonner(toast)                                          |
+| 호스팅 | Vercel                                                            |
 
 ---
 
 ## FSD 구조 (`src/`)
 
 ```
-app/api/                     ← Route Handlers (Secret 보호 — 클라이언트 직접 호출 금지)
-entities/character/          ← buffs.ts, queries.ts, types.ts, api.ts
-features/character-search/   ← Combobox 자동완성 (useDebounce 350ms)
-features/roster-manager/     ← RosterList, BuffAnalysis, useRosterSync
-  config/roster-display.ts   ← ROLE_LABEL, ROLE_COLOR, ROLE_SORT_ORDER
-  lib/log-color.ts           ← LogVariant, logColorClass, logVariant
-  lib/fetch-character.ts     ← 캐릭터 데이터 병렬 fetch
-shared/api/                  ← apiClient, blizzardClient
-shared/config/               ← realms.ts, class-colors.ts, season.ts, raiderio.ts
-shared/lib/                  ← use-debounce.ts, roster-url.ts, wcl-zone-rankings.ts
-shared/model/                ← roster-store.ts (Zustand persist, MAX_ROSTER_SIZE=30)
+app/
+  api/character/[realm]/[name]/   ← Blizzard 캐릭터 (Route Handler)
+  api/character/search/           ← 캐릭터 검색 자동완성
+  api/raiderio/[realm]/[name]/    ← Raider.IO 프록시
+  api/warcraftlogs/[realm]/[name]/← WCL 프록시
+  layout.tsx / page.tsx / globals.css
+
+entities/character/
+  api.ts          ← fetch 함수
+  buffs.ts        ← 버프/유틸 정의 (한밤 기준)
+  config/
+    spec-role.ts  ← 스펙ID→역할 매핑
+  queries.ts      ← TanStack Query 훅
+  types.ts        ← RosterCharacter, BuffSource 등
+  index.ts        ← public API
+
+features/character-search/
+  schema.ts                       ← Zod 검색 스키마
+  ui/CharacterSearchForm.tsx      ← Combobox (useDebounce 350ms)
+  index.ts
+
+features/roster-manager/
+  config/roster-display.ts        ← ROLE_LABEL, ROLE_COLOR, ROLE_SORT_ORDER
+  lib/fetch-character.ts          ← 캐릭터 데이터 병렬 fetch
+  lib/log-color.ts                ← LogVariant, logColorClass, logVariant
+  lib/sort-roster.ts              ← 로스터 정렬 로직
+  model/useRosterSync.ts          ← URL ↔ 스토어 동기화 훅
+  ui/BuffAnalysis.tsx
+  ui/RosterList.tsx
+  ui/RosterUrlLoader.tsx
+  index.ts
+
+shared/
+  api/
+    axios.ts           ← apiClient (Raider.IO·WCL용)
+    blizzard-client.ts ← blizzardClient (OAuth interceptor)
+  config/
+    class-colors.ts    ← 클래스 색상 맵
+    env.ts             ← 서버 환경변수 검증
+    raiderio.ts        ← Raider.IO Base URL
+    realms.ts          ← 한→영 realm slug 매핑
+    season.ts          ← CURRENT_SEASON, CURRENT_WCL_ZONE_ID (시즌 변경 시 이 파일만)
+    warcraftlogs.ts    ← WCL 엔드포인트
+  lib/
+    api-error.ts       ← API 에러 처리
+    blizzard-fetch.ts  ← Blizzard fetch 헬퍼
+    blizzard-token.ts  ← OAuth 토큰 캐시
+    query-client.ts    ← QueryClient 설정
+    query-keys.ts      ← query-key-factory 정의
+    query-provider.tsx ← QueryClientProvider
+    roster-url.ts      ← 로스터 URL 인코딩/디코딩
+    theme-provider.tsx ← 다크모드 Provider
+    use-debounce.ts
+    wcl-token.ts       ← WCL OAuth 토큰 캐시
+    wcl-zone-rankings.ts
+  model/
+    roster-store.ts    ← Zustand persist (MAX_ROSTER_SIZE=30)
+  types/
+    blizzard.ts        ← Blizzard API 응답 타입
+  ui/
+    AppToaster.tsx     ← sonner Toaster
+    ThemeToggle.tsx
+
+# FSD 외 — shadcn/ui 컨벤션 유지
+components/ui/        ← shadcn 컴포넌트 + warcraftcn
+lib/utils.ts          ← cn() (tailwind-merge)
 ```
 
 ### RosterCharacter 주요 필드
 
 ```ts
-{ id, name, realm, faction: "alliance"|"horde", classId, className, specId, specName,
+{ id, name, realm, faction: "alliance" | "horde",
+  classId, className, specId, specName,
   role, itemLevel, raiderIO, warcraftLogs }
 ```
 
-### 버프/유틸 커버리지 (`entities/character/buffs.ts`)
+### 버프/유틸 (`entities/character/buffs.ts`)
 
 - **한밤(Midnight) 기준**. 각 `BuffSource`에 `spellId` + `icon` 포함.
 - 아이콘: `wowheadIconUrl(icon)` → `https://wow.zamimg.com/images/wow/icons/medium/{icon}.jpg`
 - 카테고리: `"블러드" | "전투부활" | "시너지" | "외생기" | "공생기" | "유틸"`
 - `COUNTABLE_CATEGORIES`: 모든 카테고리 개수 표시
-- 시너지 그룹: 적 디버프 / 아군 스탯버프 / 오라
-- 외생기 그룹: 피해 감소·면역 / 생존·응급 치유 / 마나·가속 강화
-- 공생기 그룹: 마법 피해 방어 / 체력·생존 강화
-- 유틸 그룹: 끌어당기기 / 이동·위치 / 아이템·소환·디버프
 - 클래스/특성명은 한국 WoW 공식 명칭 사용 (팔라딘❌→성기사✅, 안개술사❌→운무 수도사✅)
 
 ---
@@ -111,19 +163,9 @@ shared/model/                ← roster-store.ts (Zustand persist, MAX_ROSTER_SI
 
 ```ts
 CURRENT_SEASON = "season-mn-1" // Raider.IO (Midnight S1)
-CURRENT_WCL_ZONE_ID = 46 // WCL (Midnight S1 raid)
+CURRENT_WCL_ZONE_ID = 46 // WCL Zone (Midnight S1 raid)
+CURRENT_RAID_NAME = "VS / DR / MQD"
 ```
-
----
-
-## 로컬 개발
-
-```bash
-# SSL 인증서 이슈 (macOS) — pnpm dev 스크립트에 이미 포함됨
-NODE_EXTRA_CA_CERTS=$(pwd)/.certs.pem next dev
-```
-
-`.certs.pem`은 `.gitignore` 등록됨.
 
 ---
 

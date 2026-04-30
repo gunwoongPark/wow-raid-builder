@@ -13,6 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/warcraftcn/tooltip"
 import { type RosterCharacter, type WCLZoneRankings } from "@/entities/character"
+import { cn } from "@/lib/utils"
 import { getClassColor } from "@/shared/config/class-colors"
 import { extractRealmSlug } from "@/shared/lib/roster-url"
 import { useRosterStore } from "@/shared/model/roster-store"
@@ -47,10 +48,13 @@ const ScoreCell = ({ profileUrl, score }: ScoreCellProps) => {
 
   return (
     <a
-      className={`${colorClass} underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70`}
       href={profileUrl}
       rel="noopener noreferrer"
       target="_blank"
+      className={cn(
+        colorClass,
+        "underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70"
+      )}
     >
       {text}
     </a>
@@ -76,10 +80,13 @@ const LogCell = ({ wclUrl, zone }: LogCellProps) => {
 
   const trigger = (
     <a
-      className={`${logColorClass(percent)} underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70`}
       href={wclUrl}
       rel="noopener noreferrer"
       target="_blank"
+      className={cn(
+        logColorClass(percent),
+        "underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70"
+      )}
     >
       {percent}
     </a>
@@ -101,7 +108,10 @@ const LogCell = ({ wclUrl, zone }: LogCellProps) => {
                 {ranking.encounter.name}
               </span>
               <span
-                className={`shrink-0 font-mono text-[11px] ${logColorClass(Math.round(ranking.rankPercent ?? 0))}`}
+                className={cn(
+                  "shrink-0 font-mono text-[11px]",
+                  logColorClass(Math.round(ranking.rankPercent ?? 0))
+                )}
               >
                 {ranking.rankPercent !== null && ranking.rankPercent !== undefined
                   ? Math.round(ranking.rankPercent)
@@ -120,7 +130,7 @@ const LogCell = ({ wclUrl, zone }: LogCellProps) => {
 interface CharacterRowProps {
   character: RosterCharacter
   isRefreshing: boolean
-  onRefresh: () => void
+  onRefresh: (id: string) => void
 }
 
 const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps) => {
@@ -139,6 +149,9 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
   const wclKeystoneUrl = `${wclBaseUrl}#zone=47&difficulty=10`
   const wclHeroicUrl = `${wclBaseUrl}#difficulty=4`
   const wclMythicUrl = `${wclBaseUrl}#difficulty=5`
+
+  const handleRemove = () => removeCharacter(character.id)
+  const handleRefresh = () => onRefresh(character.id)
 
   // 렌더
   return (
@@ -194,16 +207,17 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
       </td>
       <td className="px-3 py-2 text-sm">
         <span
-          className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${
+          className={cn(
+            "rounded px-1.5 py-0.5 text-[10px] font-semibold",
             character.faction === "alliance"
               ? "bg-blue-500/15 text-blue-700 dark:text-blue-400"
               : "bg-red-500/15 text-red-700 dark:text-red-400"
-          }`}
+          )}
         >
           {character.faction === "alliance" ? "얼라" : "호드"}
         </span>
       </td>
-      <td className={`px-3 py-2 text-sm font-medium ${ROLE_COLOR[character.role] ?? ""}`}>
+      <td className={cn("px-3 py-2 text-sm font-medium", ROLE_COLOR[character.role])}>
         {ROLE_LABEL[character.role] ?? character.role}
       </td>
       <td className="text-foreground/90 px-3 py-2 text-sm">{character.itemLevel}</td>
@@ -258,17 +272,17 @@ const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps)
             aria-label="최신화"
             className="text-muted-foreground/40 rounded border border-transparent p-1.5 transition-all hover:border-sky-400/25 hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-30"
             disabled={isRefreshing}
-            onClick={onRefresh}
+            onClick={handleRefresh}
             title="최신화"
           >
-            <span className={`block text-base leading-none ${isRefreshing ? "animate-spin" : ""}`}>
+            <span className={cn("block text-base leading-none", isRefreshing && "animate-spin")}>
               ↻
             </span>
           </button>
           <div className="bg-border/40 h-4 w-px" />
           <button
             className="text-muted-foreground/40 rounded border border-transparent p-1.5 text-xs transition-all hover:border-red-400/25 hover:bg-red-400/10 hover:text-red-400"
-            onClick={() => removeCharacter(character.id)}
+            onClick={handleRemove}
             title="제거"
           >
             ✕
@@ -295,6 +309,65 @@ const SortIcon = ({ column, sortColumn, sortDirection }: SortIconProps) => {
     <span className="text-primary ml-0.5 text-[10px]">{sortDirection === "asc" ? "↑" : "↓"}</span>
   )
 }
+
+// ─── 정렬 가능 헤더 셀 ───────────────────────────────────────────────────────
+
+interface SortableHeaderCellProps {
+  className: string
+  column: SortColumn
+  label: string
+  onSort: (column: SortColumn) => void
+  sortColumn: SortColumn | null
+  sortDirection: SortDirection
+}
+
+const SortableHeaderCell = ({
+  className,
+  column,
+  label,
+  onSort,
+  sortColumn,
+  sortDirection,
+}: SortableHeaderCellProps) => {
+  const handleClick = () => onSort(column)
+
+  return (
+    <th
+      onClick={handleClick}
+      className={cn(
+        "hover:text-foreground cursor-pointer px-3 py-2 transition-colors select-none",
+        className,
+        sortColumn === column && "text-foreground"
+      )}
+    >
+      <span className="inline-flex items-center gap-0.5">
+        {label}
+        <SortIcon column={column} sortColumn={sortColumn} sortDirection={sortDirection} />
+      </span>
+    </th>
+  )
+}
+
+const HEADER_COLUMNS = [
+  { className: "min-w-[90px]", column: "realm", label: "서버" },
+  { className: "min-w-[90px]", column: "className", label: "직업" },
+  { className: "min-w-[80px]", column: "specName", label: "특성" },
+  { className: "min-w-[56px]", column: "faction", label: "진영" },
+  { className: "min-w-[56px]", column: "role", label: "역할" },
+  { className: "min-w-[80px]", column: "itemLevel", label: "아이템레벨" },
+  { className: "min-w-[72px]", column: "score", label: "M+ 점수" },
+  {
+    className: "min-w-[60px] text-blue-600/80 dark:text-blue-400/70",
+    column: "logHeroic",
+    label: "로그 H",
+  },
+  {
+    className: "min-w-[60px] text-yellow-600/80 dark:text-yellow-500/70",
+    column: "logMythic",
+    label: "로그 M",
+  },
+  { className: "min-w-[96px]", column: "raidProgress", label: "레이드 진행" },
+] satisfies { className: string; column: SortColumn; label: string }[]
 
 // ─── 공격대 목록 (메인 컴포넌트) ─────────────────────────────────────────────
 
@@ -402,9 +475,7 @@ export const RosterList = () => {
               disabled={isRefreshing}
               onClick={handleRefreshAll}
             >
-              <span className={`text-sm leading-none ${isRefreshing ? "animate-spin" : ""}`}>
-                ↻
-              </span>
+              <span className={cn("text-sm leading-none", isRefreshing && "animate-spin")}>↻</span>
               {isRefreshing ? "최신화 중…" : "전체 최신화"}
             </button>
 
@@ -429,42 +500,16 @@ export const RosterList = () => {
             <thead>
               <tr className="border-border/50 text-muted-foreground border-b bg-black/3 text-xs dark:bg-black/40">
                 <th className="min-w-[160px] px-3 py-2">캐릭터</th>
-                {(
-                  [
-                    { className: "min-w-[90px]", column: "realm", label: "서버" },
-                    { className: "min-w-[90px]", column: "className", label: "직업" },
-                    { className: "min-w-[80px]", column: "specName", label: "특성" },
-                    { className: "min-w-[56px]", column: "faction", label: "진영" },
-                    { className: "min-w-[56px]", column: "role", label: "역할" },
-                    { className: "min-w-[80px]", column: "itemLevel", label: "아이템레벨" },
-                    { className: "min-w-[72px]", column: "score", label: "M+ 점수" },
-                    {
-                      className: "min-w-[60px] text-blue-600/80 dark:text-blue-400/70",
-                      column: "logHeroic",
-                      label: "로그 H",
-                    },
-                    {
-                      className: "min-w-[60px] text-yellow-600/80 dark:text-yellow-500/70",
-                      column: "logMythic",
-                      label: "로그 M",
-                    },
-                    { className: "min-w-[96px]", column: "raidProgress", label: "레이드 진행" },
-                  ] satisfies { column: SortColumn; label: string; className: string }[]
-                ).map(({ className, column, label }) => (
-                  <th
-                    className={`hover:text-foreground cursor-pointer px-3 py-2 transition-colors select-none ${className} ${sortColumn === column ? "text-foreground" : ""}`}
+                {HEADER_COLUMNS.map(({ className, column, label }) => (
+                  <SortableHeaderCell
+                    className={className}
+                    column={column}
                     key={column}
-                    onClick={() => handleSort(column)}
-                  >
-                    <span className="inline-flex items-center gap-0.5">
-                      {label}
-                      <SortIcon
-                        column={column}
-                        sortColumn={sortColumn}
-                        sortDirection={sortDirection}
-                      />
-                    </span>
-                  </th>
+                    label={label}
+                    onSort={handleSort}
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
+                  />
                 ))}
                 <th className="min-w-[64px] px-3 py-2" />
               </tr>
@@ -475,7 +520,7 @@ export const RosterList = () => {
                   character={character}
                   isRefreshing={refreshingIds.has(character.id)}
                   key={character.id}
-                  onRefresh={() => refreshOne(character.id)}
+                  onRefresh={refreshOne}
                 />
               ))}
             </tbody>

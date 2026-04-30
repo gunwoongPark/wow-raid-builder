@@ -1,5 +1,6 @@
 "use client"
 
+import { cva } from "class-variance-authority"
 import { useTheme } from "next-themes"
 import Image from "next/image"
 
@@ -11,6 +12,7 @@ import {
   COUNTABLE_CATEGORIES,
   wowheadIconUrl,
 } from "@/entities/character"
+import { cn } from "@/lib/utils"
 import { getClassColor, getClassColorLight } from "@/shared/config/class-colors"
 import { useRosterStore } from "@/shared/model/roster-store"
 
@@ -26,6 +28,34 @@ const CATEGORY_LABEL: Record<BuffCategory, string> = {
 // 블러드와 전투부활은 한 행에 나란히 표시
 const INLINE_CATEGORIES = new Set<BuffCategory>(["블러드", "전투부활"])
 
+// ─── cva 변형 정의 ──────────────────────────────���─────────────────────────────
+
+const buffCardVariants = cva(
+  "flex min-h-14 items-center gap-2.5 rounded border border-l-2 p-2 pl-2.5 text-sm",
+  {
+    variants: {
+      state: {
+        covered:
+          "border-emerald-500/40 border-l-emerald-500 bg-emerald-500/8 dark:border-emerald-400/30 dark:border-l-emerald-400 dark:bg-emerald-950/35",
+        missing:
+          "border-red-400/30 border-l-red-500/60 bg-red-500/5 dark:border-red-500/20 dark:border-l-red-500/50 dark:bg-red-950/25",
+      },
+    },
+  }
+)
+
+const coverageBadgeVariants = cva("rounded px-1.5 py-0.5 text-[10px] font-bold tabular-nums", {
+  variants: {
+    level: {
+      good: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+      medium: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
+      poor: "bg-red-500/15 text-red-600 dark:text-red-400",
+    },
+  },
+})
+
+// ─── ProviderBadge ───────────────────────���──────────────────────────��─────────
+
 interface ProviderBadgeProps {
   isDark: boolean
   provider: CandidateProvider
@@ -37,16 +67,14 @@ const ProviderBadge = ({ isDark, provider }: ProviderBadgeProps) => {
   return (
     <span
       className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold"
-      key={provider.label}
-      style={{
-        backgroundColor: `${color}22`,
-        color,
-      }}
+      style={{ backgroundColor: `${color}22`, color }}
     >
       {provider.label}
     </span>
   )
 }
+
+// ─── BuffCard ─────────────────────────���───────────────────────────────────��───
 
 interface BuffCardProps {
   buff: ReturnType<typeof analyzeBuffCoverage>[number]
@@ -55,25 +83,20 @@ interface BuffCardProps {
 }
 
 const BuffCard = ({ buff, isCountable, isDark }: BuffCardProps) => (
-  <div
-    className={`flex min-h-14 items-center gap-2.5 rounded border-l-2 p-2 pl-2.5 text-sm ${
-      buff.covered
-        ? "border border-emerald-500/40 border-l-emerald-500 bg-emerald-500/8 dark:border-emerald-400/30 dark:border-l-emerald-400 dark:bg-emerald-950/35"
-        : "border border-red-400/30 border-l-red-500/60 bg-red-500/5 dark:border-red-500/20 dark:border-l-red-500/50 dark:bg-red-950/25"
-    }`}
-  >
+  <div className={buffCardVariants({ state: buff.covered ? "covered" : "missing" })}>
     <div className="relative shrink-0">
       <Image
         alt={buff.label}
-        className={`rounded ${buff.covered ? "" : "opacity-30 grayscale"}`}
+        className={cn("rounded", !buff.covered && "opacity-30 grayscale")}
         height={24}
         src={wowheadIconUrl(buff.icon)}
         width={24}
       />
       <span
-        className={`absolute -right-1 -bottom-1 flex h-3 w-3 items-center justify-center rounded-full text-[8px] leading-none font-bold ${
-          buff.covered ? "bg-emerald-500 text-white" : "bg-red-500/60 text-white"
-        }`}
+        className={cn(
+          "absolute -right-1 -bottom-1 flex h-3 w-3 items-center justify-center rounded-full text-[8px] leading-none font-bold text-white",
+          buff.covered ? "bg-emerald-500" : "bg-red-500/60"
+        )}
       >
         {buff.covered ? "✓" : "✗"}
       </span>
@@ -81,9 +104,10 @@ const BuffCard = ({ buff, isCountable, isDark }: BuffCardProps) => (
     <div className="min-w-0 flex-1">
       <div className="flex items-baseline gap-1.5">
         <p
-          className={`line-clamp-2 min-w-0 flex-1 text-xs leading-snug font-medium ${
+          className={cn(
+            "line-clamp-2 min-w-0 flex-1 text-xs leading-snug font-medium",
             buff.covered ? "text-foreground" : "text-foreground/50"
-          }`}
+          )}
         >
           {buff.label}
         </p>
@@ -109,6 +133,8 @@ const BuffCard = ({ buff, isCountable, isDark }: BuffCardProps) => (
   </div>
 )
 
+// ─── BuffAnalysis (메인) ──────────────────────────��───────────────────────────
+
 export const BuffAnalysis = () => {
   const characters = useRosterStore((store) => store.characters)
   const coverage = analyzeBuffCoverage(characters)
@@ -128,8 +154,9 @@ export const BuffAnalysis = () => {
 
   const totalCovered = coverage.filter((buff) => buff.covered).length
   const total = coverage.length
+  const percent = Math.round((totalCovered / total) * 100)
 
-  const pct = Math.round((totalCovered / total) * 100)
+  const coverageLevel = percent >= 80 ? "good" : percent >= 50 ? "medium" : "poor"
 
   return (
     <section className="wow-panel border-border/60 bg-card/90 rounded-lg border p-5">
@@ -140,17 +167,7 @@ export const BuffAnalysis = () => {
             버프 / 유틸 커버리지
           </span>
           <div className="flex items-center gap-2">
-            <span
-              className={`rounded px-1.5 py-0.5 text-[10px] font-bold tabular-nums ${
-                pct >= 80
-                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-                  : pct >= 50
-                    ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
-                    : "bg-red-500/15 text-red-600 dark:text-red-400"
-              }`}
-            >
-              {pct}%
-            </span>
+            <span className={coverageBadgeVariants({ level: coverageLevel })}>{percent}%</span>
             <span className="text-muted-foreground/60 text-xs">
               {totalCovered} / {total}
             </span>
@@ -161,7 +178,7 @@ export const BuffAnalysis = () => {
         <div className="relative h-2 w-full overflow-hidden rounded-sm border border-black/10 bg-black/5 shadow-[inset_0_1px_3px_rgba(0,0,0,0.15)] dark:border-white/5 dark:bg-black/40 dark:shadow-[inset_0_1px_4px_rgba(0,0,0,0.5)]">
           <div
             className="h-full rounded-sm bg-linear-to-r from-amber-600 to-yellow-400 transition-[width] duration-700 ease-out dark:from-amber-500 dark:to-yellow-300 dark:shadow-[0_0_10px_rgba(250,200,50,0.5)]"
-            style={{ width: `${pct}%` }}
+            style={{ width: `${percent}%` }}
           />
         </div>
 
@@ -174,7 +191,7 @@ export const BuffAnalysis = () => {
                   {CATEGORY_LABEL[category]}
                 </p>
                 <span className="bg-primary/10 text-primary/70 rounded px-1 text-[9px] font-semibold tabular-nums">
-                  {buffs.filter((b) => b.covered).length}/{buffs.length}
+                  {buffs.filter((buff) => buff.covered).length}/{buffs.length}
                 </span>
               </div>
             ))}

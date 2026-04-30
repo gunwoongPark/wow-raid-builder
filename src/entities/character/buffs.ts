@@ -97,7 +97,7 @@ const SPEC_INFO: Record<number, { className: string; specName: string }> = {
   251: { className: "죽음의 기사", specName: "냉기" },
   252: { className: "죽음의 기사", specName: "부정" },
   // 사냥꾼
-  253: { className: "사냥꾼", specName: "야수조련사" },
+  253: { className: "사냥꾼", specName: "야수" },
   254: { className: "사냥꾼", specName: "사격" },
   255: { className: "사냥꾼", specName: "생존" },
   // 사제
@@ -198,7 +198,7 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
       1467,
       1468,
       1473, // 기원사 전체 — 용군단의 분노
-      253, // 야수조련사 사냥꾼 — 원초적 분노 (외래 야수 펫 필요)
+      253, // 야수 사냥꾼 — 원초적 분노 (외래 야수 펫 필요)
     ],
     spellId: 32182,
   },
