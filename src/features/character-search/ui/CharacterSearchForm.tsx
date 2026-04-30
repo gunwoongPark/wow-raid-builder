@@ -19,9 +19,10 @@ import { useDebounce } from "@/shared/lib/use-debounce"
 
 export const CharacterSearchForm = () => {
   // 변수부 — 스토어
+  // characters 배열 전체 대신 length만 구독 — raiderIO/warcraftLogs 업데이트 시 불필요한 리렌더 방지
+  const characterCount = useRosterStore((store) => store.characters.length)
   const addCharacter = useRosterStore((store) => store.addCharacter)
   const updateCharacter = useRosterStore((store) => store.updateCharacter)
-  const characters = useRosterStore((store) => store.characters)
   const setPendingRaiderIO = useRosterStore((store) => store.setPendingRaiderIO)
   const setPendingWCL = useRosterStore((store) => store.setPendingWCL)
 
@@ -43,6 +44,8 @@ export const CharacterSearchForm = () => {
     if (!result) return
 
     const characterId = `${result.realmSlug}-${result.name.toLowerCase()}`
+    // 액션 시점에 최신 상태를 getState()로 읽어 구독 없이 중복 체크
+    const { characters } = useRosterStore.getState()
     if (characters.some((character) => character.id === characterId)) {
       toast.error("이미 공격대에 추가된 캐릭터입니다.", {
         description: `${result.name}은(는) 이미 공격대 목록에 있습니다.`,
@@ -50,7 +53,7 @@ export const CharacterSearchForm = () => {
       return
     }
 
-    if (characters.length >= MAX_ROSTER_SIZE) {
+    if (characterCount >= MAX_ROSTER_SIZE) {
       toast.warning("공격대 인원 초과", {
         description: `공격대원은 최대 ${MAX_ROSTER_SIZE}명까지 추가할 수 있습니다.`,
       })

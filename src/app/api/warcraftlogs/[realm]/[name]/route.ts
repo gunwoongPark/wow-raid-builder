@@ -41,7 +41,9 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
       mythic: parseZoneRankings(characterData.mythic),
     }
 
-    return NextResponse.json(result)
+    return NextResponse.json(result, {
+      headers: { "Cache-Control": "public, max-age=600, stale-while-revalidate=1200" },
+    })
   } catch (error) {
     return handleRouteError(error)
   }

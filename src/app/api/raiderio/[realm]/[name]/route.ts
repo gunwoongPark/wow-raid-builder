@@ -26,7 +26,9 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
       },
     })
 
-    return NextResponse.json(data)
+    return NextResponse.json(data, {
+      headers: { "Cache-Control": "public, max-age=300, stale-while-revalidate=600" },
+    })
   } catch (error) {
     return handleRouteError(error)
   }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useState } from "react"
 
 import {
   buildShareUrl,
@@ -29,33 +29,30 @@ export const useRosterSync = () => {
   })
 
   // 단일 캐릭터 새로고침
-  const refreshOne = useCallback(
-    async (id: string) => {
-      const character = characters.find((entry) => entry.id === id)
-      if (!character) return
+  const refreshOne = async (id: string) => {
+    const character = characters.find((entry) => entry.id === id)
+    if (!character) return
 
-      setState((previous) => ({
-        ...previous,
-        refreshingIds: new Set([...previous.refreshingIds, id]),
-      }))
+    setState((previous) => ({
+      ...previous,
+      refreshingIds: new Set([...previous.refreshingIds, id]),
+    }))
 
-      try {
-        const realmSlug = extractRealmSlug(character.id, character.name)
-        const fresh = await fetchCharacter(realmSlug, character.name)
-        if (fresh) updateCharacter(id, fresh)
-      } finally {
-        setState((previous) => {
-          const next = new Set(previous.refreshingIds)
-          next.delete(id)
-          return { ...previous, refreshingIds: next }
-        })
-      }
-    },
-    [characters, updateCharacter]
-  )
+    try {
+      const realmSlug = extractRealmSlug(character.id, character.name)
+      const fresh = await fetchCharacter(realmSlug, character.name)
+      if (fresh) updateCharacter(id, fresh)
+    } finally {
+      setState((previous) => {
+        const next = new Set(previous.refreshingIds)
+        next.delete(id)
+        return { ...previous, refreshingIds: next }
+      })
+    }
+  }
 
   // 전체 캐릭터 새로고침 (병렬)
-  const refreshAll = useCallback(async () => {
+  const refreshAll = async () => {
     if (state.isRefreshing || !characters.length) return
 
     setState((previous) => ({ ...previous, isRefreshing: true }))
@@ -70,42 +67,39 @@ export const useRosterSync = () => {
     } finally {
       setState((previous) => ({ ...previous, isRefreshing: false }))
     }
-  }, [characters, state.isRefreshing, updateCharacter])
+  }
 
   // URL에서 캐릭터 로드 — 없으면 추가, 있으면 최신화
-  const loadFromUrl = useCallback(
-    async (entries: RosterUrlEntry[]) => {
-      if (!entries.length) return
+  const loadFromUrl = async (entries: RosterUrlEntry[]) => {
+    if (!entries.length) return
 
-      setState((previous) => ({ ...previous, isRefreshing: true }))
-      try {
-        await Promise.allSettled(
-          entries.map(async ({ name, realmSlug }) => {
-            const id = `${realmSlug}-${name.toLowerCase()}`
-            const fresh = await fetchCharacter(realmSlug, name)
-            if (!fresh) return
+    setState((previous) => ({ ...previous, isRefreshing: true }))
+    try {
+      await Promise.allSettled(
+        entries.map(async ({ name, realmSlug }) => {
+          const id = `${realmSlug}-${name.toLowerCase()}`
+          const fresh = await fetchCharacter(realmSlug, name)
+          if (!fresh) return
 
-            const { characters: current } = useRosterStore.getState()
-            if (current.some((character) => character.id === id)) {
-              updateCharacter(id, fresh)
-            } else if (current.length < MAX_ROSTER_SIZE) {
-              addCharacter(fresh)
-            }
-          })
-        )
-      } finally {
-        setState((previous) => ({ ...previous, isRefreshing: false }))
-      }
-    },
-    [addCharacter, updateCharacter]
-  )
+          const { characters: current } = useRosterStore.getState()
+          if (current.some((character) => character.id === id)) {
+            updateCharacter(id, fresh)
+          } else if (current.length < MAX_ROSTER_SIZE) {
+            addCharacter(fresh)
+          }
+        })
+      )
+    } finally {
+      setState((previous) => ({ ...previous, isRefreshing: false }))
+    }
+  }
 
   // 현재 로스터를 URL로 인코딩 후 클립보드 복사
-  const copyShareUrl = useCallback(() => {
+  const copyShareUrl = () => {
     if (!characters.length) return
     const url = buildShareUrl(characters)
     navigator.clipboard.writeText(url)
-  }, [characters])
+  }
 
   return {
     copyShareUrl,

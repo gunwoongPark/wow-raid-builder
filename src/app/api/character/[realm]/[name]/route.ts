@@ -38,7 +38,9 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
       warcraftLogs: null,
     }
 
-    return NextResponse.json(character)
+    return NextResponse.json(character, {
+      headers: { "Cache-Control": "public, max-age=300, stale-while-revalidate=600" },
+    })
   } catch (error) {
     return handleRouteError(error)
   }
