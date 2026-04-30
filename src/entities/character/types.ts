@@ -62,14 +62,6 @@ export interface RaiderIOProfile {
   thumbnail_url: string
 }
 
-// ─── 에러 ─────────────────────────────────────────────────────────────────────
-
-export interface RaiderIOErrorResponse {
-  error: string
-  message: string
-  statusCode: number
-}
-
 // ─── 로스터 ───────────────────────────────────────────────────────────────────
 
 export interface RosterCharacterRaiderIO {
