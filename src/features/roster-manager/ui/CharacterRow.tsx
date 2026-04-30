@@ -41,7 +41,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
 
   // 렌더
   return (
-    <tr className="border-border/30 hover:bg-primary/5 dark:hover:bg-primary/[0.07] h-[52px] border-b transition-colors">
+    <tr className="border-border/30 hover:bg-primary/5 dark:hover:bg-primary/[0.07] h-14 border-b transition-colors">
       {/* 썸네일 + 이름(아머리) + Raider.IO 링크 */}
       <td className="px-3 py-2">
         <div className="flex items-center gap-2">
