@@ -43,7 +43,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
   return (
     <tr className="border-border/30 hover:bg-primary/5 dark:hover:bg-primary/[0.07] h-14 border-b transition-colors">
       {/* 썸네일 + 이름(아머리) + Raider.IO 링크 */}
-      <td className="px-3 py-2">
+      <td className="min-w-[160px] px-3 py-2">
         <div className="flex items-center gap-2">
           {isPendingRaiderIO ? (
             <Skeleton className="size-8 rounded" />
@@ -86,12 +86,12 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
         </div>
       </td>
 
-      <td className="text-muted-foreground px-3 py-2 text-sm">{character.realm}</td>
-      <td className="text-foreground/80 px-3 py-2 text-sm">{character.className}</td>
-      <td className="px-3 py-2 text-sm" style={{ color: classColor }}>
+      <td className="text-muted-foreground min-w-[90px] px-3 py-2 text-sm">{character.realm}</td>
+      <td className="text-foreground/80 min-w-[90px] px-3 py-2 text-sm">{character.className}</td>
+      <td className="min-w-[80px] px-3 py-2 text-sm" style={{ color: classColor }}>
         {character.specName}
       </td>
-      <td className="px-3 py-2 text-sm">
+      <td className="min-w-[56px] px-3 py-2 text-sm">
         <span
           className={cn(
             "rounded px-1.5 py-0.5 text-[10px] font-semibold",
@@ -103,12 +103,12 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
           {character.faction === "alliance" ? "얼라" : "호드"}
         </span>
       </td>
-      <td className={cn("px-3 py-2 text-sm font-medium", ROLE_COLOR[character.role])}>
+      <td className={cn("min-w-[56px] px-3 py-2 text-sm font-medium", ROLE_COLOR[character.role])}>
         {ROLE_LABEL[character.role] ?? character.role}
       </td>
-      <td className="text-foreground/90 px-3 py-2 text-sm">{character.itemLevel}</td>
+      <td className="text-foreground/90 min-w-[80px] px-3 py-2 text-sm">{character.itemLevel}</td>
 
-      <td className="px-3 py-2 font-mono text-sm">
+      <td className="min-w-[72px] px-3 py-2 font-mono text-sm">
         {isPendingRaiderIO ? (
           <Skeleton className="h-4 w-12 rounded" />
         ) : (
@@ -116,14 +116,14 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
         )}
       </td>
 
-      <td className="px-3 py-2 font-mono text-sm">
+      <td className="min-w-[60px] px-3 py-2 font-mono text-sm">
         {isPendingWCL ? (
           <Skeleton className="h-4 w-8 rounded" />
         ) : (
           <LogCell wclUrl={wclHeroicUrl} zone={character.warcraftLogs?.heroic} />
         )}
       </td>
-      <td className="px-3 py-2 font-mono text-sm">
+      <td className="min-w-[60px] px-3 py-2 font-mono text-sm">
         {isPendingWCL ? (
           <Skeleton className="h-4 w-8 rounded" />
         ) : (
@@ -131,7 +131,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
         )}
       </td>
 
-      <td className="px-3 py-2 text-xs">
+      <td className="min-w-[96px] px-3 py-2 text-xs">
         {isPendingRaiderIO ? (
           <div className="flex flex-col gap-1">
             <Skeleton className="h-3 w-16 rounded" />
@@ -152,7 +152,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
       </td>
 
       {/* 액션 버튼: 최신화 + 제거 */}
-      <td className="px-3 py-2">
+      <td className="min-w-[64px] px-3 py-2">
         <div className="flex items-center gap-2">
           <button
             aria-label="최신화"
