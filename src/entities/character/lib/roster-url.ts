@@ -1,4 +1,4 @@
-import { type RosterCharacter } from "@/entities/character"
+import { type RosterCharacter } from "../types"
 
 export interface RosterUrlEntry {
   name: string
@@ -17,10 +17,10 @@ export const encodeRosterParam = (characters: RosterCharacter[]): string =>
 export const decodeRosterParam = (param: string | null): RosterUrlEntry[] => {
   if (!param) return []
   return param.split(",").flatMap((entry) => {
-    const idx = entry.indexOf(":")
-    if (idx === -1) return []
-    const realmSlug = entry.slice(0, idx).trim()
-    const name = decodeURIComponent(entry.slice(idx + 1).trim())
+    const index = entry.indexOf(":")
+    if (index === -1) return []
+    const realmSlug = entry.slice(0, index).trim()
+    const name = decodeURIComponent(entry.slice(index + 1).trim())
     if (!realmSlug || !name) return []
     return [{ name, realmSlug }]
   })

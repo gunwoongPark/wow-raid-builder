@@ -8,7 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-pretendard), sans-serif;
   --font-cinzel: var(--font-cinzel);
   --font-mono: var(--font-geist-mono);
   --color-border: var(--border);
@@ -42,80 +42,56 @@
   --color-class-warrior: #c69b3a;
 }
 
-/* WoW 라이트 테마 */
+/* ─── 라이트 테마 — WoW 양피지/황금 ────────────────────────────────────────── */
 :root {
   --wc-tooltip-bg: linear-gradient(180deg, oklch(0.97 0.01 80) 0%, oklch(0.93 0.015 75) 100%);
-  --background: oklch(0.97 0.01 80); /* 따뜻한 양피지 */
-  --foreground: oklch(0.18 0.02 60);
-  --card: oklch(0.94 0.015 75);
-  --card-foreground: oklch(0.18 0.02 60);
-  --popover: oklch(0.96 0.01 80);
-  --popover-foreground: oklch(0.18 0.02 60);
-  --primary: oklch(0.55 0.12 75); /* WoW 골드 (라이트) */
-  --primary-foreground: oklch(0.98 0.01 80);
-  --muted: oklch(0.9 0.015 75);
-  --muted-foreground: oklch(0.45 0.02 70);
-  --border: oklch(0.7 0.04 70 / 60%);
-  --input: oklch(0.92 0.015 75);
-  --ring: oklch(0.55 0.12 75 / 50%);
+  --background: oklch(0.95 0.015 80);
+  --foreground: oklch(0.16 0.025 55);
+  --card: oklch(0.91 0.02 74);
+  --card-foreground: oklch(0.16 0.025 55);
+  --popover: oklch(0.94 0.015 78);
+  --popover-foreground: oklch(0.16 0.025 55);
+  --primary: oklch(0.52 0.13 70);
+  --primary-foreground: oklch(0.98 0.005 80);
+  --muted: oklch(0.88 0.018 74);
+  --muted-foreground: oklch(0.42 0.025 68);
+  --border: oklch(0.62 0.07 68 / 70%);
+  --input: oklch(0.9 0.018 74);
+  --ring: oklch(0.52 0.13 70 / 50%);
   --radius: 0.375rem;
+
+  --wc-tooltip-border: hsl(45 55% 46%);
+  --wc-tooltip-uncommon-border: hsl(120 38% 40%);
+  --wc-tooltip-rare-border: hsl(220 52% 48%);
+  --wc-tooltip-epic-border: hsl(280 42% 48%);
+  --wc-tooltip-legendary-border: hsl(30 72% 46%);
+  --wc-tooltip-shadow: 0 4px 20px hsl(0 0% 0% / 0.18);
 }
 
-/* WoW 다크 테마 */
+/* ─── 다크 테마 — 한밤(Midnight) 심야 석조 ──────────────────────────────────── */
 .dark {
-  --wc-tooltip-bg: linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
-  --background: oklch(0.1 0.01 60);
-  --foreground: oklch(0.92 0.04 80);
-  --card: oklch(0.14 0.015 60);
-  --card-foreground: oklch(0.92 0.04 80);
-  --popover: oklch(0.12 0.01 60);
-  --popover-foreground: oklch(0.92 0.04 80);
-  --primary: oklch(0.75 0.12 80); /* WoW 골드 */
-  --primary-foreground: oklch(0.1 0.01 60);
-  --muted: oklch(0.18 0.01 60);
-  --muted-foreground: oklch(0.6 0.03 80);
-  --border: oklch(0.3 0.04 70 / 50%);
-  --input: oklch(0.18 0.015 60);
-  --ring: oklch(0.75 0.12 80 / 50%);
+  --wc-tooltip-bg: linear-gradient(180deg, hsl(235 20% 7%) 0%, hsl(240 15% 4%) 100%);
+  --background: oklch(0.065 0.018 268);
+  --foreground: oklch(0.93 0.04 82);
+  --card: oklch(0.135 0.022 260);
+  --card-foreground: oklch(0.93 0.04 82);
+  --popover: oklch(0.11 0.018 262);
+  --popover-foreground: oklch(0.93 0.04 82);
+  --primary: oklch(0.82 0.18 82);
+  --primary-foreground: oklch(0.065 0.018 268);
+  --muted: oklch(0.18 0.016 258);
+  --muted-foreground: oklch(0.6 0.03 82);
+  --border: oklch(0.4 0.09 78 / 60%);
+  --input: oklch(0.17 0.02 262);
+  --ring: oklch(0.82 0.18 82 / 50%);
   --radius: 0.375rem;
-}
 
-/* 툴팁 라이트 모드 테두리 override */
-:root {
-  --wc-tooltip-border: hsl(45 50% 50%);
-  --wc-tooltip-uncommon-border: hsl(120 35% 45%);
-  --wc-tooltip-rare-border: hsl(220 50% 52%);
-  --wc-tooltip-epic-border: hsl(280 40% 52%);
-  --wc-tooltip-legendary-border: hsl(30 70% 50%);
-  --wc-tooltip-shadow: 0 4px 20px hsl(0 0% 0% / 0.15);
-}
-.dark {
-  --wc-tooltip-border: hsl(45 60% 35%);
-  --wc-tooltip-uncommon-border: hsl(120 35% 32%);
-  --wc-tooltip-rare-border: hsl(220 50% 42%);
-  --wc-tooltip-epic-border: hsl(280 40% 42%);
-  --wc-tooltip-legendary-border: hsl(30 70% 40%);
-  --wc-tooltip-shadow: 0 4px 20px hsl(0 0% 0% / 0.7);
-}
-.wc-tooltip {
-  border-color: var(--wc-tooltip-border);
-  box-shadow: var(--wc-tooltip-shadow);
-}
-.wc-tooltip-uncommon {
-  border-color: var(--wc-tooltip-uncommon-border);
-  box-shadow: var(--wc-tooltip-shadow);
-}
-.wc-tooltip-rare {
-  border-color: var(--wc-tooltip-rare-border);
-  box-shadow: var(--wc-tooltip-shadow);
-}
-.wc-tooltip-epic {
-  border-color: var(--wc-tooltip-epic-border);
-  box-shadow: var(--wc-tooltip-shadow);
-}
-.wc-tooltip-legendary {
-  border-color: var(--wc-tooltip-legendary-border);
-  box-shadow: var(--wc-tooltip-shadow);
+  --wc-tooltip-border: hsl(45 65% 30%);
+  --wc-tooltip-uncommon-border: hsl(120 38% 26%);
+  --wc-tooltip-rare-border: hsl(220 55% 36%);
+  --wc-tooltip-epic-border: hsl(280 45% 36%);
+  --wc-tooltip-legendary-border: hsl(30 75% 34%);
+  --wc-tooltip-shadow: 0 4px 28px hsl(0 0% 0% / 0.9);
 }
 
 @layer base {
@@ -127,18 +103,157 @@
   [role="option"] {
     cursor: pointer;
   }
-  body {
-    @apply bg-background text-foreground;
-    min-height: 100vh;
-  }
-  .dark body {
-    background-image: radial-gradient(
-      ellipse at top,
-      oklch(0.14 0.02 50) 0%,
-      oklch(0.08 0.01 60) 100%
-    );
-  }
   html {
     @apply font-sans;
+    min-height: 100dvh;
   }
+
+  /* 라이트 — 양피지 상단 밝고 아래로 갈수록 황갈색 */
+  body {
+    @apply text-foreground;
+    min-height: 100dvh;
+    background-color: oklch(0.93 0.02 72);
+    background-image: radial-gradient(
+      ellipse 120% 100% at 50% 0%,
+      oklch(0.97 0.012 82) 0%,
+      oklch(0.93 0.02 72) 100%
+    );
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+
+  /* 다크 — 심야 창공 심청 → 하단 자주빛 */
+  .dark body {
+    background-color: oklch(0.065 0.018 268);
+    background-image:
+      radial-gradient(ellipse 120% 80% at 50% 0%, oklch(0.19 0.055 272) 0%, transparent 100%),
+      radial-gradient(ellipse 80% 60% at 20% 100%, oklch(0.1 0.03 255) 0%, transparent 100%);
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+
+  /* 다크 — WoW 골드 헤딩 광채 */
+  .dark .fantasy {
+    text-shadow: 0 0 24px oklch(0.82 0.18 82 / 0.35);
+  }
+
+  /* 라이트 — WoW 양피지 패널: 위 크림 하이라이트 + 아래 황갈 그림자 */
+  .wow-panel {
+    box-shadow:
+      inset 0 1px 0 oklch(0.98 0.01 85 / 0.8),
+      inset 0 -1px 0 oklch(0.7 0.04 68 / 0.4),
+      0 4px 14px oklch(0.55 0.05 68 / 0.18),
+      0 1px 3px oklch(0.55 0.05 68 / 0.12);
+  }
+
+  /* 다크 — WoW 석판 패널: 상단 골드 인셋 + 외부 골드 링 + 깊은 그림자 */
+  .dark .wow-panel {
+    box-shadow:
+      0 0 0 1px oklch(0.42 0.1 78 / 28%),
+      inset 0 1px 0 oklch(0.6 0.1 82 / 0.22),
+      inset 0 -1px 0 oklch(0 0 0 / 0.4),
+      0 8px 40px oklch(0 0 0 / 0.7),
+      0 2px 8px oklch(0 0 0 / 0.5);
+  }
+}
+
+/* ─── WoW UI 유틸리티 ──────────────────────────────────────────────────────── */
+
+/* 섹션 타이틀 — 양쪽 장식 선 */
+.wow-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+.wow-section-title::before,
+.wow-section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+}
+.wow-section-title::before {
+  background: linear-gradient(to right, transparent, oklch(0.62 0.07 68 / 50%));
+}
+.wow-section-title::after {
+  background: linear-gradient(to left, transparent, oklch(0.62 0.07 68 / 50%));
+}
+.dark .wow-section-title::before {
+  background: linear-gradient(to right, transparent, oklch(0.48 0.1 78 / 50%));
+}
+.dark .wow-section-title::after {
+  background: linear-gradient(to left, transparent, oklch(0.48 0.1 78 / 50%));
+}
+
+/* 헤더 장식선 — 중앙 강조, 양쪽 fade */
+.wow-header-divider {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    oklch(0.52 0.13 70 / 60%) 20%,
+    oklch(0.52 0.13 70 / 80%) 50%,
+    oklch(0.52 0.13 70 / 60%) 80%,
+    transparent 100%
+  );
+}
+.dark .wow-header-divider {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    oklch(0.82 0.18 82 / 50%) 20%,
+    oklch(0.82 0.18 82 / 80%) 50%,
+    oklch(0.82 0.18 82 / 50%) 80%,
+    transparent 100%
+  );
+}
+.wow-header-divider::before,
+.wow-header-divider::after {
+  content: "◆";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.35rem;
+  color: oklch(0.52 0.13 70);
+  line-height: 1;
+}
+.dark .wow-header-divider::before,
+.dark .wow-header-divider::after {
+  color: oklch(0.82 0.18 82);
+}
+.wow-header-divider::before {
+  left: 19%;
+}
+.wow-header-divider::after {
+  right: 19%;
+}
+
+/* WoW 스타일 인풋 */
+.wow-input {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.wow-input:focus {
+  border-color: oklch(0.52 0.13 70 / 70%);
+  box-shadow: 0 0 0 2px oklch(0.52 0.13 70 / 0.15);
+  outline: none;
+}
+.dark .wow-input {
+  background-color: oklch(0.1 0.018 262);
+  border-color: oklch(0.35 0.08 78 / 55%);
+}
+.dark .wow-input:focus {
+  border-color: oklch(0.65 0.18 82 / 65%);
+  box-shadow:
+    0 0 0 2px oklch(0.82 0.18 82 / 0.18),
+    0 0 14px oklch(0.82 0.18 82 / 0.1);
 }

@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server"
 
-import { type RosterCharacter } from "@/entities/character"
-import { SPEC_ROLE_MAP } from "@/entities/character/config/spec-role"
+import { type RosterCharacter, SPEC_ROLE_MAP } from "@/entities/character"
 import { toRealmSlug } from "@/shared/config/realms"
 import { handleRouteError } from "@/shared/lib/api-error"
 import { blizzardFetch } from "@/shared/lib/blizzard-fetch"
+import { characterParamSchema } from "@/shared/lib/route-param-schema"
 import { type BlizzardCharacterSummary } from "@/shared/types/blizzard"
 
 interface Params {
@@ -14,7 +14,12 @@ interface Params {
 
 export const GET = async (_req: Request, { params }: { params: Promise<Params> }) => {
   try {
-    const { name, realm } = await params
+    const raw = await params
+    const parsed = characterParamSchema.safeParse(raw)
+    if (!parsed.success) {
+      return NextResponse.json({ error: "잘못된 요청입니다.", status: 400 }, { status: 400 })
+    }
+    const { name, realm } = parsed.data
     const realmSlug = toRealmSlug(realm)
 
     const summary = await blizzardFetch<BlizzardCharacterSummary>(
@@ -39,7 +44,9 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
       warcraftLogs: null,
     }
 
-    return NextResponse.json(character)
+    return NextResponse.json(character, {
+      headers: { "Cache-Control": "public, max-age=300, stale-while-revalidate=600" },
+    })
   } catch (error) {
     return handleRouteError(error)
   }

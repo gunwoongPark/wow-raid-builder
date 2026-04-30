@@ -19,6 +19,8 @@ export type SortColumn = (typeof SORT_COLUMNS)[number]
 
 export type SortDirection = "asc" | "desc"
 
+type ComparableValue = string | number | null
+
 const getRaidProgressScore = (character: RosterCharacter): number | null => {
   const progression = character.raiderIO?.raidProgression
     ? Object.values(character.raiderIO.raidProgression)[0]
@@ -28,41 +30,28 @@ const getRaidProgressScore = (character: RosterCharacter): number | null => {
   return progression.mythic_bosses_killed * 1000 + progression.heroic_bosses_killed
 }
 
-const compareNullableLast = (a: number | null, b: number | null): number => {
-  if (a === null && b === null) return 0
-  if (a === null) return 1
-  if (b === null) return -1
-  return a - b
-}
-
-const compareByColumn = (a: RosterCharacter, b: RosterCharacter, column: SortColumn): number => {
+const getValue = (character: RosterCharacter, column: SortColumn): ComparableValue => {
   switch (column) {
     case "realm":
-      return a.realm.localeCompare(b.realm, "ko")
+      return character.realm
     case "className":
-      return a.className.localeCompare(b.className, "ko")
+      return character.className
     case "specName":
-      return a.specName.localeCompare(b.specName, "ko")
+      return character.specName
     case "faction":
-      return a.faction.localeCompare(b.faction)
+      return character.faction
     case "role":
-      return ROLE_SORT_ORDER.indexOf(a.role) - ROLE_SORT_ORDER.indexOf(b.role)
+      return ROLE_SORT_ORDER.indexOf(character.role)
     case "itemLevel":
-      return a.itemLevel - b.itemLevel
+      return character.itemLevel
     case "score":
-      return compareNullableLast(a.raiderIO?.score ?? null, b.raiderIO?.score ?? null)
+      return character.raiderIO?.score ?? null
     case "logHeroic":
-      return compareNullableLast(
-        a.warcraftLogs?.heroic?.bestPerformanceAverage ?? null,
-        b.warcraftLogs?.heroic?.bestPerformanceAverage ?? null
-      )
+      return character.warcraftLogs?.heroic?.bestPerformanceAverage ?? null
     case "logMythic":
-      return compareNullableLast(
-        a.warcraftLogs?.mythic?.bestPerformanceAverage ?? null,
-        b.warcraftLogs?.mythic?.bestPerformanceAverage ?? null
-      )
+      return character.warcraftLogs?.mythic?.bestPerformanceAverage ?? null
     case "raidProgress":
-      return compareNullableLast(getRaidProgressScore(a), getRaidProgressScore(b))
+      return getRaidProgressScore(character)
   }
 }
 
@@ -72,42 +61,22 @@ export const sortRoster = (
   direction: SortDirection
 ): RosterCharacter[] =>
   [...characters].sort((a, b) => {
-    const nullableColumns: SortColumn[] = ["score", "logHeroic", "logMythic", "raidProgress"]
-    if (nullableColumns.includes(column)) {
-      const scoreA = (() => {
-        switch (column) {
-          case "score":
-            return a.raiderIO?.score ?? null
-          case "logHeroic":
-            return a.warcraftLogs?.heroic?.bestPerformanceAverage ?? null
-          case "logMythic":
-            return a.warcraftLogs?.mythic?.bestPerformanceAverage ?? null
-          case "raidProgress":
-            return getRaidProgressScore(a)
-          default:
-            return null
-        }
-      })()
-      const scoreB = (() => {
-        switch (column) {
-          case "score":
-            return b.raiderIO?.score ?? null
-          case "logHeroic":
-            return b.warcraftLogs?.heroic?.bestPerformanceAverage ?? null
-          case "logMythic":
-            return b.warcraftLogs?.mythic?.bestPerformanceAverage ?? null
-          case "raidProgress":
-            return getRaidProgressScore(b)
-          default:
-            return null
-        }
-      })()
-      // null 은 방향과 무관하게 항상 마지막
-      if (scoreA === null && scoreB === null) return 0
-      if (scoreA === null) return 1
-      if (scoreB === null) return -1
+    const aValue = getValue(a, column)
+    const bValue = getValue(b, column)
+
+    // null은 방향 무관하게 항상 마지막
+    if (aValue === null && bValue === null) return 0
+    if (aValue === null) return 1
+    if (bValue === null) return -1
+
+    let comparison: number
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      comparison = aValue.localeCompare(bValue, "ko")
+    } else if (typeof aValue === "number" && typeof bValue === "number") {
+      comparison = aValue - bValue
+    } else {
+      comparison = 0
     }
 
-    const result = compareByColumn(a, b, column)
-    return direction === "asc" ? result : -result
+    return direction === "asc" ? comparison : -comparison
   })

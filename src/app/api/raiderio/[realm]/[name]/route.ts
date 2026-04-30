@@ -6,15 +6,21 @@ import { RAIDERIO_BASE_URL } from "@/shared/config/raiderio"
 import { toRealmSlug } from "@/shared/config/realms"
 import { CURRENT_SEASON } from "@/shared/config/season"
 import { handleRouteError } from "@/shared/lib/api-error"
+import { characterParamSchema } from "@/shared/lib/route-param-schema"
 
 interface Params {
-  realm: string
   name: string
+  realm: string
 }
 
 export const GET = async (_req: Request, { params }: { params: Promise<Params> }) => {
   try {
-    const { name, realm } = await params
+    const raw = await params
+    const parsed = characterParamSchema.safeParse(raw)
+    if (!parsed.success) {
+      return NextResponse.json({ error: "잘못된 요청입니다.", status: 400 }, { status: 400 })
+    }
+    const { name, realm } = parsed.data
     const realmSlug = toRealmSlug(realm)
 
     const { data } = await axios.get<RaiderIOProfile>(`${RAIDERIO_BASE_URL}/characters/profile`, {
@@ -26,7 +32,9 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
       },
     })
 
-    return NextResponse.json(data)
+    return NextResponse.json(data, {
+      headers: { "Cache-Control": "public, max-age=300, stale-while-revalidate=600" },
+    })
   } catch (error) {
     return handleRouteError(error)
   }

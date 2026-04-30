@@ -3,6 +3,7 @@ import nextVitals from "eslint-config-next/core-web-vitals"
 import nextTs from "eslint-config-next/typescript"
 import prettier from "eslint-config-prettier"
 import perfectionist from "eslint-plugin-perfectionist"
+import reactCompiler from "eslint-plugin-react-compiler"
 import unusedImports from "eslint-plugin-unused-imports"
 import { defineConfig, globalIgnores } from "eslint/config"
 
@@ -129,6 +130,14 @@ const eslintConfig = defineConfig([
       "react/no-array-index-key": "error",
       // self-closing 태그 강제
       "react/self-closing-comp": ["error", { component: true, html: true }],
+    },
+  },
+
+  // ─── React Compiler ────────────────────────────────────────────────────
+  {
+    plugins: { "react-compiler": reactCompiler },
+    rules: {
+      "react-compiler/react-compiler": "error",
     },
   },
 

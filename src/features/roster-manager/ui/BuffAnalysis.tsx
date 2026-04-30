@@ -1,88 +1,35 @@
 "use client"
 
-import Image from "next/image"
+import { cva } from "class-variance-authority"
+import { useTheme } from "next-themes"
 
 import {
   analyzeBuffCoverage,
   BUFF_CATEGORIES,
-  type BuffCategory,
   COUNTABLE_CATEGORIES,
-  wowheadIconUrl,
+  useRosterStore,
 } from "@/entities/character"
-import { useRosterStore } from "@/shared/model/roster-store"
 
-const CATEGORY_LABEL: Record<BuffCategory, string> = {
-  공생기: "공생기",
-  블러드: "블러드",
-  시너지: "시너지",
-  외생기: "외생기",
-  유틸: "유틸",
-  전투부활: "전투 부활",
-}
+import { CATEGORY_LABEL, INLINE_CATEGORIES } from "../config/buff-display"
+import { BuffCard } from "./BuffCard"
 
-// 블러드와 전투부활은 한 행에 나란히 표시
-const INLINE_CATEGORIES: BuffCategory[] = ["블러드", "전투부활"]
-
-interface BuffCardProps {
-  buff: ReturnType<typeof analyzeBuffCoverage>[number]
-  isCountable: boolean
-}
-
-const BuffCard = ({ buff, isCountable }: BuffCardProps) => (
-  <div
-    className={`flex items-start gap-2.5 rounded p-2 text-sm ${
-      buff.covered
-        ? "border border-emerald-500/40 bg-emerald-500/10 dark:border-emerald-500/30"
-        : "border border-red-400/30 bg-red-500/5 dark:border-red-500/20"
-    }`}
-  >
-    <div className="relative mt-0.5 shrink-0">
-      <Image
-        alt={buff.label}
-        className={`rounded ${buff.covered ? "" : "opacity-30 grayscale"}`}
-        height={24}
-        src={wowheadIconUrl(buff.icon)}
-        width={24}
-      />
-      <span
-        className={`absolute -right-1 -bottom-1 flex h-3 w-3 items-center justify-center rounded-full text-[8px] leading-none font-bold ${
-          buff.covered ? "bg-emerald-500 text-white" : "bg-red-500/60 text-white"
-        }`}
-      >
-        {buff.covered ? "✓" : "✗"}
-      </span>
-    </div>
-    <div className="min-w-0 flex-1">
-      <div className="flex items-baseline gap-1.5">
-        <p
-          className={`text-xs leading-snug font-medium ${
-            buff.covered ? "text-foreground" : "text-foreground/50"
-          }`}
-        >
-          {buff.label}
-        </p>
-        {isCountable && buff.covered && buff.count > 0 && (
-          <span className="shrink-0 rounded bg-emerald-500/20 px-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-            ×{buff.count}
-          </span>
-        )}
-      </div>
-      {buff.covered && (
-        <p className="mt-0.5 truncate text-[10px] text-emerald-600 dark:text-emerald-400/70">
-          {buff.providers.join(", ")}
-        </p>
-      )}
-    </div>
-  </div>
-)
+const coverageBadgeVariants = cva("rounded px-1.5 py-0.5 text-[10px] font-bold tabular-nums", {
+  variants: {
+    level: {
+      good: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+      medium: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
+      poor: "bg-red-500/15 text-red-600 dark:text-red-400",
+    },
+  },
+})
 
 export const BuffAnalysis = () => {
   const characters = useRosterStore((store) => store.characters)
   const coverage = analyzeBuffCoverage(characters)
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
 
   if (characters.length === 0) return null
-
-  // 이하 렌더는 characters가 있을 때만 도달
 
   const byCategory = BUFF_CATEGORIES.map((category) => ({
     buffs: coverage.filter((buff) => buff.category === category),
@@ -90,46 +37,70 @@ export const BuffAnalysis = () => {
     isCountable: (COUNTABLE_CATEGORIES as string[]).includes(category),
   }))
 
-  const inlineGroup = byCategory.filter(({ category }) => INLINE_CATEGORIES.includes(category))
-  const regularGroups = byCategory.filter(({ category }) => !INLINE_CATEGORIES.includes(category))
+  const inlineGroup = byCategory.filter(({ category }) => INLINE_CATEGORIES.has(category))
+  const regularGroups = byCategory.filter(({ category }) => !INLINE_CATEGORIES.has(category))
 
   const totalCovered = coverage.filter((buff) => buff.covered).length
   const total = coverage.length
+  const percent = Math.round((totalCovered / total) * 100)
+
+  const coverageLevel = percent >= 80 ? "good" : percent >= 50 ? "medium" : "poor"
 
   return (
-    <section className="border-border/40 bg-card/40 rounded-lg border p-5">
+    <section className="wow-panel border-border/60 bg-card/90 rounded-lg border p-5">
       <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <span className="text-primary font-semibold">버프 / 유틸 커버리지</span>
-          <span className="text-muted-foreground text-xs">
-            {totalCovered} / {total} 커버됨
+        {/* 헤더 */}
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-primary text-base font-bold tracking-wide">
+            버프 / 유틸 커버리지
           </span>
+          <div className="flex items-center gap-2">
+            <span className={coverageBadgeVariants({ level: coverageLevel })}>{percent}%</span>
+            <span className="text-muted-foreground/60 text-xs">
+              {totalCovered} / {total}
+            </span>
+          </div>
         </div>
 
-        <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">
+        {/* WoW 스타일 프로그레스 바 */}
+        <div className="relative h-2 w-full overflow-hidden rounded-sm border border-black/10 bg-black/5 shadow-[inset_0_1px_3px_rgba(0,0,0,0.15)] dark:border-white/5 dark:bg-black/40 dark:shadow-[inset_0_1px_4px_rgba(0,0,0,0.5)]">
           <div
-            className="bg-primary h-full rounded-full transition-all duration-500"
-            style={{ width: `${Math.round((totalCovered / total) * 100)}%` }}
+            className="h-full rounded-sm bg-linear-to-r from-amber-600 to-yellow-400 transition-[width] duration-700 ease-out dark:from-amber-500 dark:to-yellow-300 dark:shadow-[0_0_10px_rgba(250,200,50,0.5)]"
+            style={{ width: `${percent}%` }}
           />
         </div>
 
         {/* 블러드 + 전투부활 — 같은 행에 나란히 */}
         <div>
-          <div className="mb-2 flex items-center gap-4">
-            {inlineGroup.map(({ buffs, category }) => (
-              <div className="flex items-center gap-1.5" key={category}>
-                <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                  {CATEGORY_LABEL[category]}
-                </p>
-                <span className="text-muted-foreground/60 text-xs">
-                  {buffs.filter((b) => b.covered).length}/{buffs.length}
-                </span>
-              </div>
-            ))}
+          <div className="mb-2 flex items-center gap-6">
+            {inlineGroup.map(({ buffs, category, isCountable }) => {
+              const isBattleRez = category === "전투부활"
+              const totalProviderCount = isCountable
+                ? buffs.reduce((sum, buff) => sum + buff.count, 0)
+                : 0
+              return (
+                <div className="flex items-center gap-1.5" key={category}>
+                  <p className="text-muted-foreground/80 text-[10px] font-bold tracking-widest uppercase">
+                    {CATEGORY_LABEL[category]}
+                  </p>
+                  {isBattleRez ? (
+                    <span className="rounded bg-emerald-500/20 px-1 text-[9px] font-semibold text-emerald-600 tabular-nums dark:text-emerald-400">
+                      ×{totalProviderCount}
+                    </span>
+                  ) : (
+                    <span className="bg-primary/10 text-primary/70 rounded px-1 text-[9px] font-semibold tabular-nums">
+                      {buffs.filter((buff) => buff.covered).length}/{buffs.length}
+                    </span>
+                  )}
+                </div>
+              )
+            })}
           </div>
-          <div className="grid grid-cols-2 gap-1">
+          <div className="grid grid-cols-2 gap-1.5">
             {inlineGroup.flatMap(({ buffs, isCountable }) =>
-              buffs.map((buff) => <BuffCard buff={buff} isCountable={isCountable} key={buff.key} />)
+              buffs.map((buff) => (
+                <BuffCard buff={buff} isCountable={isCountable} isDark={isDark} key={buff.key} />
+              ))
             )}
           </div>
         </div>
@@ -139,17 +110,15 @@ export const BuffAnalysis = () => {
           const coveredCount = buffs.filter((buff) => buff.covered).length
           return (
             <div key={category}>
-              <div className="mb-2 flex items-center gap-2">
-                <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                  {CATEGORY_LABEL[category]}
-                </p>
-                <span className="text-muted-foreground/60 text-xs">
+              <p className="wow-section-title text-muted-foreground/80 mb-2">
+                {CATEGORY_LABEL[category]}
+                <span className="ml-1 text-[10px] font-normal tracking-normal normal-case opacity-55">
                   {coveredCount}/{buffs.length}
                 </span>
-              </div>
-              <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
+              </p>
+              <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
                 {buffs.map((buff) => (
-                  <BuffCard buff={buff} isCountable={isCountable} key={buff.key} />
+                  <BuffCard buff={buff} isCountable={isCountable} isDark={isDark} key={buff.key} />
                 ))}
               </div>
             </div>

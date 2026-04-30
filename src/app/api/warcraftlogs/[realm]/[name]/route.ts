@@ -1,13 +1,17 @@
 import axios from "axios"
 import { NextResponse } from "next/server"
 
-import { type RosterCharacterWCL } from "@/entities/character"
+import {
+  parseZoneRankings,
+  type RosterCharacterWCL,
+  ZONE_RANKINGS_QUERY,
+} from "@/entities/character"
 import { env } from "@/shared/config/env"
 import { toRealmSlug } from "@/shared/config/realms"
 import { WCL_GRAPHQL_URL } from "@/shared/config/warcraftlogs"
 import { handleRouteError } from "@/shared/lib/api-error"
+import { characterParamSchema } from "@/shared/lib/route-param-schema"
 import { getWCLToken } from "@/shared/lib/wcl-token"
-import { parseZoneRankings, ZONE_RANKINGS_QUERY } from "@/shared/lib/wcl-zone-rankings"
 
 interface Params {
   name: string
@@ -20,7 +24,12 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
   }
 
   try {
-    const { name, realm } = await params
+    const raw = await params
+    const parsed = characterParamSchema.safeParse(raw)
+    if (!parsed.success) {
+      return NextResponse.json({ error: "잘못된 요청입니다.", status: 400 }, { status: 400 })
+    }
+    const { name, realm } = parsed.data
     const token = await getWCLToken()
     const serverSlug = toRealmSlug(realm)
 
@@ -38,7 +47,9 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
       mythic: parseZoneRankings(characterData.mythic),
     }
 
-    return NextResponse.json(result)
+    return NextResponse.json(result, {
+      headers: { "Cache-Control": "public, max-age=600, stale-while-revalidate=1200" },
+    })
   } catch (error) {
     return handleRouteError(error)
   }
