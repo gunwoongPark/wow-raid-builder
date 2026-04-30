@@ -1,8 +1,17 @@
 import { ImageResponse } from "next/og"
 
-export const alt = "WoW Raid Builder — 공격대 버프·유틸 커버리지 분석"
+export const alt = "WoW Raid Builder — Raid Buff & Utility Coverage Analyzer"
 export const size = { height: 630, width: 1200 }
 export const contentType = "image/png"
+
+const tagStyle = {
+  background: "rgba(200, 160, 60, 0.15)",
+  border: "1px solid rgba(200, 160, 60, 0.4)",
+  borderRadius: "6px",
+  color: "#c9a84c",
+  fontSize: "20px",
+  padding: "8px 16px",
+}
 
 const OgImage = () =>
   new ImageResponse(
@@ -17,7 +26,6 @@ const OgImage = () =>
         width: "100%",
       }}
     >
-      {/* 상단 골드 장식선 */}
       <div
         style={{
           background:
@@ -28,7 +36,6 @@ const OgImage = () =>
         }}
       />
 
-      {/* 서비스명 */}
       <div
         style={{
           color: "#e8c96a",
@@ -36,46 +43,41 @@ const OgImage = () =>
           fontWeight: "700",
           letterSpacing: "4px",
           lineHeight: 1.1,
-          textShadow: "0 0 40px rgba(200, 160, 60, 0.6)",
         }}
       >
         WoW Raid Builder
       </div>
 
-      {/* 설명 */}
       <div
         style={{
           color: "#94a3b8",
-          fontSize: "32px",
+          fontSize: "30px",
           fontWeight: "400",
           lineHeight: 1.5,
           marginTop: "24px",
           maxWidth: "800px",
         }}
       >
-        공대장을 위한 공격대 구성 분석 도구
+        Raid composition analyzer for raid leaders.
+      </div>
+      <div
+        style={{
+          color: "#94a3b8",
+          fontSize: "30px",
+          fontWeight: "400",
+          lineHeight: 1.5,
+          maxWidth: "800px",
+        }}
+      >
+        Check buff & utility coverage at a glance.
       </div>
 
-      {/* 태그 */}
       <div style={{ display: "flex", gap: "12px", marginTop: "40px" }}>
-        {["버프 커버리지", "유틸 분석", "한밤 시즌 1"].map((tag) => (
-          <div
-            key={tag}
-            style={{
-              background: "rgba(200, 160, 60, 0.15)",
-              border: "1px solid rgba(200, 160, 60, 0.4)",
-              borderRadius: "6px",
-              color: "#c9a84c",
-              fontSize: "20px",
-              padding: "8px 16px",
-            }}
-          >
-            {tag}
-          </div>
-        ))}
+        <div style={tagStyle}>Buff Coverage</div>
+        <div style={tagStyle}>Utility Analysis</div>
+        <div style={tagStyle}>Midnight Season 1</div>
       </div>
 
-      {/* 하단 골드 장식선 */}
       <div
         style={{
           background:

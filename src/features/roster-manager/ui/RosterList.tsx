@@ -114,7 +114,7 @@ export const RosterList = () => {
           {/* 헤더 액션 버튼 */}
           <div className="flex shrink-0 flex-wrap items-center gap-1.5">
             <button
-              className="flex items-center gap-1 rounded border border-transparent px-2 py-1 text-xs text-sky-500/70 transition-all hover:border-sky-400/30 hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-40 dark:text-sky-400/70"
+              className="flex items-center gap-1 rounded border border-transparent px-2 py-1 text-xs text-sky-700 transition-all hover:border-sky-500/30 hover:bg-sky-500/10 hover:text-sky-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-sky-400/70 dark:hover:border-sky-400/30 dark:hover:text-sky-400"
               disabled={isRefreshing}
               onClick={handleRefreshAll}
             >
@@ -125,7 +125,7 @@ export const RosterList = () => {
             </button>
 
             <button
-              className="flex items-center gap-1 rounded border border-transparent px-2 py-1 text-xs text-emerald-600/70 transition-all hover:border-emerald-400/30 hover:bg-emerald-400/10 hover:text-emerald-500 dark:text-emerald-400/70 dark:hover:text-emerald-400"
+              className="flex items-center gap-1 rounded border border-transparent px-2 py-1 text-xs text-emerald-700 transition-all hover:border-emerald-500/30 hover:bg-emerald-500/10 hover:text-emerald-600 dark:text-emerald-400/70 dark:hover:border-emerald-400/30 dark:hover:text-emerald-400"
               onClick={handleCopyLink}
             >
               <Link className="size-3" />
@@ -133,7 +133,7 @@ export const RosterList = () => {
             </button>
 
             <button
-              className="rounded border border-transparent px-2 py-1 text-xs text-red-400/40 transition-all hover:border-red-400/25 hover:bg-red-400/8 hover:text-red-400"
+              className="rounded border border-transparent px-2 py-1 text-xs text-red-600/70 transition-all hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-600 dark:text-red-400/40 dark:hover:border-red-400/25 dark:hover:text-red-400"
               onClick={clearRoster}
             >
               전체 초기화

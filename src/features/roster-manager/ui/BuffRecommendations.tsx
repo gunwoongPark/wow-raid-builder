@@ -1,10 +1,14 @@
 "use client"
 
+import { useTheme } from "next-themes"
+
 import { analyzeBuffCoverage, getBuffRecommendations, useRosterStore } from "@/entities/character"
-import { getClassColor } from "@/shared/config/class-colors"
+import { getClassColor, getClassColorLight } from "@/shared/config/class-colors"
 
 export const BuffRecommendations = () => {
   const characters = useRosterStore((store) => store.characters)
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
 
   if (!characters.length) return null
 
@@ -31,7 +35,7 @@ export const BuffRecommendations = () => {
 
         <ul className="flex flex-col gap-2">
           {recommendations.map((rec) => {
-            const color = getClassColor(rec.className)
+            const color = isDark ? getClassColor(rec.className) : getClassColorLight(rec.className)
             const otherLabels = rec.buffLabels.filter((label) => !rec.synergyLabels.includes(label))
 
             return (

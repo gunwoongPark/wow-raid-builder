@@ -29,14 +29,14 @@ const PresetItem = ({ onDelete, onLoad, preset }: PresetItemProps) => {
       </div>
       <div className="flex shrink-0 gap-1.5">
         <button
-          className="border-primary/30 text-primary/70 hover:bg-primary/10 rounded border px-2.5 py-1 text-xs transition-colors"
+          className="border-primary/60 text-primary hover:bg-primary/10 dark:border-primary/30 dark:text-primary/70 rounded border px-2.5 py-1 text-xs transition-colors"
           onClick={handleLoad}
         >
           불러오기
         </button>
         <button
           aria-label={`${preset.name} 프리셋 삭제`}
-          className="rounded border border-transparent px-2.5 py-1 text-xs text-red-400/50 transition-colors hover:border-red-400/25 hover:bg-red-400/10 hover:text-red-400"
+          className="rounded border border-transparent px-2.5 py-1 text-xs text-red-600/70 transition-colors hover:border-red-500/25 hover:bg-red-500/10 hover:text-red-600 dark:text-red-400/50 dark:hover:border-red-400/25 dark:hover:text-red-400"
           onClick={handleDelete}
         >
           삭제
@@ -123,7 +123,7 @@ export const PresetManager = () => {
               value={presetName}
             />
             <button
-              className="border-primary/40 text-primary hover:bg-primary/10 shrink-0 rounded border px-4 py-2 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+              className="border-primary/70 text-primary hover:bg-primary/10 dark:border-primary/40 shrink-0 rounded border px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40"
               disabled={!presetName.trim() || !characters.length}
               type="submit"
             >
