@@ -20,8 +20,10 @@ interface CharacterRowProps {
 export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps) => {
   // 변수부
   const removeCharacter = useRosterStore((store) => store.removeCharacter)
-  const isPendingRaiderIO = useRosterStore((store) => store.pendingRaiderIOIds.has(character.id))
-  const isPendingWCL = useRosterStore((store) => store.pendingWCLIds.has(character.id))
+  const storePendingRaiderIO = useRosterStore((store) => store.pendingRaiderIOIds.has(character.id))
+  const storePendingWCL = useRosterStore((store) => store.pendingWCLIds.has(character.id))
+  const isPendingRaiderIO = isRefreshing || storePendingRaiderIO
+  const isPendingWCL = isRefreshing || storePendingWCL
   const classColor = getClassColor(character.className)
   const score = character.raiderIO?.score ?? 0
   const progression = character.raiderIO?.raidProgression
@@ -165,7 +167,8 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
           </button>
           <div className="bg-border/40 h-4 w-px" />
           <button
-            className="text-muted-foreground/40 rounded border border-transparent p-1.5 text-xs transition-all hover:border-red-400/25 hover:bg-red-400/10 hover:text-red-400"
+            className="text-muted-foreground/40 rounded border border-transparent p-1.5 text-xs transition-all hover:border-red-400/25 hover:bg-red-400/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-30"
+            disabled={isRefreshing}
             onClick={handleRemove}
             title="제거"
           >

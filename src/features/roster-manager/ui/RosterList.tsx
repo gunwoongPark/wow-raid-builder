@@ -164,7 +164,7 @@ export const RosterList = () => {
               {sorted.map((character) => (
                 <CharacterRow
                   character={character}
-                  isRefreshing={refreshingIds.has(character.id)}
+                  isRefreshing={refreshingIds.has(character.id) || isRefreshing}
                   key={character.id}
                   onRefresh={refreshOne}
                 />
