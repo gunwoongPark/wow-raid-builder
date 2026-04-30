@@ -6,12 +6,11 @@ import { useTheme } from "next-themes"
 import {
   analyzeBuffCoverage,
   BUFF_CATEGORIES,
-  type BuffCategory,
   COUNTABLE_CATEGORIES,
   useRosterStore,
 } from "@/entities/character"
 
-import { BuffCard } from "./BuffCard"
+import { CATEGORY_LABEL, INLINE_CATEGORIES } from "../config/buff-display"
 
 const coverageBadgeVariants = cva("rounded px-1.5 py-0.5 text-[10px] font-bold tabular-nums", {
   variants: {
@@ -22,18 +21,7 @@ const coverageBadgeVariants = cva("rounded px-1.5 py-0.5 text-[10px] font-bold t
     },
   },
 })
-
-const CATEGORY_LABEL: Record<BuffCategory, string> = {
-  공생기: "공생기",
-  블러드: "블러드",
-  시너지: "시너지",
-  외생기: "외생기",
-  유틸: "유틸",
-  전투부활: "전투 부활",
-}
-
-// 블러드와 전투부활은 한 행에 나란히 표시
-const INLINE_CATEGORIES = new Set<BuffCategory>(["블러드", "전투부활"])
+import { BuffCard } from "./BuffCard"
 
 export const BuffAnalysis = () => {
   const characters = useRosterStore((store) => store.characters)
