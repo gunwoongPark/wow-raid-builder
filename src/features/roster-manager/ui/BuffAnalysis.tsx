@@ -73,16 +73,26 @@ export const BuffAnalysis = () => {
         {/* 블러드 + 전투부활 — 같은 행에 나란히 */}
         <div>
           <div className="mb-2 flex items-center gap-6">
-            {inlineGroup.map(({ buffs, category }) => (
-              <div className="flex items-center gap-1.5" key={category}>
-                <p className="text-muted-foreground/80 text-[10px] font-bold tracking-widest uppercase">
-                  {CATEGORY_LABEL[category]}
-                </p>
-                <span className="bg-primary/10 text-primary/70 rounded px-1 text-[9px] font-semibold tabular-nums">
-                  {buffs.filter((buff) => buff.covered).length}/{buffs.length}
-                </span>
-              </div>
-            ))}
+            {inlineGroup.map(({ buffs, category, isCountable }) => {
+              const totalProviderCount = isCountable
+                ? buffs.reduce((sum, buff) => sum + buff.count, 0)
+                : 0
+              return (
+                <div className="flex items-center gap-1.5" key={category}>
+                  <p className="text-muted-foreground/80 text-[10px] font-bold tracking-widest uppercase">
+                    {CATEGORY_LABEL[category]}
+                  </p>
+                  <span className="bg-primary/10 text-primary/70 rounded px-1 text-[9px] font-semibold tabular-nums">
+                    {buffs.filter((buff) => buff.covered).length}/{buffs.length}
+                  </span>
+                  {totalProviderCount > 0 && (
+                    <span className="rounded bg-emerald-500/20 px-1 text-[9px] font-semibold text-emerald-600 tabular-nums dark:text-emerald-400">
+                      ×{totalProviderCount}
+                    </span>
+                  )}
+                </div>
+              )
+            })}
           </div>
           <div className="grid grid-cols-2 gap-1.5">
             {inlineGroup.flatMap(({ buffs, isCountable }) =>
