@@ -37,6 +37,11 @@ export const metadata: Metadata = {
   authors: [{ name: "WoW Raid Builder" }],
   description:
     "공대장을 위한 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 한눈에 파악하세요. 한밤(Midnight) 시즌 1 기준.",
+  icons: {
+    apple: "/apple-icon",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+  },
   keywords: [
     "WoW",
     "World of Warcraft",
@@ -63,6 +68,13 @@ export const metadata: Metadata = {
   },
   robots: {
     follow: true,
+    googleBot: {
+      follow: true,
+      index: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
     index: true,
   },
   title: {
@@ -97,6 +109,12 @@ export const RootLayout = ({
       className={`${geistMono.variable} ${cinzel.variable} ${pretendard.variable} h-full antialiased`}
       lang="ko"
     >
+      <head>
+        {/* 외부 이미지 리소스 preconnect — 첫 로드 속도 개선 */}
+        <link crossOrigin="anonymous" href="https://wow.zamimg.com" rel="preconnect" />
+        <link href="https://render.worldofwarcraft.com" rel="preconnect" />
+        <link crossOrigin="anonymous" href="https://cdnassets.raider.io" rel="preconnect" />
+      </head>
       <body className="flex min-h-full flex-col">
         <AppThemeProvider>
           <QueryProvider>{children}</QueryProvider>

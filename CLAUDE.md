@@ -8,22 +8,12 @@
 
 ## 코딩 규칙 (반드시 준수)
 
-1. **줄임말 금지** — 변수·함수·타입·파라미터 모두. `pct→percent`, `avg→average`, `idx→index`, `c→character`
-   예외: `ref`(React), `props`, `params`(Next.js)
-
+1. **줄임말 금지** — `pct→percent`, `avg→average`, `idx→index`, `c→character`. 예외: `ref`, `props`, `params`
 2. **WCL 표현** — UI·코드 모두 `parse` 대신 `log`. `parseColorClass→logColorClass`
-
 3. **컴포넌트 코드 순서** — `스토어·상태·ref·커스텀훅` → `핸들러 함수` → `useEffect` → `return JSX`
-
-4. **상수·타입·유틸 분리 (FSD)** — 컴포넌트 밖으로 분리.
-   표시용 상수→`feature/config/`, 도메인 유틸→`feature/lib/`, 범용→`shared/lib/`
-   파일명은 도메인명 (❌`utils.ts` / ✅`log-color.ts`)
-   **예외**: 컴포넌트 전용 `interface XxxProps`는 컴포넌트 파일 내부에 둔다.
-
-5. **lodash-es 우선** — debounce·타입 체킹은 직접 구현 금지. tree-shaking을 위해 `lodash` 아닌 `lodash-es`.
-
+4. **상수·타입·유틸 분리 (FSD)** — 표시용 상수→`feature/config/`, 도메인 유틸→`feature/lib/`, 범용→`shared/lib/`. 파일명은 도메인명 (❌`utils.ts` / ✅`log-color.ts`). 예외: `interface XxxProps`는 컴포넌트 파일 내부.
+5. **lodash-es 우선** — debounce·타입 체킹 직접 구현 금지. tree-shaking을 위해 `lodash` 아닌 `lodash-es`.
 6. **중복 금지** — 동일 값·로직 2곳 이상 반복 시 공통 위치로 추출.
-
 7. **FSD import 방향** — `app→features→entities→shared`. 같은 레이어 cross-import 금지. 슬라이스는 `index.ts`로만 노출.
 
 ---
@@ -40,7 +30,7 @@
 
 | 역할   | 선택                                                              |
 | ------ | ----------------------------------------------------------------- |
-| 프레임 | Next.js 16 (App Router, Turbopack)                                |
+| 프레임 | Next.js 16 (App Router, Turbopack, React Compiler)                |
 | 상태   | TanStack Query v5 (`@lukemorales/query-key-factory`) + Zustand v5 |
 | 폼     | React Hook Form v7 + Zod v4                                       |
 | HTTP   | Axios (인스턴스 + interceptor)                                    |
@@ -54,78 +44,60 @@
 
 ```
 app/
-  api/character/[realm]/[name]/   ← Blizzard 캐릭터 (Route Handler)
+  api/character/[realm]/[name]/   ← Blizzard 캐릭터
   api/character/search/           ← 캐릭터 검색 자동완성
   api/raiderio/[realm]/[name]/    ← Raider.IO 프록시
   api/warcraftlogs/[realm]/[name]/← WCL 프록시
+  apple-icon.tsx / opengraph-image.tsx  ← ImageResponse 아이콘·OG 이미지
+  error.tsx / global-error.tsx / not-found.tsx ← 에러·404 UI
+  manifest.ts / robots.ts / sitemap.ts  ← SEO 정적 파일
   layout.tsx / page.tsx / globals.css
 
 entities/character/
-  api.ts              ← fetch 함수
-  buffs.ts            ← 버프/유틸 정의 (한밤 기준)
-  config/
-    spec-role.ts      ← 스펙ID→역할 매핑
+  api.ts              ← fetch 함수, buildRaiderIOProfile
+  buffs.ts            ← 버프/유틸 정의 (한밤 기준), analyzeBuffCoverage
+  config/spec-role.ts ← 스펙ID→역할 매핑
   lib/
-    roster-url.ts     ← 로스터 URL 인코딩/디코딩, extractRealmSlug
+    buff-recommendations.ts ← getBuffRecommendations (시너지 우선)
+    roster-url.ts     ← URL 인코딩/디코딩, extractRealmSlug
     wcl-zone-rankings.ts ← WCL GraphQL 쿼리 + parseZoneRankings
-  model/
-    roster-store.ts   ← Zustand persist (MAX_ROSTER_SIZE=30)
-  queries.ts          ← TanStack Query 훅
-  types.ts            ← RosterCharacter, WCLZoneRankings 등
-  index.ts            ← public API (모든 외부 import는 여기서만)
+  model/roster-store.ts ← Zustand persist (MAX_ROSTER_SIZE=30)
+  queries.ts / types.ts / index.ts
 
 features/character-search/
-  ui/CharacterSearchForm.tsx      ← Combobox (useDebounce 350ms)
+  ui/CharacterSearchForm.tsx  ← Combobox (useDebounce 350ms)
   index.ts
 
 features/roster-manager/
-  config/roster-display.ts        ← ROLE_LABEL, ROLE_COLOR, ROLE_SORT_ORDER
-  lib/fetch-character.ts          ← 캐릭터 데이터 병렬 fetch
-  lib/log-color.ts                ← LogVariant, logColorClass, logVariant
-  lib/sort-roster.ts              ← 로스터 정렬 로직
-  model/useRosterSync.ts          ← URL ↔ 스토어 동기화 훅
+  config/
+    buff-display.ts     ← CATEGORY_LABEL, INLINE_CATEGORIES
+    roster-display.ts   ← ROLE_LABEL, ROLE_COLOR, ROLE_SORT_ORDER
+    table-columns.ts    ← HEADER_COLUMNS
+  lib/
+    fetch-character.ts / log-color.ts / score-color.ts / sort-roster.ts
+  model/
+    preset-store.ts     ← 로스터 프리셋 Zustand persist
+    useRosterSync.ts    ← URL ↔ 스토어 동기화 훅
   ui/
-    BuffAnalysis.tsx              ← 커버리지 분석 메인
-    BuffCard.tsx                  ← 버프 카드 (cva 변형)
-    CharacterRow.tsx              ← 캐릭터 테이블 행
-    LogCell.tsx                   ← WCL 로그 % 셀
-    ProviderBadge.tsx             ← 직업 색상 제공자 뱃지
-    RosterList.tsx                ← 테이블 + 정렬/액션 로직
-    RosterUrlLoader.tsx           ← URL ?r= 파라미터 로더
-    ScoreCell.tsx                 ← M+ 점수 셀
-    SortableHeaderCell.tsx        ← 정렬 가능 헤더 셀
+    BuffAnalysis.tsx / BuffCard.tsx / BuffRecommendations.tsx
+    CharacterRow.tsx / LogCell.tsx / PresetManager.tsx
+    ProviderBadge.tsx / RosterList.tsx / RosterUrlLoader.tsx
+    ScoreCell.tsx / SortIcon.tsx / SortableHeaderCell.tsx
   index.ts
 
 shared/
-  api/
-    axios.ts           ← apiClient (Raider.IO·WCL용)
-    blizzard-client.ts ← blizzardClient (OAuth interceptor)
-  config/
-    class-colors.ts    ← 클래스 색상 맵
-    env.ts             ← 서버 환경변수 검증
-    raiderio.ts        ← Raider.IO Base URL
-    realms.ts          ← 한→영 realm slug 매핑
-    season.ts          ← CURRENT_SEASON, CURRENT_WCL_ZONE_ID (시즌 변경 시 이 파일만)
-    warcraftlogs.ts    ← WCL 엔드포인트
-  lib/
-    api-error.ts       ← API 에러 처리
-    blizzard-fetch.ts  ← Blizzard fetch 헬퍼
-    blizzard-token.ts  ← OAuth 토큰 캐시
-    query-client.ts    ← QueryClient 설정
-    query-keys.ts      ← query-key-factory 정의
-    query-provider.tsx ← QueryClientProvider
-    theme-provider.tsx ← 다크모드 Provider
-    use-debounce.ts
-    wcl-token.ts       ← WCL OAuth 토큰 캐시
-  types/
-    blizzard.ts        ← Blizzard API 응답 타입
-  ui/
-    AppToaster.tsx     ← sonner Toaster
-    ThemeToggle.tsx
+  api/   axios.ts · blizzard-client.ts
+  config/ class-colors.ts · env.ts · raiderio.ts · realms.ts · season.ts · warcraftlogs.ts
+  lib/   api-error.ts · blizzard-fetch.ts · blizzard-token.ts
+         query-client.ts · query-keys.ts · query-provider.tsx
+         route-param-schema.ts  ← Route Handler 파라미터 Zod 검증
+         theme-provider.tsx · use-debounce.ts · wcl-token.ts
+  types/ blizzard.ts
+  ui/    AppToaster.tsx · NetworkStatusMonitor.tsx · ThemeToggle.tsx
 
 # FSD 외 — shadcn/ui 컨벤션 유지
-components/ui/        ← shadcn 컴포넌트 + warcraftcn
-lib/utils.ts          ← cn() (tailwind-merge)
+components/ui/  ← shadcn + warcraftcn (wow-btn 등 CSS 클래스 포함)
+lib/utils.ts    ← cn() (tailwind-merge)
 ```
 
 ### RosterCharacter 주요 필드
@@ -141,7 +113,6 @@ lib/utils.ts          ← cn() (tailwind-merge)
 - **한밤(Midnight) 기준**. 각 `BuffSource`에 `spellId` + `icon` 포함.
 - 아이콘: `wowheadIconUrl(icon)` → `https://wow.zamimg.com/images/wow/icons/medium/{icon}.jpg`
 - 카테고리: `"블러드" | "전투부활" | "시너지" | "외생기" | "공생기" | "유틸"`
-- `COUNTABLE_CATEGORIES`: 모든 카테고리 개수 표시
 - 클래스/특성명은 한국 WoW 공식 명칭 사용 (팔라딘❌→성기사✅, 안개술사❌→운무 수도사✅)
 
 ---
@@ -178,18 +149,20 @@ CURRENT_RAID_NAME = "VS / DR / MQD"
 
 ## Known Gotchas
 
-| 문제                      | 원인                                | 해결                                 |
-| ------------------------- | ----------------------------------- | ------------------------------------ |
-| CSS `@import` 오류        | 다른 규칙 뒤에 위치                 | 파일 최상단에 배치                   |
-| Combobox z-index 무효     | `backdrop-blur-sm` stacking context | 검색 섹션에서 제거                   |
-| warcraftcn CSS asset 오류 | 미설치 컴포넌트 로컬 경로           | CDN URL로 교체                       |
-| 한글 검색 빈 배열         | axios params 한글 인코딩 깨짐       | URL 직접 구성 + `encodeURIComponent` |
+| 문제                       | 원인                                | 해결                                   |
+| -------------------------- | ----------------------------------- | -------------------------------------- |
+| CSS `@import` 오류         | 다른 규칙 뒤에 위치                 | 파일 최상단에 배치                     |
+| Combobox z-index 무효      | `backdrop-blur-sm` stacking context | 검색 섹션에서 제거                     |
+| 한글 검색 빈 배열          | axios params 한글 인코딩 깨짐       | URL 직접 구성 + `encodeURIComponent`   |
+| OG 이미지 한글 렌더링 실패 | Edge Runtime Dynamic font 미지원    | opengraph-image.tsx에 한글 텍스트 금지 |
+| 라이트 모드 색상 저대비    | 다크 전용 oklch/opacity 값          | `dark:` prefix 분리, light용 별도 지정 |
 
 ---
 
 ## 환경변수
 
 ```bash
+NEXT_PUBLIC_BASE_URL=            # 배포 URL (SEO canonical, OG)
 BLIZZARD_CLIENT_ID=
 BLIZZARD_CLIENT_SECRET=
 WARCRAFT_LOGS_CLIENT_ID=

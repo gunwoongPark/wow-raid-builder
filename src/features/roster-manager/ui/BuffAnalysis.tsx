@@ -34,7 +34,7 @@ export const BuffAnalysis = () => {
   const byCategory = BUFF_CATEGORIES.map((category) => ({
     buffs: coverage.filter((buff) => buff.category === category),
     category,
-    isCountable: (COUNTABLE_CATEGORIES as string[]).includes(category),
+    isCountable: COUNTABLE_CATEGORIES.includes(category),
   }))
 
   const inlineGroup = byCategory.filter(({ category }) => INLINE_CATEGORIES.has(category))
@@ -108,14 +108,33 @@ export const BuffAnalysis = () => {
         {/* 나머지 카테고리 */}
         {regularGroups.map(({ buffs, category, isCountable }) => {
           const coveredCount = buffs.filter((buff) => buff.covered).length
+          const categoryPercent =
+            buffs.length === 0 ? 0 : Math.round((coveredCount / buffs.length) * 100)
+          const categoryLevel =
+            categoryPercent >= 80 ? "good" : categoryPercent > 0 ? "medium" : "poor"
+          const barColor =
+            categoryLevel === "good"
+              ? "bg-linear-to-r from-emerald-600 to-emerald-400 dark:from-emerald-500 dark:to-emerald-300"
+              : categoryLevel === "medium"
+                ? "bg-linear-to-r from-amber-600 to-yellow-400 dark:from-amber-500 dark:to-yellow-300"
+                : "bg-linear-to-r from-red-700 to-red-500"
+
           return (
             <div key={category}>
-              <p className="wow-section-title text-muted-foreground/80 mb-2">
-                {CATEGORY_LABEL[category]}
-                <span className="ml-1 text-[10px] font-normal tracking-normal normal-case opacity-55">
+              <div className="mb-2 flex items-center gap-3">
+                <p className="wow-section-title text-muted-foreground/80 shrink-0">
+                  {CATEGORY_LABEL[category]}
+                </p>
+                <div className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-black/10 dark:bg-white/5">
+                  <div
+                    className={`h-full rounded-full transition-[width] duration-500 ease-out ${barColor}`}
+                    style={{ width: `${categoryPercent}%` }}
+                  />
+                </div>
+                <span className={coverageBadgeVariants({ level: categoryLevel })}>
                   {coveredCount}/{buffs.length}
                 </span>
-              </p>
+              </div>
               <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
                 {buffs.map((buff) => (
                   <BuffCard buff={buff} isCountable={isCountable} isDark={isDark} key={buff.key} />

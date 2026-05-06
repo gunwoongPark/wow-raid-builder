@@ -1,4 +1,5 @@
 export { buildRaiderIOProfile, characterApi } from "./api"
+export { type BuffRecommendation, getBuffRecommendations } from "./lib/buff-recommendations"
 export { analyzeBuffCoverage, BUFF_CATEGORIES, COUNTABLE_CATEGORIES, wowheadIconUrl } from "./buffs"
 export type { BuffCategory, BuffCoverage, BuffKey, CandidateProvider } from "./buffs"
 export { SPEC_ROLE_MAP } from "./config/spec-role"

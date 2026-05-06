@@ -142,7 +142,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
             <span className="text-blue-700 dark:text-blue-400">
               H {progression.heroic_bosses_killed}/{progression.total_bosses}
             </span>
-            <span className="text-yellow-600 dark:text-yellow-500">
+            <span className="text-amber-700 dark:text-yellow-500">
               M {progression.mythic_bosses_killed}/{progression.total_bosses}
             </span>
           </div>
@@ -156,7 +156,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
         <div className="flex items-center gap-2">
           <button
             aria-label="최신화"
-            className="text-muted-foreground/40 rounded border border-transparent p-1.5 transition-all hover:border-sky-400/25 hover:bg-sky-400/10 hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-30"
+            className="dark:text-muted-foreground/40 rounded border border-transparent p-1.5 text-stone-400 transition-all hover:border-sky-500/25 hover:bg-sky-500/10 hover:text-sky-600 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:border-sky-400/25 dark:hover:text-sky-400"
             disabled={isRefreshing}
             onClick={handleRefresh}
             title="최신화"
@@ -168,7 +168,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
           <div className="bg-border/40 h-4 w-px" />
           <button
             aria-label={`${character.name} 제거`}
-            className="text-muted-foreground/40 rounded border border-transparent p-1.5 text-xs transition-all hover:border-red-400/25 hover:bg-red-400/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-30"
+            className="dark:text-muted-foreground/40 rounded border border-transparent p-1.5 text-xs text-stone-400 transition-all hover:border-red-500/25 hover:bg-red-500/10 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:border-red-400/25 dark:hover:text-red-400"
             disabled={isRefreshing}
             onClick={handleRemove}
             title="제거"
