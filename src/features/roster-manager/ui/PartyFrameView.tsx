@@ -11,6 +11,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core"
+import { arrayMove } from "@dnd-kit/sortable"
 import { useState } from "react"
 
 import { type RosterCharacter, useRosterStore } from "@/entities/character"
@@ -144,8 +145,10 @@ const UnassignedPool = ({ characters, isDragging }: UnassignedPoolProps) => {
 export const PartyFrameView = () => {
   const characters = useRosterStore((store) => store.characters)
   const partyAssignments = useRosterStore((store) => store.partyAssignments)
+  const partyOrder = useRosterStore((store) => store.partyOrder)
   const assignToParty = useRosterStore((store) => store.assignToParty)
   const unassignFromParty = useRosterStore((store) => store.unassignFromParty)
+  const reorderParty = useRosterStore((store) => store.reorderParty)
   const setPartyAssignments = useRosterStore((store) => store.setPartyAssignments)
   const clearPartyAssignments = useRosterStore((store) => store.clearPartyAssignments)
 
@@ -153,7 +156,6 @@ export const PartyFrameView = () => {
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      // 5px 이동 후 드래그 시작 — 버튼 클릭과 충돌 방지
       activationConstraint: { distance: 5 },
     })
   )
@@ -177,20 +179,41 @@ export const PartyFrameView = () => {
     const dropTarget = String(over.id)
     const currentParty = partyAssignments[characterId]
 
+    // 1. 미배정 풀로 드롭 → 배정 해제
     if (dropTarget === "pool") {
       if (currentParty !== undefined) unassignFromParty(characterId)
       return
     }
 
+    // 2. 파티 카드 빈 공간으로 드롭 → 파티 이동
     if (dropTarget.startsWith("party-")) {
       const partyNumber = parseInt(dropTarget.replace("party-", ""), 10)
       if (isNaN(partyNumber) || currentParty === partyNumber) return
-
-      // 정원 초과 시 드롭 무시
       const partySize = characters.filter((c) => partyAssignments[c.id] === partyNumber).length
       if (partySize >= MAX_PARTY_SIZE) return
-
       assignToParty(characterId, partyNumber)
+      return
+    }
+
+    // 3. 다른 캐릭터 슬롯으로 드롭 → 같은 파티면 순서 변경, 다른 파티면 이동
+    const overCharacter = characters.find((c) => c.id === dropTarget)
+    if (!overCharacter) return
+
+    const overParty = partyAssignments[overCharacter.id]
+
+    if (overParty === currentParty && currentParty !== undefined) {
+      // 파티 내 순서 변경
+      const currentOrder = partyOrder[currentParty] ?? []
+      const oldIndex = currentOrder.indexOf(characterId)
+      const newIndex = currentOrder.indexOf(dropTarget)
+      if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+        reorderParty(currentParty, arrayMove(currentOrder, oldIndex, newIndex))
+      }
+    } else if (overParty !== undefined) {
+      // 다른 파티의 캐릭터 위로 드롭 → 그 파티로 이동
+      const partySize = characters.filter((c) => partyAssignments[c.id] === overParty).length
+      if (partySize >= MAX_PARTY_SIZE) return
+      assignToParty(characterId, overParty)
     }
   }
 
@@ -225,9 +248,14 @@ export const PartyFrameView = () => {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: PARTY_COUNT }, (_, i) => {
             const partyNumber = i + 1
-            const partyCharacters = characters.filter((c) => partyAssignments[c.id] === partyNumber)
+            const orderedIds = partyOrder[partyNumber] ?? []
+            // partyOrder 기반으로 순서 유지, store에서 캐릭터 조회
+            const partyCharacters = orderedIds
+              .map((id) => characters.find((c) => c.id === id))
+              .filter((c): c is RosterCharacter => c !== undefined)
             return (
               <PartyCard
+                characterIds={orderedIds}
                 characters={partyCharacters}
                 isDragging={isDragging}
                 key={partyNumber}
@@ -238,7 +266,7 @@ export const PartyFrameView = () => {
         </div>
       </div>
 
-      {/* 드래그 오버레이 — DndContext 내부에 있어야 포인터 위치 추적 */}
+      {/* 드래그 오버레이 */}
       <DragOverlay>
         {activeCharacter && <CharacterDragCard character={activeCharacter} />}
       </DragOverlay>

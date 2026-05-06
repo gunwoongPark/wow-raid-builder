@@ -8,6 +8,7 @@ export const MAX_ROSTER_SIZE = 30
 interface RosterState {
   characters: RosterCharacter[]
   partyAssignments: Record<string, number>
+  partyOrder: Record<number, string[]>
   pendingRaiderIOIds: Set<string>
   pendingWCLIds: Set<string>
   addCharacter: (character: RosterCharacter) => void
@@ -18,6 +19,7 @@ interface RosterState {
   unassignFromParty: (id: string) => void
   setPartyAssignments: (assignments: Record<string, number>) => void
   clearPartyAssignments: () => void
+  reorderParty: (partyNumber: number, characterIds: string[]) => void
   setPendingRaiderIO: (id: string, pending: boolean) => void
   setPendingWCL: (id: string, pending: boolean) => void
 }
@@ -33,17 +35,36 @@ export const useRosterStore = create<RosterState>()(
         }),
 
       assignToParty: (id, partyNumber) =>
-        set((state) => ({
-          partyAssignments: { ...state.partyAssignments, [id]: partyNumber },
-        })),
+        set((state) => {
+          const prevParty = state.partyAssignments[id]
+          const prevOrder = { ...state.partyOrder }
+
+          // 이전 파티에서 제거
+          if (prevParty !== undefined) {
+            prevOrder[prevParty] = (prevOrder[prevParty] ?? []).filter((cid) => cid !== id)
+          }
+
+          // 새 파티에 추가 (중복 방지)
+          const nextPartyOrder = prevOrder[partyNumber] ?? []
+          if (!nextPartyOrder.includes(id)) {
+            prevOrder[partyNumber] = [...nextPartyOrder, id]
+          }
+
+          return {
+            partyAssignments: { ...state.partyAssignments, [id]: partyNumber },
+            partyOrder: prevOrder,
+          }
+        }),
 
       characters: [],
 
-      clearPartyAssignments: () => set({ partyAssignments: {} }),
+      clearPartyAssignments: () => set({ partyAssignments: {}, partyOrder: {} }),
 
-      clearRoster: () => set({ characters: [], partyAssignments: {} }),
+      clearRoster: () => set({ characters: [], partyAssignments: {}, partyOrder: {} }),
 
       partyAssignments: {},
+
+      partyOrder: {},
 
       pendingRaiderIOIds: new Set(),
 
@@ -55,17 +76,41 @@ export const useRosterStore = create<RosterState>()(
           const pendingWCLIds = new Set(state.pendingWCLIds)
           pendingRaiderIOIds.delete(id)
           pendingWCLIds.delete(id)
+
           const partyAssignments = { ...state.partyAssignments }
+          const partyNumber = partyAssignments[id]
           delete partyAssignments[id]
+
+          const partyOrder = { ...state.partyOrder }
+          if (partyNumber !== undefined) {
+            partyOrder[partyNumber] = (partyOrder[partyNumber] ?? []).filter((cid) => cid !== id)
+          }
+
           return {
             characters: state.characters.filter((c) => c.id !== id),
             partyAssignments,
+            partyOrder,
             pendingRaiderIOIds,
             pendingWCLIds,
           }
         }),
 
-      setPartyAssignments: (assignments) => set({ partyAssignments: assignments }),
+      reorderParty: (partyNumber, characterIds) =>
+        set((state) => ({
+          partyOrder: { ...state.partyOrder, [partyNumber]: characterIds },
+        })),
+
+      // autoAssignParties 결과로 전체 일괄 설정 시 order도 함께 재구성
+      setPartyAssignments: (assignments) =>
+        set(() => {
+          const order: Record<number, string[]> = {}
+          for (const [id, partyNumber] of Object.entries(assignments)) {
+            const party = partyNumber
+            if (!order[party]) order[party] = []
+            order[party].push(id)
+          }
+          return { partyAssignments: assignments, partyOrder: order }
+        }),
 
       setPendingRaiderIO: (id, pending) =>
         set((state) => {
@@ -86,8 +131,15 @@ export const useRosterStore = create<RosterState>()(
       unassignFromParty: (id) =>
         set((state) => {
           const partyAssignments = { ...state.partyAssignments }
+          const partyNumber = partyAssignments[id]
           delete partyAssignments[id]
-          return { partyAssignments }
+
+          const partyOrder = { ...state.partyOrder }
+          if (partyNumber !== undefined) {
+            partyOrder[partyNumber] = (partyOrder[partyNumber] ?? []).filter((cid) => cid !== id)
+          }
+
+          return { partyAssignments, partyOrder }
         }),
 
       updateCharacter: (id, updates) =>

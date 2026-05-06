@@ -1,6 +1,7 @@
 "use client"
 
-import { useDraggable, useDroppable } from "@dnd-kit/core"
+import { useDroppable } from "@dnd-kit/core"
+import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
 
 import { type RosterCharacter, useRosterStore } from "@/entities/character"
 import { cn } from "@/lib/utils"
@@ -13,6 +14,9 @@ import { ROLE_COLOR } from "../config/roster-display"
 export const MAX_PARTY_SIZE = 5
 export const PARTY_COUNT = 6
 
+// 슬롯 고정 높이 — CharacterSlot / EmptySlot 동일 적용으로 layout shift 방지
+const SLOT_HEIGHT = "h-[46px]"
+
 export const ROLE_BADGE: Record<string, string> = {
   HEALER: "힐",
   MELEE: "근",
@@ -20,7 +24,7 @@ export const ROLE_BADGE: Record<string, string> = {
   TANK: "탱",
 }
 
-// ─── CharacterSlot (Draggable) ─────────────────────────────────────────────────
+// ─── CharacterSlot (Sortable + Draggable) ──────────────────────────────────────
 
 interface CharacterSlotProps {
   character: RosterCharacter
@@ -28,7 +32,7 @@ interface CharacterSlotProps {
 
 export const CharacterSlot = ({ character }: CharacterSlotProps) => {
   const unassignFromParty = useRosterStore((store) => store.unassignFromParty)
-  const { attributes, isDragging, listeners, setNodeRef } = useDraggable({
+  const { attributes, isDragging, listeners, setNodeRef } = useSortable({
     id: character.id,
   })
 
@@ -41,7 +45,8 @@ export const CharacterSlot = ({ character }: CharacterSlotProps) => {
     <div
       ref={setNodeRef}
       className={cn(
-        "border-border/20 flex cursor-grab items-center gap-2 border-b px-2 py-1.5 last:border-0 active:cursor-grabbing",
+        "border-border/20 flex cursor-grab items-center gap-2 border-b px-2 last:border-0 active:cursor-grabbing",
+        SLOT_HEIGHT,
         isDragging && "opacity-30"
       )}
       {...listeners}
@@ -71,7 +76,7 @@ export const CharacterSlot = ({ character }: CharacterSlotProps) => {
         <p className="text-muted-foreground text-[10px]">{character.itemLevel}</p>
       </div>
 
-      {/* 해제 버튼 — pointerdown이 전파되면 drag 시작 시도하나, distance:5 제약으로 클릭은 드래그 안됨 */}
+      {/* 해제 버튼 */}
       <button
         aria-label={`${character.name} 파티 배정 해제`}
         className="text-muted-foreground/30 shrink-0 text-xs transition-colors hover:text-red-500"
@@ -87,22 +92,33 @@ export const CharacterSlot = ({ character }: CharacterSlotProps) => {
 // ─── EmptySlot ─────────────────────────────────────────────────────────────────
 
 const EmptySlot = () => (
-  <div className="border-border/10 text-muted-foreground/25 flex items-center gap-2 border-b px-2 py-1.5 text-[10px] last:border-0">
+  <div
+    className={cn(
+      "border-border/10 text-muted-foreground/25 flex items-center gap-2 border-b px-2 text-[10px] last:border-0",
+      SLOT_HEIGHT
+    )}
+  >
     <div className="size-3 shrink-0" />
     <div className="h-5 w-0.5 shrink-0 rounded-full bg-transparent" />
     <span className="select-none">· · · 빈 슬롯</span>
   </div>
 )
 
-// ─── PartyCard (Droppable) ─────────────────────────────────────────────────────
+// ─── PartyCard (Droppable + SortableContext) ────────────────────────────────────
 
 interface PartyCardProps {
+  characterIds: string[]
   characters: RosterCharacter[]
   isDragging: boolean
   partyNumber: number
 }
 
-export const PartyCard = ({ characters, isDragging, partyNumber }: PartyCardProps) => {
+export const PartyCard = ({
+  characterIds,
+  characters,
+  isDragging,
+  partyNumber,
+}: PartyCardProps) => {
   const { isOver, setNodeRef } = useDroppable({ id: `party-${partyNumber}` })
   const isFull = characters.length >= MAX_PARTY_SIZE
   const isEmpty = characters.length === 0
@@ -117,14 +133,10 @@ export const PartyCard = ({ characters, isDragging, partyNumber }: PartyCardProp
       ref={setNodeRef}
       className={cn(
         "wow-panel rounded-lg border transition-colors",
-        // 기본 스타일
         isEmpty && !isDragging
           ? "border-border/30 bg-card/40 opacity-60"
           : "border-border/60 bg-card/90",
-        // 드래그 중 드롭 가능 강조
-        isDragging && !isEmpty && "border-border/60 bg-card/90",
         isDragging && isEmpty && "border-border/40 bg-card/60 opacity-100",
-        // 드롭 타겟 하이라이트
         isOver && !isFull && "border-primary/50 bg-primary/5",
         isOver && isFull && "border-red-400/40 bg-red-500/5"
       )}
@@ -158,14 +170,16 @@ export const PartyCard = ({ characters, isDragging, partyNumber }: PartyCardProp
       </div>
 
       {/* 슬롯 목록 */}
-      <div>
-        {characters.map((character) => (
-          <CharacterSlot character={character} key={character.id} />
-        ))}
-        {Array.from({ length: emptySlotCount }, (_, i) => (
-          <EmptySlot key={`empty-${partyNumber}-${i}`} />
-        ))}
-      </div>
+      <SortableContext items={characterIds} strategy={verticalListSortingStrategy}>
+        <div>
+          {characters.map((character) => (
+            <CharacterSlot character={character} key={character.id} />
+          ))}
+          {Array.from({ length: emptySlotCount }, (_, i) => (
+            <EmptySlot key={`empty-${partyNumber}-${i}`} />
+          ))}
+        </div>
+      </SortableContext>
     </div>
   )
 }
