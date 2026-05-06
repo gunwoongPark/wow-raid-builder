@@ -49,12 +49,18 @@ export const RosterList = () => {
   const handleSort = (column: SortColumn) => {
     const params = new URLSearchParams(searchParams.toString())
     if (sortColumn === column) {
-      params.set("dir", sortDirection === "desc" ? "asc" : "desc")
+      if (sortDirection === "desc") {
+        params.set("dir", "asc")
+      } else {
+        params.delete("sort")
+        params.delete("dir")
+      }
     } else {
       params.set("sort", column)
       params.set("dir", "desc")
     }
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+    const query = params.toString()
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
   }
 
   const handleCopyLink = () => {
