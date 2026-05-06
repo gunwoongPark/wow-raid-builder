@@ -31,17 +31,6 @@ export const AppFooter = () => {
             Warcraft Logs
           </a>
         </p>
-        <p className="text-muted-foreground">
-          제작:{" "}
-          <a
-            className="text-primary hover:text-primary/80 underline-offset-2 hover:underline"
-            href="https://github.com/gunwoongPark"
-            rel="noreferrer"
-            target="_blank"
-          >
-            @gunwoongPark
-          </a>
-        </p>
       </div>
     </footer>
   )
