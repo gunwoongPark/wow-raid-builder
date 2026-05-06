@@ -20,9 +20,11 @@ const jsonLd = {
   },
   browserRequirements: "JavaScript 필요",
   description:
-    "공대장을 위한 월드 오브 워크래프트 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 한눈에 파악하고, 시너지·외생기·공생기 추천까지. 한밤(Midnight) 시즌 1 기준.",
+    "공대장을 위한 월드 오브 워크래프트 공격대 구성 분석 도구. 캐릭터 검색, 버프·유틸 커버리지 분석, 파티 프레임 기반 5인 파티 편성을 지원합니다. 한밤(Midnight) 시즌 1 기준.",
   featureList: [
     "캐릭터 검색 및 공격대원 추가",
+    "파티 프레임 기반 5인 파티 편성",
+    "파티 간 드래그 앤 드롭 재배치",
     "버프·유틸리티 커버리지 시각화",
     "시너지·외생기·공생기 추천",
     "Raider.IO M+ 점수 연동",
@@ -31,7 +33,8 @@ const jsonLd = {
     "로스터 프리셋 저장/불러오기",
   ],
   inLanguage: "ko-KR",
-  keywords: "WoW, 공격대, 레이드, 버프, 유틸, 한밤, Midnight, 공대장, 레이드 빌더, 공격대 편성",
+  keywords:
+    "WoW, 공격대, 레이드, 버프, 유틸, 한밤, Midnight, 공대장, 레이드 빌더, 공격대 편성, 파티 프레임, 파티 편성, 5인 파티, 드래그 앤 드롭",
   name: "WoW Raid Builder",
   offers: {
     "@type": "Offer",
@@ -66,7 +69,8 @@ const HomePage = () => {
           </div>
           <div className="wow-header-divider" />
           <p className="text-muted-foreground text-sm">
-            캐릭터를 검색해 공격대를 구성하고 버프 커버리지를 확인하세요.
+            캐릭터를 검색해 공격대를 구성하고, 파티 프레임으로 5인 파티를 편성하며 버프 커버리지를
+            확인하세요.
           </p>
         </header>
 

@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   category: "game",
   creator: "gunwoongPark",
   description:
-    "공대장을 위한 월드 오브 워크래프트 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 한눈에 파악하고, 시너지·외생기·공생기 추천까지. 한밤(Midnight) 시즌 1 기준.",
+    "공대장을 위한 월드 오브 워크래프트 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 확인하고, 파티 프레임으로 5인 파티 단위 편성까지 지원합니다. 한밤(Midnight) 시즌 1 기준.",
   keywords: [
     "WoW",
     "World of Warcraft",
@@ -69,6 +69,10 @@ export const metadata: Metadata = {
     "공대장",
     "레이드 조합",
     "공격대 조합",
+    "파티 프레임",
+    "파티 편성",
+    "5인 파티",
+    "드래그 앤 드롭",
     "WCL",
     "Raider.IO",
     "Warcraft Logs",
@@ -78,7 +82,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   openGraph: {
     description:
-      "공대장을 위한 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 한눈에 파악하고, 시너지·외생기·공생기 추천까지.",
+      "공대장을 위한 공격대 구성 분석 도구. 캐릭터 검색, 버프·유틸 커버리지 분석, 파티 프레임 기반 5인 파티 편성을 지원합니다.",
     locale: "ko_KR",
     siteName: "WoW Raid Builder",
     title: "WoW Raid Builder — 공격대 구성 분석",
@@ -104,7 +108,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     description:
-      "공대장을 위한 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 한눈에 파악하고, 시너지·외생기·공생기 추천까지.",
+      "공대장을 위한 공격대 구성 분석 도구. 캐릭터 검색, 버프·유틸 커버리지 분석, 파티 프레임 기반 5인 파티 편성을 지원합니다.",
     title: "WoW Raid Builder — 공격대 구성 분석",
   },
   verification: {
