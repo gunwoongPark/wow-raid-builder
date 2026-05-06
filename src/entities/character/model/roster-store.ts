@@ -97,10 +97,7 @@ export const useRosterStore = create<RosterState>()(
     }),
     {
       name: "wow-raid-roster",
-      partialize: (state) => ({
-        characters: state.characters,
-        partyAssignments: state.partyAssignments,
-      }),
+      partialize: (state) => ({ characters: state.characters }),
     }
   )
 )

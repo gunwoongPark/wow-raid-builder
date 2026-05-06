@@ -32,7 +32,7 @@ const CharacterDragCard = ({ character }: CharacterDragCardProps) => {
   const classColorLight = getClassColorLight(character.className)
 
   return (
-    <div className="border-border/60 bg-card flex cursor-grabbing items-center gap-2 rounded-md border px-3 py-1.5 shadow-2xl">
+    <div className="border-border/60 bg-card flex cursor-grabbing items-center gap-2 rounded-md border py-1.5 pr-4 pl-3 shadow-2xl">
       <div
         className="h-5 w-0.5 shrink-0 rounded-full"
         style={{ background: `light-dark(${classColorLight}, ${classColor})` }}
@@ -73,7 +73,7 @@ const UnassignedSlot = ({ character }: UnassignedSlotProps) => {
     <div
       ref={setNodeRef}
       className={cn(
-        "border-border/40 bg-card/60 flex cursor-grab items-center gap-1.5 rounded border px-2 py-1 active:cursor-grabbing",
+        "border-border/40 bg-card/60 flex cursor-grab items-center gap-1.5 rounded border py-1 pr-3 pl-2 active:cursor-grabbing",
         isDragging && "opacity-30"
       )}
       {...listeners}
