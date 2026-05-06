@@ -1,6 +1,7 @@
 "use client"
 
-import { type ChangeEvent } from "react"
+import { useDraggable, useDroppable } from "@dnd-kit/core"
+import { GripVertical } from "lucide-react"
 
 import { type RosterCharacter, useRosterStore } from "@/entities/character"
 import { cn } from "@/lib/utils"
@@ -10,43 +11,50 @@ import { ROLE_COLOR } from "../config/roster-display"
 
 // ─── 상수 ──────────────────────────────────────────────────────────────────────
 
-const MAX_PARTY_SIZE = 5
-const PARTY_COUNT = 6
+export const MAX_PARTY_SIZE = 5
+export const PARTY_COUNT = 6
 
-const ROLE_BADGE: Record<string, string> = {
+export const ROLE_BADGE: Record<string, string> = {
   HEALER: "힐",
   MELEE: "근",
   RANGED: "원",
   TANK: "탱",
 }
 
-// ─── CharacterSlot ─────────────────────────────────────────────────────────────
+// ─── CharacterSlot (Draggable) ─────────────────────────────────────────────────
 
 interface CharacterSlotProps {
   character: RosterCharacter
-  currentParty: number
 }
 
-const CharacterSlot = ({ character, currentParty }: CharacterSlotProps) => {
-  const assignToParty = useRosterStore((store) => store.assignToParty)
+export const CharacterSlot = ({ character }: CharacterSlotProps) => {
   const unassignFromParty = useRosterStore((store) => store.unassignFromParty)
+  const { attributes, isDragging, listeners, setNodeRef } = useDraggable({
+    id: character.id,
+  })
 
   const classColor = getClassColor(character.className)
   const classColorLight = getClassColorLight(character.className)
 
-  const handlePartyChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value
-    if (!value) {
-      unassignFromParty(character.id)
-    } else {
-      assignToParty(character.id, parseInt(value, 10))
-    }
-  }
-
   const handleUnassign = () => unassignFromParty(character.id)
 
   return (
-    <div className="border-border/20 flex items-center gap-2 border-b px-3 py-1.5 last:border-0">
+    <div
+      ref={setNodeRef}
+      className={cn(
+        "border-border/20 flex items-center gap-2 border-b px-2 py-1.5 last:border-0",
+        isDragging && "opacity-30"
+      )}
+    >
+      {/* 드래그 핸들 */}
+      <div
+        className="text-muted-foreground/30 hover:text-muted-foreground/70 shrink-0 cursor-grab transition-colors active:cursor-grabbing"
+        {...listeners}
+        {...attributes}
+      >
+        <GripVertical className="size-3" />
+      </div>
+
       {/* 클래스 색상 좌측 바 */}
       <div
         className="h-5 w-0.5 shrink-0 rounded-full"
@@ -71,21 +79,6 @@ const CharacterSlot = ({ character, currentParty }: CharacterSlotProps) => {
         <p className="text-muted-foreground text-[10px]">{character.itemLevel}</p>
       </div>
 
-      {/* 파티 이동 select */}
-      <select
-        aria-label={`${character.name} 파티 이동`}
-        className="border-border/40 bg-background/60 text-muted-foreground hover:border-border/70 cursor-pointer rounded border px-1 py-0.5 text-[10px] transition-colors"
-        onChange={handlePartyChange}
-        value={String(currentParty)}
-      >
-        {Array.from({ length: PARTY_COUNT }, (_, i) => (
-          <option key={i + 1} value={String(i + 1)}>
-            P{i + 1}
-          </option>
-        ))}
-        <option value="">해제</option>
-      </select>
-
       {/* 해제 버튼 */}
       <button
         aria-label={`${character.name} 파티 배정 해제`}
@@ -102,40 +95,52 @@ const CharacterSlot = ({ character, currentParty }: CharacterSlotProps) => {
 // ─── EmptySlot ─────────────────────────────────────────────────────────────────
 
 const EmptySlot = () => (
-  <div className="border-border/10 text-muted-foreground/30 flex items-center gap-2 border-b px-3 py-1.5 text-[10px] last:border-0">
+  <div className="border-border/10 text-muted-foreground/25 flex items-center gap-2 border-b px-2 py-1.5 text-[10px] last:border-0">
+    <div className="size-3 shrink-0" />
     <div className="h-5 w-0.5 shrink-0 rounded-full bg-transparent" />
     <span className="select-none">· · · 빈 슬롯</span>
   </div>
 )
 
-// ─── PartyCard ─────────────────────────────────────────────────────────────────
+// ─── PartyCard (Droppable) ─────────────────────────────────────────────────────
 
 interface PartyCardProps {
   characters: RosterCharacter[]
+  isDragging: boolean
   partyNumber: number
 }
 
-export const PartyCard = ({ characters, partyNumber }: PartyCardProps) => {
+export const PartyCard = ({ characters, isDragging, partyNumber }: PartyCardProps) => {
+  const { isOver, setNodeRef } = useDroppable({ id: `party-${partyNumber}` })
+  const isFull = characters.length >= MAX_PARTY_SIZE
   const isEmpty = characters.length === 0
 
-  // 역할 구성 요약 (탱 힐 딜)
   const tankCount = characters.filter((c) => c.role === "TANK").length
   const healerCount = characters.filter((c) => c.role === "HEALER").length
   const dpsCount = characters.filter((c) => c.role === "MELEE" || c.role === "RANGED").length
-
   const emptySlotCount = MAX_PARTY_SIZE - characters.length
 
   return (
     <div
+      ref={setNodeRef}
       className={cn(
-        "wow-panel border-border/60 bg-card/90 rounded-lg border",
-        isEmpty && "border-border/30 bg-card/40 opacity-60"
+        "wow-panel rounded-lg border transition-colors",
+        // 기본 스타일
+        isEmpty && !isDragging
+          ? "border-border/30 bg-card/40 opacity-60"
+          : "border-border/60 bg-card/90",
+        // 드래그 중 드롭 가능 강조
+        isDragging && !isEmpty && "border-border/60 bg-card/90",
+        isDragging && isEmpty && "border-border/40 bg-card/60 opacity-100",
+        // 드롭 타겟 하이라이트
+        isOver && !isFull && "border-primary/50 bg-primary/5",
+        isOver && isFull && "border-red-400/40 bg-red-500/5"
       )}
     >
       {/* 헤더 */}
       <div className="border-border/40 flex items-center justify-between border-b px-3 py-2">
         <span className="text-primary/80 text-xs font-bold tracking-wide">파티 {partyNumber}</span>
-        {!isEmpty && (
+        {!isEmpty ? (
           <div className="flex items-center gap-1.5 text-[10px]">
             {tankCount > 0 && (
               <span className="text-blue-700 dark:text-blue-400">탱{tankCount}</span>
@@ -144,18 +149,26 @@ export const PartyCard = ({ characters, partyNumber }: PartyCardProps) => {
               <span className="text-emerald-600 dark:text-emerald-400">힐{healerCount}</span>
             )}
             {dpsCount > 0 && <span className="text-muted-foreground">딜{dpsCount}</span>}
-            <span className="text-muted-foreground/40">
+            <span
+              className={cn(
+                "text-muted-foreground/40",
+                isFull && "text-amber-600/60 dark:text-amber-400/60"
+              )}
+            >
               {characters.length}/{MAX_PARTY_SIZE}
             </span>
           </div>
+        ) : (
+          <span className="text-muted-foreground/40 text-[10px]">
+            {isDragging ? "여기에 놓기" : "비어있음"}
+          </span>
         )}
-        {isEmpty && <span className="text-muted-foreground/40 text-[10px]">비어있음</span>}
       </div>
 
       {/* 슬롯 목록 */}
       <div>
         {characters.map((character) => (
-          <CharacterSlot character={character} currentParty={partyNumber} key={character.id} />
+          <CharacterSlot character={character} key={character.id} />
         ))}
         {Array.from({ length: emptySlotCount }, (_, i) => (
           <EmptySlot key={`empty-${partyNumber}-${i}`} />
