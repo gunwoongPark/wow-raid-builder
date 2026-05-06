@@ -32,7 +32,7 @@ const CharacterDragCard = ({ character }: CharacterDragCardProps) => {
   const classColorLight = getClassColorLight(character.className)
 
   return (
-    <div className="border-border/60 bg-card flex cursor-grabbing items-center gap-2 rounded-md border py-1.5 pr-4 pl-3 shadow-2xl">
+    <div className="border-border/60 bg-card flex w-max cursor-grabbing items-center gap-2 rounded-md border py-1.5 pr-4 pl-3 shadow-2xl">
       <div
         className="h-5 w-0.5 shrink-0 rounded-full"
         style={{ background: `light-dark(${classColorLight}, ${classColor})` }}
