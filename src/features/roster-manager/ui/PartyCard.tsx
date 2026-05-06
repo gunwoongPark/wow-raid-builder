@@ -125,7 +125,8 @@ export const PartyCard = ({
 
   const tankCount = characters.filter((c) => c.role === "TANK").length
   const healerCount = characters.filter((c) => c.role === "HEALER").length
-  const dpsCount = characters.filter((c) => c.role === "MELEE" || c.role === "RANGED").length
+  const meleeCount = characters.filter((c) => c.role === "MELEE").length
+  const rangedCount = characters.filter((c) => c.role === "RANGED").length
   const emptySlotCount = MAX_PARTY_SIZE - characters.length
 
   return (
@@ -152,7 +153,12 @@ export const PartyCard = ({
             {healerCount > 0 && (
               <span className="text-emerald-600 dark:text-emerald-400">힐{healerCount}</span>
             )}
-            {dpsCount > 0 && <span className="text-muted-foreground">딜{dpsCount}</span>}
+            {meleeCount > 0 && (
+              <span className="text-red-600 dark:text-red-400">근{meleeCount}</span>
+            )}
+            {rangedCount > 0 && (
+              <span className="text-sky-600 dark:text-sky-400">원{rangedCount}</span>
+            )}
             <span
               className={cn(
                 "text-muted-foreground/40",
