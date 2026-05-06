@@ -8,8 +8,7 @@ import {
   RosterList,
   RosterUrlLoader,
 } from "@/features/roster-manager"
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://wow-raid-builder.vercel.app"
+import { SITE_URL } from "@/shared/config/site"
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -40,7 +39,7 @@ const jsonLd = {
     priceCurrency: "KRW",
   },
   operatingSystem: "Any",
-  url: BASE_URL,
+  url: SITE_URL,
 }
 
 const HomePage = () => {
@@ -61,7 +60,7 @@ const HomePage = () => {
             <h1 className="fantasy text-primary text-4xl font-bold tracking-wide">
               WoW Raid Builder
             </h1>
-            <span className="text-muted-foreground/50 mb-1 hidden shrink-0 text-[10px] font-semibold tracking-widest uppercase sm:block">
+            <span className="text-muted-foreground/70 dark:text-primary/60 mb-1 hidden shrink-0 text-[10px] font-semibold tracking-widest uppercase sm:block">
               한밤 시즌 1
             </span>
           </div>

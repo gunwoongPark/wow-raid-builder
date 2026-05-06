@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import { Cinzel, Geist_Mono } from "next/font/google"
 import localFont from "next/font/local"
 
+import { SITE_URL } from "@/shared/config/site"
 import { QueryProvider } from "@/shared/lib/query-provider"
 import { AppThemeProvider } from "@/shared/lib/theme-provider"
 import { AppToaster } from "@/shared/ui/AppToaster"
@@ -28,12 +29,10 @@ const pretendard = localFont({
   weight: "45 920",
 })
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://wow-raid-builder.vercel.app"
-
 export const metadata: Metadata = {
   alternates: {
-    canonical: BASE_URL,
-    languages: { "ko-KR": BASE_URL },
+    canonical: SITE_URL,
+    languages: { "ko-KR": SITE_URL },
   },
   applicationName: "WoW Raid Builder",
   authors: [{ name: "WoW Raid Builder" }],
@@ -72,7 +71,7 @@ export const metadata: Metadata = {
     "아이템 레벨",
     "M+ 점수",
   ],
-  metadataBase: new URL(BASE_URL),
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     description:
       "공대장을 위한 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 한눈에 파악하고, 시너지·외생기·공생기 추천까지.",
@@ -80,7 +79,7 @@ export const metadata: Metadata = {
     siteName: "WoW Raid Builder",
     title: "WoW Raid Builder — 공격대 구성 분석",
     type: "website",
-    url: BASE_URL,
+    url: SITE_URL,
   },
   robots: {
     follow: true,

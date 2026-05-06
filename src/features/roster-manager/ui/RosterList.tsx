@@ -25,10 +25,10 @@ export const RosterList = () => {
   const pathname = usePathname()
 
   const rawSortColumn = searchParams.get("sort")
+  const isSortColumn = (value: string): value is SortColumn =>
+    (SORT_COLUMNS as readonly string[]).includes(value)
   const sortColumn: SortColumn | null =
-    rawSortColumn && (SORT_COLUMNS as readonly string[]).includes(rawSortColumn)
-      ? (rawSortColumn as SortColumn)
-      : null
+    rawSortColumn && isSortColumn(rawSortColumn) ? rawSortColumn : null
   const sortDirection: SortDirection = searchParams.get("dir") === "asc" ? "asc" : "desc"
 
   // 공격대원이 없어지면 정렬 쿼리스트링 초기화

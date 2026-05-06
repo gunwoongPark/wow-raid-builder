@@ -125,11 +125,15 @@ export const CharacterSearchForm = () => {
         <div className="relative">
           <ComboboxInput
             className="wow-input border-border/60 bg-input text-foreground placeholder:text-muted-foreground w-full rounded-md border px-3 py-2.5 pr-24 text-sm disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={isAdding}
+            disabled={isAdding || characterCount >= MAX_ROSTER_SIZE}
             displayValue={getDisplayValue}
             onChange={handleQueryChange}
-            placeholder="캐릭터명 검색 (예: 액흑)"
             ref={inputRef}
+            placeholder={
+              characterCount >= MAX_ROSTER_SIZE
+                ? `최대 ${MAX_ROSTER_SIZE}명 도달`
+                : "캐릭터명 검색 (예: 액흑)"
+            }
           />
 
           {(isFetching || isAdding) && (
