@@ -17,18 +17,23 @@ const searchOnRealm = async (
       `?region=kr` +
       `&realm=${encodeURIComponent(realmSlug)}` +
       `&name=${encodeURIComponent(name)}` +
-      `&fields=mythic_plus_scores_by_season:${CURRENT_SEASON}`
+      `&fields=mythic_plus_scores_by_season:${CURRENT_SEASON},raid_progression`
 
     const { data } = await axios.get<RaiderIOProfile>(url, { timeout: 4000 })
 
+    const raidProgression = data.raid_progression ? Object.values(data.raid_progression)[0] : null
+
     return {
       className: data.class,
+      heroicKills: raidProgression?.heroic_bosses_killed ?? null,
+      mythicKills: raidProgression?.mythic_bosses_killed ?? null,
       name: data.name,
       realm: data.realm,
       realmSlug,
       score: data.mythic_plus_scores_by_season?.[0]?.scores.all ?? 0,
       specName: data.active_spec_name,
       thumbnailUrl: data.thumbnail_url,
+      totalBosses: raidProgression?.total_bosses ?? null,
     }
   } catch {
     return null

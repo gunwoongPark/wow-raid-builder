@@ -169,6 +169,20 @@ export const CharacterSearchForm = () => {
                           M+ {result.score.toLocaleString()}
                         </span>
                       )}
+                      {result.totalBosses !== null && (
+                        <>
+                          {(result.heroicKills ?? 0) > 0 && (
+                            <span className="ml-1.5 text-blue-700 dark:text-blue-400">
+                              H {result.heroicKills}/{result.totalBosses}
+                            </span>
+                          )}
+                          {(result.mythicKills ?? 0) > 0 && (
+                            <span className="ml-1.5 text-amber-700 dark:text-yellow-500">
+                              M {result.mythicKills}/{result.totalBosses}
+                            </span>
+                          )}
+                        </>
+                      )}
                     </p>
                   </div>
                 </ComboboxOption>
