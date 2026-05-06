@@ -138,10 +138,10 @@ export const RootLayout = ({
         <link href="https://render.worldofwarcraft.com" rel="preconnect" />
         <link crossOrigin="anonymous" href="https://cdnassets.raider.io" rel="preconnect" />
       </head>
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-dvh flex-col">
         <AppThemeProvider>
           <QueryProvider>
-            <div className="flex min-h-full flex-col">
+            <div className="flex min-h-dvh flex-col">
               <div className="flex-1">{children}</div>
               <AppFooter />
             </div>
