@@ -98,13 +98,15 @@ export interface RosterCharacterWCL {
 
 export interface CharacterSearchResult {
   className: string
+  heroicKills: number | null
+  mythicKills: number | null
   name: string
-  raidSummary: string | null
   realm: string
   realmSlug: string
   score: number
   specName: string
   thumbnailUrl: string
+  totalBosses: number | null
 }
 
 export interface RosterCharacter {

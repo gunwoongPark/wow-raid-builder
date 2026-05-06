@@ -25,13 +25,15 @@ const searchOnRealm = async (
 
     return {
       className: data.class,
+      heroicKills: raidProgression?.heroic_bosses_killed ?? null,
+      mythicKills: raidProgression?.mythic_bosses_killed ?? null,
       name: data.name,
-      raidSummary: raidProgression?.summary ?? null,
       realm: data.realm,
       realmSlug,
       score: data.mythic_plus_scores_by_season?.[0]?.scores.all ?? 0,
       specName: data.active_spec_name,
       thumbnailUrl: data.thumbnail_url,
+      totalBosses: raidProgression?.total_bosses ?? null,
     }
   } catch {
     return null
