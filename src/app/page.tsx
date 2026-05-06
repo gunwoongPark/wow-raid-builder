@@ -8,17 +8,30 @@ import {
   RosterList,
   RosterUrlLoader,
 } from "@/features/roster-manager"
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://wow-raid-builder.vercel.app"
+import { SITE_URL } from "@/shared/config/site"
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   applicationCategory: "GameApplication",
+  audience: {
+    "@type": "Audience",
+    audienceType: "월드 오브 워크래프트 공대장, 레이드 리더",
+  },
   browserRequirements: "JavaScript 필요",
   description:
-    "공대장을 위한 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 한눈에 파악하세요.",
+    "공대장을 위한 월드 오브 워크래프트 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 한눈에 파악하고, 시너지·외생기·공생기 추천까지. 한밤(Midnight) 시즌 1 기준.",
+  featureList: [
+    "캐릭터 검색 및 공격대원 추가",
+    "버프·유틸리티 커버리지 시각화",
+    "시너지·외생기·공생기 추천",
+    "Raider.IO M+ 점수 연동",
+    "Warcraft Logs 레이드 로그 연동",
+    "공격대 URL 공유",
+    "로스터 프리셋 저장/불러오기",
+  ],
   inLanguage: "ko-KR",
+  keywords: "WoW, 공격대, 레이드, 버프, 유틸, 한밤, Midnight, 공대장, 레이드 빌더, 공격대 편성",
   name: "WoW Raid Builder",
   offers: {
     "@type": "Offer",
@@ -26,7 +39,7 @@ const jsonLd = {
     priceCurrency: "KRW",
   },
   operatingSystem: "Any",
-  url: BASE_URL,
+  url: SITE_URL,
 }
 
 const HomePage = () => {
@@ -47,7 +60,7 @@ const HomePage = () => {
             <h1 className="fantasy text-primary text-4xl font-bold tracking-wide">
               WoW Raid Builder
             </h1>
-            <span className="text-muted-foreground/50 mb-1 hidden shrink-0 text-[10px] font-semibold tracking-widest uppercase sm:block">
+            <span className="text-muted-foreground/70 dark:text-primary/60 mb-1 hidden shrink-0 text-[10px] font-semibold tracking-widest uppercase sm:block">
               한밤 시즌 1
             </span>
           </div>

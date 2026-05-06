@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next"
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://wow-raid-builder.vercel.app"
+import { SITE_URL } from "@/shared/config/site"
 
 const robots = (): MetadataRoute.Robots => ({
   rules: {
@@ -8,7 +8,7 @@ const robots = (): MetadataRoute.Robots => ({
     disallow: "/api/",
     userAgent: "*",
   },
-  sitemap: `${BASE_URL}/sitemap.xml`,
+  sitemap: `${SITE_URL}/sitemap.xml`,
 })
 
 export default robots
