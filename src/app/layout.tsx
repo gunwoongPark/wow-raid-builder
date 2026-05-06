@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata, Viewport } from "next"
 import { Cinzel, Geist_Mono } from "next/font/google"
@@ -140,6 +141,7 @@ export const RootLayout = ({
           <ThemeToggle />
           <AppToaster />
           <NetworkStatusMonitor />
+          <Analytics />
           <SpeedInsights />
         </AppThemeProvider>
       </body>
