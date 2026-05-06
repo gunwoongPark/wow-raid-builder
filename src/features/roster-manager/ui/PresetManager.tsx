@@ -52,6 +52,7 @@ export const PresetManager = () => {
   const characters = useRosterStore((store) => store.characters)
   const clearRoster = useRosterStore((store) => store.clearRoster)
   const addCharacter = useRosterStore((store) => store.addCharacter)
+  const setPartyAssignments = useRosterStore((store) => store.setPartyAssignments)
 
   const presets = usePresetStore((store) => store.presets)
   const savePreset = usePresetStore((store) => store.savePreset)
@@ -70,7 +71,8 @@ export const PresetManager = () => {
       toast.error("저장할 공격대원이 없습니다.")
       return
     }
-    savePreset(trimmed, characters)
+    const { partyAssignments } = useRosterStore.getState()
+    savePreset(trimmed, characters, partyAssignments)
     setPresetName("")
     toast.success(`"${trimmed}" 프리셋이 저장됐습니다.`)
   }
@@ -80,6 +82,7 @@ export const PresetManager = () => {
     if (!preset) return
     clearRoster()
     preset.characters.forEach(addCharacter)
+    setPartyAssignments(preset.partyAssignments ?? {})
     toast.success(`"${name}" 프리셋을 불러왔습니다.`, {
       description: `공격대원 ${preset.characters.length}명이 로드됐습니다.`,
     })

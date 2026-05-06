@@ -2,7 +2,7 @@
 
 import { Link } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import { useRosterStore } from "@/entities/character"
@@ -12,12 +12,17 @@ import { HEADER_COLUMNS } from "../config/table-columns"
 import { SORT_COLUMNS, type SortColumn, type SortDirection, sortRoster } from "../lib/sort-roster"
 import { useRosterSync } from "../model/useRosterSync"
 import { CharacterRow } from "./CharacterRow"
+import { PartyFrameView } from "./PartyFrameView"
+import { type RosterView, RosterViewToggle } from "./RosterViewToggle"
 import { SortableHeaderCell } from "./SortableHeaderCell"
 
 export const RosterList = () => {
   // 변수부 — 스토어
   const characters = useRosterStore((store) => store.characters)
   const clearRoster = useRosterStore((store) => store.clearRoster)
+
+  // 변수부 — 뷰 토글 (목록 | 파티 프레임)
+  const [view, setView] = useState<RosterView>("list")
 
   // 변수부 — 정렬 상태 (URL 쿼리스트링)
   const searchParams = useSearchParams()
@@ -119,6 +124,8 @@ export const RosterList = () => {
 
           {/* 헤더 액션 버튼 */}
           <div className="flex shrink-0 flex-wrap items-center gap-1.5">
+            <RosterViewToggle onViewChange={setView} view={view} />
+
             <button
               className="flex items-center gap-1 rounded border border-transparent px-2 py-1 text-xs text-sky-700 transition-all hover:border-sky-500/30 hover:bg-sky-500/10 hover:text-sky-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-sky-400/70 dark:hover:border-sky-400/30 dark:hover:text-sky-400"
               disabled={isRefreshing}
@@ -147,41 +154,45 @@ export const RosterList = () => {
           </div>
         </div>
 
-        <div className="border-border/60 bg-card/95 min-w-0 overflow-x-auto rounded-md border">
-          <table aria-label="공격대 목록" className="w-full min-w-[900px] text-left">
-            <thead>
-              <tr className="border-border/50 text-muted-foreground border-b bg-black/3 text-xs dark:bg-black/40">
-                <th className="min-w-[160px] px-3 py-2" scope="col">
-                  캐릭터
-                </th>
-                {HEADER_COLUMNS.map(({ className, column, label }) => (
-                  <SortableHeaderCell
-                    className={className}
-                    column={column}
-                    key={column}
-                    label={label}
-                    onSort={handleSort}
-                    sortColumn={sortColumn}
-                    sortDirection={sortDirection}
+        {view === "list" ? (
+          <div className="border-border/60 bg-card/95 min-w-0 overflow-x-auto rounded-md border">
+            <table aria-label="공격대 목록" className="w-full min-w-[900px] text-left">
+              <thead>
+                <tr className="border-border/50 text-muted-foreground border-b bg-black/3 text-xs dark:bg-black/40">
+                  <th className="min-w-[160px] px-3 py-2" scope="col">
+                    캐릭터
+                  </th>
+                  {HEADER_COLUMNS.map(({ className, column, label }) => (
+                    <SortableHeaderCell
+                      className={className}
+                      column={column}
+                      key={column}
+                      label={label}
+                      onSort={handleSort}
+                      sortColumn={sortColumn}
+                      sortDirection={sortDirection}
+                    />
+                  ))}
+                  <th className="min-w-[64px] px-3 py-2" scope="col">
+                    <span className="sr-only">액션</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {sorted.map((character) => (
+                  <CharacterRow
+                    character={character}
+                    isRefreshing={refreshingIds.has(character.id) || isRefreshing}
+                    key={character.id}
+                    onRefresh={refreshOne}
                   />
                 ))}
-                <th className="min-w-[64px] px-3 py-2" scope="col">
-                  <span className="sr-only">액션</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {sorted.map((character) => (
-                <CharacterRow
-                  character={character}
-                  isRefreshing={refreshingIds.has(character.id) || isRefreshing}
-                  key={character.id}
-                  onRefresh={refreshOne}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <PartyFrameView />
+        )}
       </div>
     </section>
   )

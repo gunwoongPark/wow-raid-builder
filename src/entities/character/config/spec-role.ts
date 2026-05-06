@@ -7,6 +7,7 @@ export const SPEC_ROLE_MAP: Record<number, Role> = {
   251: "MELEE",
   252: "MELEE",
   // Demon Hunter
+  1480: "RANGED", // 포식 (Midnight 신규 스펙)
   577: "MELEE",
   581: "TANK",
   // Druid

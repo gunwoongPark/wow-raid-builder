@@ -17,6 +17,17 @@ const NotFoundPage = () => (
       >
         홈으로 돌아가기
       </Link>
+      <p className="text-muted-foreground mt-5 text-xs">
+        Created by{" "}
+        <Link
+          className="text-primary hover:text-primary/80 underline-offset-2 hover:underline"
+          href="https://github.com/gunwoongPark"
+          rel="noreferrer"
+          target="_blank"
+        >
+          @gunwoongPark
+        </Link>
+      </p>
       <div className="wow-header-divider mt-6" />
     </div>
   </main>

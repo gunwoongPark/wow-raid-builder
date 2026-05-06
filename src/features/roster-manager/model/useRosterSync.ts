@@ -69,7 +69,7 @@ export const useRosterSync = () => {
     }
   }
 
-  // URL에서 캐릭터 로드 — 없으면 추가, 있으면 최신화
+  // URL에서 캐릭터 로드 — 없으면 추가, 있으면 최신화. 파티 배정도 복원.
   const loadFromUrl = async (entries: RosterUrlEntry[]) => {
     if (!entries.length) return
 
@@ -89,15 +89,24 @@ export const useRosterSync = () => {
           }
         })
       )
+
+      // 캐릭터 로드 완료 후 파티 배정 복원
+      const { assignToParty } = useRosterStore.getState()
+      for (const { name, partyNumber, realmSlug } of entries) {
+        if (partyNumber !== undefined) {
+          assignToParty(`${realmSlug}-${name.toLowerCase()}`, partyNumber)
+        }
+      }
     } finally {
       setState((previous) => ({ ...previous, isRefreshing: false }))
     }
   }
 
-  // 현재 로스터를 URL로 인코딩 후 클립보드 복사
+  // 현재 로스터를 URL로 인코딩 후 클립보드 복사 (파티 배정 포함)
   const copyShareUrl = () => {
     if (!characters.length) return
-    const url = buildShareUrl(characters)
+    const { partyAssignments } = useRosterStore.getState()
+    const url = buildShareUrl(characters, partyAssignments)
     navigator.clipboard.writeText(url)
   }
 
