@@ -4,8 +4,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://wow-raid-builder.v
 
 const sitemap = (): MetadataRoute.Sitemap => [
   {
-    changeFrequency: "weekly",
-    lastModified: new Date(),
+    changeFrequency: "monthly",
+    lastModified: new Date("2025-05-06"),
     priority: 1,
     url: BASE_URL,
   },

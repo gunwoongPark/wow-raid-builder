@@ -5,8 +5,8 @@ const manifest = (): MetadataRoute.Manifest => ({
   description: "공대장을 위한 공격대 구성 분석 도구",
   display: "standalone",
   icons: [
-    { purpose: "maskable", sizes: "192x192", src: "/favicon.ico", type: "image/x-icon" },
-    { purpose: "any", sizes: "512x512", src: "/favicon.ico", type: "image/x-icon" },
+    { purpose: "any", sizes: "32x32", src: "/icon", type: "image/png" },
+    { purpose: "maskable", sizes: "180x180", src: "/apple-icon", type: "image/png" },
   ],
   name: "WoW Raid Builder",
   orientation: "portrait",
