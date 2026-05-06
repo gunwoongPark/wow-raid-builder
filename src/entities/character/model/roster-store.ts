@@ -7,12 +7,17 @@ export const MAX_ROSTER_SIZE = 30
 
 interface RosterState {
   characters: RosterCharacter[]
+  partyAssignments: Record<string, number>
   pendingRaiderIOIds: Set<string>
   pendingWCLIds: Set<string>
   addCharacter: (character: RosterCharacter) => void
   removeCharacter: (id: string) => void
   updateCharacter: (id: string, updates: Partial<RosterCharacter>) => void
   clearRoster: () => void
+  assignToParty: (id: string, partyNumber: number) => void
+  unassignFromParty: (id: string) => void
+  setPartyAssignments: (assignments: Record<string, number>) => void
+  clearPartyAssignments: () => void
   setPendingRaiderIO: (id: string, pending: boolean) => void
   setPendingWCL: (id: string, pending: boolean) => void
 }
@@ -27,9 +32,18 @@ export const useRosterStore = create<RosterState>()(
           return { characters: [...state.characters, character] }
         }),
 
+      assignToParty: (id, partyNumber) =>
+        set((state) => ({
+          partyAssignments: { ...state.partyAssignments, [id]: partyNumber },
+        })),
+
       characters: [],
 
-      clearRoster: () => set({ characters: [] }),
+      clearPartyAssignments: () => set({ partyAssignments: {} }),
+
+      clearRoster: () => set({ characters: [], partyAssignments: {} }),
+
+      partyAssignments: {},
 
       pendingRaiderIOIds: new Set(),
 
@@ -41,12 +55,17 @@ export const useRosterStore = create<RosterState>()(
           const pendingWCLIds = new Set(state.pendingWCLIds)
           pendingRaiderIOIds.delete(id)
           pendingWCLIds.delete(id)
+          const partyAssignments = { ...state.partyAssignments }
+          delete partyAssignments[id]
           return {
             characters: state.characters.filter((c) => c.id !== id),
+            partyAssignments,
             pendingRaiderIOIds,
             pendingWCLIds,
           }
         }),
+
+      setPartyAssignments: (assignments) => set({ partyAssignments: assignments }),
 
       setPendingRaiderIO: (id, pending) =>
         set((state) => {
@@ -64,6 +83,13 @@ export const useRosterStore = create<RosterState>()(
           return { pendingWCLIds }
         }),
 
+      unassignFromParty: (id) =>
+        set((state) => {
+          const partyAssignments = { ...state.partyAssignments }
+          delete partyAssignments[id]
+          return { partyAssignments }
+        }),
+
       updateCharacter: (id, updates) =>
         set((state) => ({
           characters: state.characters.map((c) => (c.id === id ? { ...c, ...updates } : c)),
@@ -71,7 +97,10 @@ export const useRosterStore = create<RosterState>()(
     }),
     {
       name: "wow-raid-roster",
-      partialize: (state) => ({ characters: state.characters }),
+      partialize: (state) => ({
+        characters: state.characters,
+        partyAssignments: state.partyAssignments,
+      }),
     }
   )
 )

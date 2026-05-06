@@ -8,12 +8,17 @@ export interface RosterPreset {
   createdAt: number
   id: string
   name: string
+  partyAssignments: Record<string, number>
 }
 
 interface PresetState {
   presets: RosterPreset[]
   deletePreset: (id: string) => void
-  savePreset: (name: string, characters: RosterCharacter[]) => void
+  savePreset: (
+    name: string,
+    characters: RosterCharacter[],
+    partyAssignments: Record<string, number>
+  ) => void
 }
 
 export const usePresetStore = create<PresetState>()(
@@ -24,7 +29,7 @@ export const usePresetStore = create<PresetState>()(
 
       presets: [],
 
-      savePreset: (name, characters) =>
+      savePreset: (name, characters, partyAssignments) =>
         set((state) => ({
           presets: [
             ...state.presets,
@@ -33,6 +38,7 @@ export const usePresetStore = create<PresetState>()(
               createdAt: Date.now(),
               id: Date.now().toString(36) + Math.random().toString(36).slice(2),
               name,
+              partyAssignments,
             },
           ],
         })),
