@@ -1,7 +1,16 @@
 {
   "name": "wow-raid-builder",
   "version": "0.1.0",
+  "author": "gunwoongPark",
+  "bugs": {
+    "url": "https://github.com/gunwoongPark/wow-raid-builder/issues"
+  },
+  "homepage": "https://github.com/gunwoongPark/wow-raid-builder",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gunwoongPark/wow-raid-builder.git"
+  },
   "scripts": {
     "dev": "NODE_EXTRA_CA_CERTS=$(pwd)/.certs.pem next dev",
     "build": "next build",
