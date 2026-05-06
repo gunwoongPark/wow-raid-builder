@@ -99,6 +99,7 @@ export interface RosterCharacterWCL {
 export interface CharacterSearchResult {
   className: string
   name: string
+  raidSummary: string | null
   realm: string
   realmSlug: string
   score: number

@@ -169,6 +169,11 @@ export const CharacterSearchForm = () => {
                           M+ {result.score.toLocaleString()}
                         </span>
                       )}
+                      {result.raidSummary && (
+                        <span className="ml-1.5 text-emerald-500 dark:text-emerald-400">
+                          {result.raidSummary}
+                        </span>
+                      )}
                     </p>
                   </div>
                 </ComboboxOption>
