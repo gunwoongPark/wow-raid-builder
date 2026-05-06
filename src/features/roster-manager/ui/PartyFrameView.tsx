@@ -11,7 +11,6 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core"
-import { GripVertical } from "lucide-react"
 import { useState } from "react"
 
 import { type RosterCharacter, useRosterStore } from "@/entities/character"
@@ -34,7 +33,6 @@ const CharacterDragCard = ({ character }: CharacterDragCardProps) => {
 
   return (
     <div className="border-border/60 bg-card flex cursor-grabbing items-center gap-2 rounded-md border px-3 py-1.5 shadow-2xl">
-      <GripVertical className="text-muted-foreground/40 size-3 shrink-0" />
       <div
         className="h-5 w-0.5 shrink-0 rounded-full"
         style={{ background: `light-dark(${classColorLight}, ${classColor})` }}
@@ -44,9 +42,9 @@ const CharacterDragCard = ({ character }: CharacterDragCardProps) => {
       >
         {ROLE_BADGE[character.role] ?? ""}
       </span>
-      <div className="min-w-0">
+      <div>
         <p
-          className="truncate text-xs font-semibold"
+          className="text-xs font-semibold whitespace-nowrap"
           style={{ color: `light-dark(${classColorLight}, ${classColor})` }}
         >
           {character.name}
@@ -75,19 +73,12 @@ const UnassignedSlot = ({ character }: UnassignedSlotProps) => {
     <div
       ref={setNodeRef}
       className={cn(
-        "border-border/40 bg-card/60 flex items-center gap-1.5 rounded border",
+        "border-border/40 bg-card/60 flex cursor-grab items-center gap-1.5 rounded border px-2 py-1 active:cursor-grabbing",
         isDragging && "opacity-30"
       )}
+      {...listeners}
+      {...attributes}
     >
-      {/* 드래그 핸들 */}
-      <div
-        className="text-muted-foreground/30 hover:text-muted-foreground/60 cursor-grab pl-2 transition-colors active:cursor-grabbing"
-        {...listeners}
-        {...attributes}
-      >
-        <GripVertical className="size-3" />
-      </div>
-
       {/* 클래스 색상 바 */}
       <div
         className="h-4 w-0.5 shrink-0 rounded-full"
@@ -101,7 +92,7 @@ const UnassignedSlot = ({ character }: UnassignedSlotProps) => {
 
       {/* 이름 */}
       <span
-        className="max-w-[88px] truncate pr-2 text-xs font-semibold"
+        className="text-xs font-semibold whitespace-nowrap"
         style={{ color: `light-dark(${classColorLight}, ${classColor})` }}
       >
         {character.name}

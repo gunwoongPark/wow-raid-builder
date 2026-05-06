@@ -1,7 +1,6 @@
 "use client"
 
 import { useDraggable, useDroppable } from "@dnd-kit/core"
-import { GripVertical } from "lucide-react"
 
 import { type RosterCharacter, useRosterStore } from "@/entities/character"
 import { cn } from "@/lib/utils"
@@ -42,19 +41,12 @@ export const CharacterSlot = ({ character }: CharacterSlotProps) => {
     <div
       ref={setNodeRef}
       className={cn(
-        "border-border/20 flex items-center gap-2 border-b px-2 py-1.5 last:border-0",
+        "border-border/20 flex cursor-grab items-center gap-2 border-b px-2 py-1.5 last:border-0 active:cursor-grabbing",
         isDragging && "opacity-30"
       )}
+      {...listeners}
+      {...attributes}
     >
-      {/* 드래그 핸들 */}
-      <div
-        className="text-muted-foreground/30 hover:text-muted-foreground/70 shrink-0 cursor-grab transition-colors active:cursor-grabbing"
-        {...listeners}
-        {...attributes}
-      >
-        <GripVertical className="size-3" />
-      </div>
-
       {/* 클래스 색상 좌측 바 */}
       <div
         className="h-5 w-0.5 shrink-0 rounded-full"
@@ -79,7 +71,7 @@ export const CharacterSlot = ({ character }: CharacterSlotProps) => {
         <p className="text-muted-foreground text-[10px]">{character.itemLevel}</p>
       </div>
 
-      {/* 해제 버튼 */}
+      {/* 해제 버튼 — pointerdown이 전파되면 drag 시작 시도하나, distance:5 제약으로 클릭은 드래그 안됨 */}
       <button
         aria-label={`${character.name} 파티 배정 해제`}
         className="text-muted-foreground/30 shrink-0 text-xs transition-colors hover:text-red-500"
