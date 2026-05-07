@@ -1,5 +1,5 @@
 export { BuffAnalysis } from "./ui/BuffAnalysis"
 export { BuffRecommendations } from "./ui/BuffRecommendations"
 export { PresetManager } from "./ui/PresetManager"
+export { RosterInitializer } from "./ui/RosterInitializer"
 export { RosterList } from "./ui/RosterList"
-export { RosterUrlLoader } from "./ui/RosterUrlLoader"

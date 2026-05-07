@@ -4,7 +4,7 @@ import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headl
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import Image from "next/image"
-import { type ChangeEvent, type FormEvent, useRef, useState } from "react"
+import { type ChangeEvent, type FormEvent, type KeyboardEvent, useRef, useState } from "react"
 import { toast } from "sonner"
 
 import {
@@ -30,14 +30,14 @@ export const CharacterSearchForm = () => {
   const [query, setQuery] = useState("")
   const [isAdding, setIsAdding] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const debouncedQuery = useDebounce(query, 350)
+  // Enter 입력 시 debounce를 건너뛰고 즉시 검색을 트리거하기 위한 상태
+  const [instantQuery, setInstantQuery] = useState("")
+  const debouncedQuery = useDebounce(query, 250)
+  const effectiveQuery = instantQuery.length >= 2 ? instantQuery : debouncedQuery
   const inputRef = useRef<HTMLInputElement>(null)
 
   // 변수부 — 쿼리
-  const { data: searchResults = [], isFetching } = useQuery({
-    ...characterQueries.search(debouncedQuery),
-    placeholderData: (previous) => previous,
-  })
+  const { data: searchResults = [], isFetching } = useQuery(characterQueries.search(effectiveQuery))
 
   // 함수
   const onSelect = async (result: CharacterSearchResult | null) => {
@@ -69,6 +69,7 @@ export const CharacterSearchForm = () => {
       setPendingRaiderIO(characterId, true)
       setPendingWCL(characterId, true)
       setQuery("")
+      setInstantQuery("")
       inputRef.current?.blur()
 
       characterApi
@@ -115,12 +116,24 @@ export const CharacterSearchForm = () => {
 
   const handleQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value)
+    setInstantQuery("") // 새로 타이핑 시 즉시검색 초기화 → debounce로 복귀
     setErrorMessage(null)
+  }
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter" || query.length < 2) return
+    // debounce를 건너뛰고 즉시 검색 실행
+    // preventDefault 없음 → 옵션이 포커스되어 있으면 Headless UI가 Enter로 선택 가능
+    setInstantQuery(query)
   }
 
   // 렌더
   return (
     <form className="flex flex-col gap-2" onSubmit={handlePreventDefault}>
+      {/*
+        immediate: 포커스 즉시 열림 → blur 시 자연스럽게 닫힘 (static 없이도 외부 클릭 닫힘 해결)
+        static 미사용: Headless UI가 open/close 직접 관리 (blur, Escape, 선택 모두 자동 처리)
+      */}
       <Combobox immediate onChange={onSelect}>
         <div className="relative">
           <ComboboxInput
@@ -128,6 +141,7 @@ export const CharacterSearchForm = () => {
             disabled={isAdding || characterCount >= MAX_ROSTER_SIZE}
             displayValue={getDisplayValue}
             onChange={handleQueryChange}
+            onKeyDown={handleKeyDown}
             ref={inputRef}
             placeholder={
               characterCount >= MAX_ROSTER_SIZE
@@ -143,9 +157,16 @@ export const CharacterSearchForm = () => {
             </span>
           )}
 
-          {searchResults.length > 0 && debouncedQuery.length >= 2 && (
-            <ComboboxOptions className="border-border/60 bg-popover absolute z-9999 mt-1 max-h-64 w-full overflow-auto rounded-md border shadow-xl [background:var(--popover)]">
-              {searchResults.map((result) => (
+          {/*
+            hidden: query < 2자일 때 포커스되어도 빈 드롭다운이 보이지 않도록 억제
+            static 없음: Headless UI가 blur 시 자동으로 닫아줌
+          */}
+          <ComboboxOptions
+            className="border-border/60 bg-popover absolute z-9999 mt-1 max-h-64 w-full overflow-auto rounded-md border shadow-xl [background:var(--popover)]"
+            hidden={query.length < 2}
+          >
+            {searchResults.length > 0 ? (
+              searchResults.map((result) => (
                 <ComboboxOption
                   className="text-foreground data-focus:bg-primary/10 flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm transition-colors"
                   key={result.realmSlug}
@@ -186,15 +207,11 @@ export const CharacterSearchForm = () => {
                     </p>
                   </div>
                 </ComboboxOption>
-              ))}
-            </ComboboxOptions>
-          )}
-
-          {!isFetching && debouncedQuery.length >= 2 && searchResults.length === 0 && (
-            <ComboboxOptions className="border-border/60 bg-popover absolute z-9999 mt-1 w-full rounded-md border shadow-xl [background:var(--popover)]">
+              ))
+            ) : !isFetching ? (
               <p className="text-muted-foreground px-3 py-2.5 text-sm">검색 결과가 없습니다.</p>
-            </ComboboxOptions>
-          )}
+            ) : null}
+          </ComboboxOptions>
         </div>
       </Combobox>
 
