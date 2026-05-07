@@ -1,9 +1,5 @@
 export { buildRaiderIOProfile, characterApi } from "./api"
-export {
-  buildCharacterUrls,
-  type CharacterUrls,
-  getFirstRaidProgression,
-} from "./lib/character-urls"
+export { buildCharacterUrls, getFirstRaidProgression } from "./lib/character-urls"
 export { type BuffRecommendation, getBuffRecommendations } from "./lib/buff-recommendations"
 export { analyzeBuffCoverage, BUFF_CATEGORIES, COUNTABLE_CATEGORIES, wowheadIconUrl } from "./buffs"
 export type { BuffCategory, BuffCoverage, BuffKey, CandidateProvider } from "./buffs"
@@ -12,7 +8,6 @@ export { MAX_ROSTER_SIZE, useRosterStore } from "./model/roster-store"
 export {
   buildShareUrl,
   decodeRosterParam,
-  encodeRosterParam,
   extractRealmSlug,
   type RosterUrlEntry,
 } from "./lib/roster-url"
@@ -25,6 +20,5 @@ export type {
   Role,
   RosterCharacter,
   RosterCharacterWCL,
-  WCLBossRanking,
   WCLZoneRankings,
 } from "./types"
