@@ -1,14 +1,12 @@
 "use client"
 
-import { useTheme } from "next-themes"
-
 import { analyzeBuffCoverage, getBuffRecommendations, useRosterStore } from "@/entities/character"
 import { getClassColor, getClassColorLight } from "@/shared/config/class-colors"
+import { useIsDarkMode } from "@/shared/lib/use-is-dark-mode"
 
 export const BuffRecommendations = () => {
   const characters = useRosterStore((store) => store.characters)
-  const { resolvedTheme } = useTheme()
-  const isDark = resolvedTheme === "dark"
+  const isDark = useIsDarkMode()
 
   if (!characters.length) return null
 

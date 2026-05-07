@@ -1,7 +1,6 @@
 "use client"
 
 import { cva } from "class-variance-authority"
-import { useTheme } from "next-themes"
 
 import {
   analyzeBuffCoverage,
@@ -9,6 +8,7 @@ import {
   COUNTABLE_CATEGORIES,
   useRosterStore,
 } from "@/entities/character"
+import { useIsDarkMode } from "@/shared/lib/use-is-dark-mode"
 
 import { CATEGORY_LABEL, INLINE_CATEGORIES } from "../config/buff-display"
 import { BuffCard } from "./BuffCard"
@@ -23,11 +23,18 @@ const coverageBadgeVariants = cva("rounded px-1.5 py-0.5 text-[10px] font-bold t
   },
 })
 
+type CoverageLevel = "good" | "medium" | "poor"
+
+const BAR_COLOR: Record<CoverageLevel, string> = {
+  good: "bg-linear-to-r from-emerald-600 to-emerald-400 dark:from-emerald-500 dark:to-emerald-300",
+  medium: "bg-linear-to-r from-amber-600 to-yellow-400 dark:from-amber-500 dark:to-yellow-300",
+  poor: "bg-linear-to-r from-red-700 to-red-500",
+}
+
 export const BuffAnalysis = () => {
   const characters = useRosterStore((store) => store.characters)
   const coverage = analyzeBuffCoverage(characters)
-  const { resolvedTheme } = useTheme()
-  const isDark = resolvedTheme === "dark"
+  const isDark = useIsDarkMode()
 
   if (characters.length === 0) return null
 
@@ -110,14 +117,9 @@ export const BuffAnalysis = () => {
           const coveredCount = buffs.filter((buff) => buff.covered).length
           const categoryPercent =
             buffs.length === 0 ? 0 : Math.round((coveredCount / buffs.length) * 100)
-          const categoryLevel =
+          const categoryLevel: CoverageLevel =
             categoryPercent >= 80 ? "good" : categoryPercent > 0 ? "medium" : "poor"
-          const barColor =
-            categoryLevel === "good"
-              ? "bg-linear-to-r from-emerald-600 to-emerald-400 dark:from-emerald-500 dark:to-emerald-300"
-              : categoryLevel === "medium"
-                ? "bg-linear-to-r from-amber-600 to-yellow-400 dark:from-amber-500 dark:to-yellow-300"
-                : "bg-linear-to-r from-red-700 to-red-500"
+          const barColor = BAR_COLOR[categoryLevel]
 
           return (
             <div key={category}>

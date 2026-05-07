@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 
 import { type RosterCharacter, SPEC_ROLE_MAP } from "@/entities/character"
+import { CACHE_HEADERS } from "@/shared/config/cache-headers"
 import { toRealmSlug } from "@/shared/config/realms"
 import { handleRouteError } from "@/shared/lib/api-error"
 import { blizzardFetch } from "@/shared/lib/blizzard-fetch"
@@ -45,7 +46,7 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
     }
 
     return NextResponse.json(character, {
-      headers: { "Cache-Control": "public, max-age=300, stale-while-revalidate=600" },
+      headers: { "Cache-Control": CACHE_HEADERS.CHARACTER_SUMMARY },
     })
   } catch (error) {
     return handleRouteError(error)

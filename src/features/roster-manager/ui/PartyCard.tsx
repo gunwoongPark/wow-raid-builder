@@ -7,6 +7,7 @@ import { type RosterCharacter, useRosterStore } from "@/entities/character"
 import { cn } from "@/lib/utils"
 import { getClassColor, getClassColorLight } from "@/shared/config/class-colors"
 
+import { DND_IDS } from "../config/dnd"
 import { MAX_PARTY_SIZE, PARTY_COUNT } from "../config/party"
 import { ROLE_COLOR } from "../config/roster-display"
 import { countByRole } from "../lib/roster-stats"
@@ -118,7 +119,7 @@ export const PartyCard = ({
   isDragging,
   partyNumber,
 }: PartyCardProps) => {
-  const { isOver, setNodeRef } = useDroppable({ id: `party-${partyNumber}` })
+  const { isOver, setNodeRef } = useDroppable({ id: `${DND_IDS.PARTY_PREFIX}${partyNumber}` })
   const isFull = characters.length >= MAX_PARTY_SIZE
   const isEmpty = characters.length === 0
 

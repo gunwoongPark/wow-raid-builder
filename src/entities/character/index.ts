@@ -1,4 +1,9 @@
 export { buildRaiderIOProfile, characterApi } from "./api"
+export {
+  buildCharacterUrls,
+  type CharacterUrls,
+  getFirstRaidProgression,
+} from "./lib/character-urls"
 export { type BuffRecommendation, getBuffRecommendations } from "./lib/buff-recommendations"
 export { analyzeBuffCoverage, BUFF_CATEGORIES, COUNTABLE_CATEGORIES, wowheadIconUrl } from "./buffs"
 export type { BuffCategory, BuffCoverage, BuffKey, CandidateProvider } from "./buffs"
