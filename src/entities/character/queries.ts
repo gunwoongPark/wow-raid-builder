@@ -17,8 +17,11 @@ export const characterQueries = {
     queryOptions({
       ...characterKeys.search(name),
       enabled: name.length >= 2,
+      gcTime: 5 * 60 * 1000,
       queryFn: () => characterApi.search(name),
-      staleTime: 30 * 1000,
+      // 검색은 404가 정상 응답(캐릭터 없음)이므로 재시도 불필요
+      retry: false,
+      staleTime: 2 * 60 * 1000,
     }),
 
   summary: (realm: string, name: string) =>
