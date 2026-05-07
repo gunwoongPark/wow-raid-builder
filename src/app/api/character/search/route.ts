@@ -20,7 +20,7 @@ const searchOnRealm = async (
       `&name=${encodeURIComponent(name)}` +
       `&fields=mythic_plus_scores_by_season:${CURRENT_SEASON},raid_progression`
 
-    const { data } = await axios.get<RaiderIOProfile>(url, { timeout: 4000 })
+    const { data } = await axios.get<RaiderIOProfile>(url, { timeout: 2500 })
 
     const raidProgression = data.raid_progression ? Object.values(data.raid_progression)[0] : null
 

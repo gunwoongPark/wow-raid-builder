@@ -1,13 +1,16 @@
 import { Suspense } from "react"
 
+import { decodeRosterParam } from "@/entities/character"
 import { CharacterSearchForm } from "@/features/character-search"
 import {
   BuffAnalysis,
   BuffRecommendations,
   PresetManager,
+  RosterInitializer,
   RosterList,
-  RosterUrlLoader,
 } from "@/features/roster-manager"
+// FSD index.ts를 통하지 않는 직접 경로 — server-only 함수이므로 의도적
+import { fetchCharacterOnServer } from "@/features/roster-manager/lib/fetch-character-server"
 import { SITE_URL } from "@/shared/config/site"
 
 const jsonLd = {
@@ -45,19 +48,37 @@ const jsonLd = {
   url: SITE_URL,
 }
 
-const HomePage = () => {
+interface PageProps {
+  searchParams: Promise<{ r?: string }>
+}
+
+const HomePage = async ({ searchParams }: PageProps) => {
+  const { r } = await searchParams
+  const entries = decodeRosterParam(r ?? null)
+
+  // ?r= 파라미터가 있으면 서버에서 병렬 fetch — 클라이언트 API 호출 불필요
+  const results = await Promise.allSettled(
+    entries.map(({ name, realmSlug }) => fetchCharacterOnServer(realmSlug, name))
+  )
+  const initialCharacters = results
+    .filter(
+      (
+        res
+      ): res is PromiseFulfilledResult<
+        NonNullable<Awaited<ReturnType<typeof fetchCharacterOnServer>>>
+      > => res.status === "fulfilled" && res.value !== null
+    )
+    .map((res) => res.value)
+
   return (
     <>
       <script
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         type="application/ld+json"
       />
+      {/* 서버에서 fetch한 캐릭터를 Zustand 스토어에 주입 */}
+      <RosterInitializer characters={initialCharacters} entries={entries} />
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4 sm:p-6">
-        {/* ?r= 파라미터로 공유된 로스터를 자동 로드 — useSearchParams는 Suspense 필요 */}
-        <Suspense fallback={null}>
-          <RosterUrlLoader />
-        </Suspense>
-
         <header className="flex flex-col gap-3 pb-6">
           <div className="flex items-end justify-between gap-4">
             <h1 className="fantasy text-primary text-4xl font-bold tracking-wide">
