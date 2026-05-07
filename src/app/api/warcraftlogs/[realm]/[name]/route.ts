@@ -6,6 +6,7 @@ import {
   type RosterCharacterWCL,
   ZONE_RANKINGS_QUERY,
 } from "@/entities/character"
+import { CACHE_HEADERS } from "@/shared/config/cache-headers"
 import { env } from "@/shared/config/env"
 import { toRealmSlug } from "@/shared/config/realms"
 import { WCL_GRAPHQL_URL } from "@/shared/config/warcraftlogs"
@@ -48,7 +49,7 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
     }
 
     return NextResponse.json(result, {
-      headers: { "Cache-Control": "public, max-age=600, stale-while-revalidate=1200" },
+      headers: { "Cache-Control": CACHE_HEADERS.WCL_DATA },
     })
   } catch (error) {
     return handleRouteError(error)

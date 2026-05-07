@@ -3,7 +3,7 @@
 import { cva } from "class-variance-authority"
 import Image from "next/image"
 
-import { type analyzeBuffCoverage, wowheadIconUrl } from "@/entities/character"
+import { type BuffCoverage, wowheadIconUrl } from "@/entities/character"
 import { cn } from "@/lib/utils"
 
 import { ProviderBadge } from "./ProviderBadge"
@@ -23,7 +23,7 @@ const buffCardVariants = cva(
 )
 
 interface BuffCardProps {
-  buff: ReturnType<typeof analyzeBuffCoverage>[number]
+  buff: BuffCoverage
   isDark: boolean
   isCountable: boolean
 }

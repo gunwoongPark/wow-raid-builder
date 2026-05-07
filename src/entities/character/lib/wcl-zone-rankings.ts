@@ -15,18 +15,19 @@ export const ZONE_RANKINGS_QUERY = `
   }
 `
 
+const isRecord = (value: unknown): value is Record<string, unknown> => isPlainObject(value)
+
 /** WCL JSON scalar를 타입 안전하게 변환 */
 export const parseZoneRankings = (raw: unknown): WCLZoneRankings | null => {
-  if (!isPlainObject(raw)) return null
-  const rawRecord = raw as Record<string, unknown>
+  if (!isRecord(raw)) return null
 
   return {
-    bestPerformanceAverage: isNumber(rawRecord.bestPerformanceAverage)
-      ? rawRecord.bestPerformanceAverage
+    bestPerformanceAverage: isNumber(raw.bestPerformanceAverage)
+      ? raw.bestPerformanceAverage
       : null,
-    medianPerformanceAverage: isNumber(rawRecord.medianPerformanceAverage)
-      ? rawRecord.medianPerformanceAverage
+    medianPerformanceAverage: isNumber(raw.medianPerformanceAverage)
+      ? raw.medianPerformanceAverage
       : null,
-    rankings: isArray(rawRecord.rankings) ? rawRecord.rankings : [],
+    rankings: isArray(raw.rankings) ? raw.rankings : [],
   }
 }

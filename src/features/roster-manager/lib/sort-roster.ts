@@ -1,4 +1,4 @@
-import { type RosterCharacter } from "@/entities/character"
+import { getFirstRaidProgression, type RosterCharacter } from "@/entities/character"
 
 import { ROLE_SORT_ORDER } from "../config/roster-display"
 
@@ -22,9 +22,7 @@ export type SortDirection = "asc" | "desc"
 type ComparableValue = string | number | null
 
 const getRaidProgressScore = (character: RosterCharacter): number | null => {
-  const progression = character.raiderIO?.raidProgression
-    ? Object.values(character.raiderIO.raidProgression)[0]
-    : null
+  const progression = getFirstRaidProgression(character.raiderIO?.raidProgression)
   if (!progression) return null
   // 신화 진행도 우선, 동점이면 영웅으로 구분
   return progression.mythic_bosses_killed * 1000 + progression.heroic_bosses_killed

@@ -5,6 +5,7 @@ import { type CharacterSearchResult, type RaiderIOProfile } from "@/entities/cha
 import { RAIDERIO_BASE_URL } from "@/shared/config/raiderio"
 import { KR_SEARCH_REALM_SLUGS } from "@/shared/config/realms"
 import { CURRENT_SEASON } from "@/shared/config/season"
+import { handleRouteError } from "@/shared/lib/api-error"
 
 const searchOnRealm = async (
   name: string,
@@ -41,17 +42,23 @@ const searchOnRealm = async (
 }
 
 export const GET = async (request: NextRequest) => {
-  const name = request.nextUrl.searchParams.get("name")?.trim()
+  try {
+    const name = request.nextUrl.searchParams.get("name")?.trim()
 
-  if (!name || name.length < 2) {
-    return NextResponse.json(
-      { error: "name은 2자 이상이어야 합니다.", status: 400 },
-      { status: 400 }
+    if (!name || name.length < 2) {
+      return NextResponse.json(
+        { error: "name은 2자 이상이어야 합니다.", status: 400 },
+        { status: 400 }
+      )
+    }
+
+    const results = await Promise.all(
+      KR_SEARCH_REALM_SLUGS.map((slug) => searchOnRealm(name, slug))
     )
+    const found = results.filter((result): result is CharacterSearchResult => result !== null)
+
+    return NextResponse.json(found)
+  } catch (error) {
+    return handleRouteError(error)
   }
-
-  const results = await Promise.all(KR_SEARCH_REALM_SLUGS.map((slug) => searchOnRealm(name, slug)))
-  const found = results.filter((result): result is CharacterSearchResult => result !== null)
-
-  return NextResponse.json(found)
 }

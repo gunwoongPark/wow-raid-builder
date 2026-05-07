@@ -13,3 +13,13 @@ export const ROLE_COLOR: Record<string, string> = {
 }
 
 export const ROLE_SORT_ORDER = ["TANK", "HEALER", "MELEE", "RANGED"]
+
+export const FACTION_CLASS: Record<string, string> = {
+  alliance: "bg-blue-500/15 text-blue-700 dark:text-blue-400",
+  horde: "bg-red-500/15 text-red-700 dark:text-red-400",
+}
+
+export const FACTION_LABEL: Record<string, string> = {
+  alliance: "얼라",
+  horde: "호드",
+}

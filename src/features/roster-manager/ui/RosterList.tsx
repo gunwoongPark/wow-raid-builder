@@ -9,6 +9,7 @@ import { useRosterStore } from "@/entities/character"
 
 import { ROLE_COLOR, ROLE_LABEL, ROLE_SORT_ORDER } from "../config/roster-display"
 import { HEADER_COLUMNS } from "../config/table-columns"
+import { countByRole } from "../lib/roster-stats"
 import { SORT_COLUMNS, type SortColumn, type SortDirection, sortRoster } from "../lib/sort-roster"
 import { useRosterSync } from "../model/useRosterSync"
 import { CharacterRow } from "./CharacterRow"
@@ -36,6 +37,9 @@ export const RosterList = () => {
     rawSortColumn && isSortColumn(rawSortColumn) ? rawSortColumn : null
   const sortDirection: SortDirection = searchParams.get("dir") === "asc" ? "asc" : "desc"
 
+  // 변수부 — 커스텀 훅
+  const { copyShareUrl, isRefreshing, refreshAll, refreshingIds, refreshOne } = useRosterSync()
+
   // 공격대원이 없어지면 정렬 쿼리스트링 초기화
   useEffect(() => {
     if (characters.length === 0 && (searchParams.get("sort") || searchParams.get("dir"))) {
@@ -46,9 +50,6 @@ export const RosterList = () => {
       router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
     }
   }, [characters.length, pathname, router, searchParams])
-
-  // 변수부 — 커스텀 훅
-  const { copyShareUrl, isRefreshing, refreshAll, refreshingIds, refreshOne } = useRosterSync()
 
   // 함수
   const handleSort = (column: SortColumn) => {
@@ -98,10 +99,7 @@ export const RosterList = () => {
         (a, b) => ROLE_SORT_ORDER.indexOf(a.role) - ROLE_SORT_ORDER.indexOf(b.role)
       )
 
-  const roleCounts = characters.reduce<Record<string, number>>((accumulator, character) => {
-    accumulator[character.role] = (accumulator[character.role] ?? 0) + 1
-    return accumulator
-  }, {})
+  const roleCounts = countByRole(characters)
 
   // 렌더
   return (

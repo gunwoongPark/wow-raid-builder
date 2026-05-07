@@ -12,7 +12,7 @@ export const extractRealmSlug = (id: string, name: string): string =>
 
 // URL 포맷: ?r=azshara:%EC%95%A1%ED%9D%91~1,zuljin:%ED%9D%A5%EB%A7%88~2
 // ~N suffix = 파티 번호 (없으면 미배정). realm slug · 캐릭터명에 ~ 없음 → 충돌 없음
-export const encodeRosterParam = (
+const encodeRosterParam = (
   characters: RosterCharacter[],
   partyAssignments: Record<string, number> = {}
 ): string =>
