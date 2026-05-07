@@ -16,23 +16,33 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Read version from package.json
+      - name: Bump patch version and write to package.json
         id: version
-        run: echo "value=v$(jq -r .version package.json)" >> $GITHUB_OUTPUT
-
-      - name: Check if tag already exists
-        id: tag_exists
         run: |
-          if git tag | grep -q "^${{ steps.version.outputs.value }}$"; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
+          current=$(jq -r .version package.json)
+          major=$(echo "$current" | cut -d. -f1)
+          minor=$(echo "$current" | cut -d. -f2)
+          patch=$(echo "$current" | cut -d. -f3)
+
+          patch=$((patch + 1))
+          if [ "$patch" -ge 10 ]; then
+            patch=0
+            minor=$((minor + 1))
           fi
 
-      - name: Create and push tag
-        if: steps.tag_exists.outputs.exists == 'false'
+          next="${major}.${minor}.${patch}"
+          jq --arg v "$next" '.version = $v' package.json > package.json.tmp && mv package.json.tmp package.json
+          echo "value=v${next}" >> $GITHUB_OUTPUT
+
+      - name: Commit bumped version
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "chore: bump version to ${{ steps.version.outputs.value }}"
+          git push origin main
+
+      - name: Create and push tag
+        run: |
           git tag ${{ steps.version.outputs.value }}
           git push origin ${{ steps.version.outputs.value }}
