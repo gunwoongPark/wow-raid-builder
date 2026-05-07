@@ -66,8 +66,6 @@
   --wc-tooltip-epic-border: hsl(280 42% 48%);
   --wc-tooltip-legendary-border: hsl(30 72% 46%);
   --wc-tooltip-shadow: 0 4px 20px hsl(0 0% 0% / 0.18);
-  /* 라이트 모드에서 블리자드 원색을 그대로 쓰면서 가독성 확보 — WoW 인게임 UI 방식 */
-  --class-text-shadow: 0 0 6px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 /* ─── 다크 테마 — 한밤(Midnight) 심야 석조 ──────────────────────────────────── */
@@ -88,7 +86,6 @@
   --ring: oklch(0.82 0.18 82 / 50%);
   --radius: 0.375rem;
 
-  --class-text-shadow: none;
   --wc-tooltip-border: hsl(45 65% 30%);
   --wc-tooltip-uncommon-border: hsl(120 38% 26%);
   --wc-tooltip-rare-border: hsl(220 55% 36%);

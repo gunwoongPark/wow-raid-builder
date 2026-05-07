@@ -10,7 +10,7 @@ import {
   useRosterStore,
 } from "@/entities/character"
 import { cn } from "@/lib/utils"
-import { getClassColor } from "@/shared/config/class-colors"
+import { getClassColor, getClassColorLight } from "@/shared/config/class-colors"
 
 import { FACTION_CLASS, FACTION_LABEL, ROLE_COLOR, ROLE_LABEL } from "../config/roster-display"
 import { LogCell } from "./LogCell"
@@ -30,6 +30,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
   const isPendingRaiderIO = isRefreshing || storePendingRaiderIO
   const isPendingWCL = isRefreshing || storePendingWCL
   const classColor = getClassColor(character.className)
+  const classColorLight = getClassColorLight(character.className)
   const score = character.raiderIO?.score ?? 0
   const progression = getFirstRaidProgression(character.raiderIO?.raidProgression)
   const {
@@ -66,7 +67,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
               className="font-semibold hover:underline"
               href={armoryUrl}
               rel="noopener noreferrer"
-              style={{ color: classColor, textShadow: "var(--class-text-shadow)" }}
+              style={{ color: `light-dark(${classColorLight}, ${classColor})` }}
               target="_blank"
             >
               {character.name}
@@ -93,7 +94,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
       <td className="text-foreground/80 min-w-[90px] px-3 py-2 text-sm">{character.className}</td>
       <td
         className="min-w-[80px] px-3 py-2 text-sm"
-        style={{ color: classColor, textShadow: "var(--class-text-shadow)" }}
+        style={{ color: `light-dark(${classColorLight}, ${classColor})` }}
       >
         {character.specName}
       </td>
