@@ -2,6 +2,7 @@ import axios from "axios"
 import { NextResponse } from "next/server"
 
 import { type RaiderIOProfile } from "@/entities/character"
+import { CACHE_HEADERS } from "@/shared/config/cache-headers"
 import { RAIDERIO_BASE_URL } from "@/shared/config/raiderio"
 import { toRealmSlug } from "@/shared/config/realms"
 import { CURRENT_SEASON } from "@/shared/config/season"
@@ -33,7 +34,7 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
     })
 
     return NextResponse.json(data, {
-      headers: { "Cache-Control": "public, max-age=300, stale-while-revalidate=600" },
+      headers: { "Cache-Control": CACHE_HEADERS.RAIDERIO_PROFILE },
     })
   } catch (error) {
     return handleRouteError(error)

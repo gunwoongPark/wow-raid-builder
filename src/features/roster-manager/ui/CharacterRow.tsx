@@ -3,11 +3,16 @@
 import Image from "next/image"
 
 import { Skeleton } from "@/components/ui/skeleton"
-import { extractRealmSlug, type RosterCharacter, useRosterStore } from "@/entities/character"
+import {
+  buildCharacterUrls,
+  getFirstRaidProgression,
+  type RosterCharacter,
+  useRosterStore,
+} from "@/entities/character"
 import { cn } from "@/lib/utils"
 import { getClassColor } from "@/shared/config/class-colors"
 
-import { ROLE_COLOR, ROLE_LABEL } from "../config/roster-display"
+import { FACTION_CLASS, FACTION_LABEL, ROLE_COLOR, ROLE_LABEL } from "../config/roster-display"
 import { LogCell } from "./LogCell"
 import { ScoreCell } from "./ScoreCell"
 
@@ -26,15 +31,13 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
   const isPendingWCL = isRefreshing || storePendingWCL
   const classColor = getClassColor(character.className)
   const score = character.raiderIO?.score ?? 0
-  const progression = character.raiderIO?.raidProgression
-    ? Object.values(character.raiderIO.raidProgression)[0]
-    : null
-  const realmSlug = extractRealmSlug(character.id, character.name)
-  const armoryUrl = `https://worldofwarcraft.blizzard.com/ko-kr/character/kr/${realmSlug}/${encodeURIComponent(character.name)}`
-  const wclBaseUrl = `https://www.warcraftlogs.com/character/kr/${realmSlug}/${encodeURIComponent(character.name.toLowerCase())}`
-  const wclKeystoneUrl = `${wclBaseUrl}#zone=47&difficulty=10`
-  const wclHeroicUrl = `${wclBaseUrl}#difficulty=4`
-  const wclMythicUrl = `${wclBaseUrl}#difficulty=5`
+  const progression = getFirstRaidProgression(character.raiderIO?.raidProgression)
+  const {
+    armory: armoryUrl,
+    wclHeroic: wclHeroicUrl,
+    wclKeystone: wclKeystoneUrl,
+    wclMythic: wclMythicUrl,
+  } = buildCharacterUrls(character)
 
   const handleRemove = () => removeCharacter(character.id)
   const handleRefresh = () => onRefresh(character.id)
@@ -95,12 +98,10 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
         <span
           className={cn(
             "rounded px-1.5 py-0.5 text-[10px] font-semibold",
-            character.faction === "alliance"
-              ? "bg-blue-500/15 text-blue-700 dark:text-blue-400"
-              : "bg-red-500/15 text-red-700 dark:text-red-400"
+            FACTION_CLASS[character.faction]
           )}
         >
-          {character.faction === "alliance" ? "얼라" : "호드"}
+          {FACTION_LABEL[character.faction]}
         </span>
       </td>
       <td className={cn("min-w-[56px] px-3 py-2 text-sm font-medium", ROLE_COLOR[character.role])}>

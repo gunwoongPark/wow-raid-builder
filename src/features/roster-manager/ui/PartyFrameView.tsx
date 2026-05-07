@@ -18,6 +18,7 @@ import { type RosterCharacter, useRosterStore } from "@/entities/character"
 import { cn } from "@/lib/utils"
 import { getClassColor, getClassColorLight } from "@/shared/config/class-colors"
 
+import { DND_IDS } from "../config/dnd"
 import { ROLE_COLOR } from "../config/roster-display"
 import { autoAssignParties } from "../lib/auto-assign-parties"
 import { MAX_PARTY_SIZE, PARTY_COUNT, PartyCard, ROLE_BADGE } from "./PartyCard"
@@ -110,7 +111,7 @@ interface UnassignedPoolProps {
 }
 
 const UnassignedPool = ({ characters, isDragging }: UnassignedPoolProps) => {
-  const { isOver, setNodeRef } = useDroppable({ id: "pool" })
+  const { isOver, setNodeRef } = useDroppable({ id: DND_IDS.UNASSIGNED_POOL })
 
   return (
     <div
@@ -143,6 +144,8 @@ const UnassignedPool = ({ characters, isDragging }: UnassignedPoolProps) => {
 // ─── PartyFrameView ────────────────────────────────────────────────────────────
 
 export const PartyFrameView = () => {
+  const [activeId, setActiveId] = useState<string | null>(null)
+
   const characters = useRosterStore((store) => store.characters)
   const partyAssignments = useRosterStore((store) => store.partyAssignments)
   const partyOrder = useRosterStore((store) => store.partyOrder)
@@ -151,8 +154,6 @@ export const PartyFrameView = () => {
   const reorderParty = useRosterStore((store) => store.reorderParty)
   const setPartyAssignments = useRosterStore((store) => store.setPartyAssignments)
   const clearPartyAssignments = useRosterStore((store) => store.clearPartyAssignments)
-
-  const [activeId, setActiveId] = useState<string | null>(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -180,14 +181,14 @@ export const PartyFrameView = () => {
     const currentParty = partyAssignments[characterId]
 
     // 1. 미배정 풀로 드롭 → 배정 해제
-    if (dropTarget === "pool") {
+    if (dropTarget === DND_IDS.UNASSIGNED_POOL) {
       if (currentParty !== undefined) unassignFromParty(characterId)
       return
     }
 
     // 2. 파티 카드 빈 공간으로 드롭 → 파티 이동
-    if (dropTarget.startsWith("party-")) {
-      const partyNumber = parseInt(dropTarget.replace("party-", ""), 10)
+    if (dropTarget.startsWith(DND_IDS.PARTY_PREFIX)) {
+      const partyNumber = parseInt(dropTarget.replace(DND_IDS.PARTY_PREFIX, ""), 10)
       if (isNaN(partyNumber) || currentParty === partyNumber) return
       const partySize = characters.filter((c) => partyAssignments[c.id] === partyNumber).length
       if (partySize >= MAX_PARTY_SIZE) return
