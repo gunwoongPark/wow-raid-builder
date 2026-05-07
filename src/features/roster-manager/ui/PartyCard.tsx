@@ -7,12 +7,11 @@ import { type RosterCharacter, useRosterStore } from "@/entities/character"
 import { cn } from "@/lib/utils"
 import { getClassColor, getClassColorLight } from "@/shared/config/class-colors"
 
+import { MAX_PARTY_SIZE, PARTY_COUNT } from "../config/party"
 import { ROLE_COLOR } from "../config/roster-display"
+import { countByRole } from "../lib/roster-stats"
 
-// ─── 상수 ──────────────────────────────────────────────────────────────────────
-
-export const MAX_PARTY_SIZE = 5
-export const PARTY_COUNT = 6
+export { MAX_PARTY_SIZE, PARTY_COUNT }
 
 // 슬롯 고정 높이 — CharacterSlot / EmptySlot 동일 적용으로 layout shift 방지
 const SLOT_HEIGHT = "h-[46px]"
@@ -123,10 +122,7 @@ export const PartyCard = ({
   const isFull = characters.length >= MAX_PARTY_SIZE
   const isEmpty = characters.length === 0
 
-  const tankCount = characters.filter((c) => c.role === "TANK").length
-  const healerCount = characters.filter((c) => c.role === "HEALER").length
-  const meleeCount = characters.filter((c) => c.role === "MELEE").length
-  const rangedCount = characters.filter((c) => c.role === "RANGED").length
+  const roleCounts = countByRole(characters)
   const emptySlotCount = MAX_PARTY_SIZE - characters.length
 
   return (
@@ -147,17 +143,17 @@ export const PartyCard = ({
         <span className="text-primary/80 text-xs font-bold tracking-wide">파티 {partyNumber}</span>
         {!isEmpty ? (
           <div className="flex items-center gap-1.5 text-[10px]">
-            {tankCount > 0 && (
-              <span className="text-blue-700 dark:text-blue-400">탱{tankCount}</span>
+            {(roleCounts.TANK ?? 0) > 0 && (
+              <span className="text-blue-700 dark:text-blue-400">탱{roleCounts.TANK}</span>
             )}
-            {healerCount > 0 && (
-              <span className="text-emerald-600 dark:text-emerald-400">힐{healerCount}</span>
+            {(roleCounts.HEALER ?? 0) > 0 && (
+              <span className="text-emerald-600 dark:text-emerald-400">힐{roleCounts.HEALER}</span>
             )}
-            {meleeCount > 0 && (
-              <span className="text-red-600 dark:text-red-400">근{meleeCount}</span>
+            {(roleCounts.MELEE ?? 0) > 0 && (
+              <span className="text-red-600 dark:text-red-400">근{roleCounts.MELEE}</span>
             )}
-            {rangedCount > 0 && (
-              <span className="text-sky-600 dark:text-sky-400">원{rangedCount}</span>
+            {(roleCounts.RANGED ?? 0) > 0 && (
+              <span className="text-sky-600 dark:text-sky-400">원{roleCounts.RANGED}</span>
             )}
             <span
               className={cn(

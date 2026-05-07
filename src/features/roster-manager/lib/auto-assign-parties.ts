@@ -1,6 +1,6 @@
 import { type RosterCharacter } from "@/entities/character"
 
-const PARTY_SIZE = 5
+import { MAX_PARTY_SIZE as PARTY_SIZE } from "../config/party"
 const ROLE_ORDER = ["TANK", "HEALER", "MELEE", "RANGED"] as const
 
 // 역할 균형 라운드 로빈: TANK → HEALER → MELEE → RANGED 순으로

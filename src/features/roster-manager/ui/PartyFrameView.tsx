@@ -143,6 +143,8 @@ const UnassignedPool = ({ characters, isDragging }: UnassignedPoolProps) => {
 // ─── PartyFrameView ────────────────────────────────────────────────────────────
 
 export const PartyFrameView = () => {
+  const [activeId, setActiveId] = useState<string | null>(null)
+
   const characters = useRosterStore((store) => store.characters)
   const partyAssignments = useRosterStore((store) => store.partyAssignments)
   const partyOrder = useRosterStore((store) => store.partyOrder)
@@ -151,8 +153,6 @@ export const PartyFrameView = () => {
   const reorderParty = useRosterStore((store) => store.reorderParty)
   const setPartyAssignments = useRosterStore((store) => store.setPartyAssignments)
   const clearPartyAssignments = useRosterStore((store) => store.clearPartyAssignments)
-
-  const [activeId, setActiveId] = useState<string | null>(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
