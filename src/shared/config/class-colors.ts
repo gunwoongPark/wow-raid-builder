@@ -16,20 +16,22 @@ export const CLASS_COLORS: Record<string, string> = {
 }
 
 // 라이트 모드 배경에서 가독성 확보를 위한 어두운 버전
+// oklch 기반으로 원본 블리자드 색상의 hue를 최대한 유지하면서
+// 흰 배경 대비 WCAG AA(4.5:1) 이상을 보장하는 값으로 조정
 const CLASS_COLORS_LIGHT: Record<string, string> = {
-  "Death Knight": "#a01830",
-  "Demon Hunter": "#7a1a99",
-  Druid: "#b05500",
-  Evoker: "#1a6d5c",
-  Hunter: "#4a7a00",
-  Mage: "#0077aa",
-  Monk: "#007a40",
-  Paladin: "#c04080",
-  Priest: "#666666",
-  Rogue: "#9a7800",
-  Shaman: "#005599",
-  Warlock: "#4040bb",
-  Warrior: "#8a6010",
+  "Death Knight": "#a01830", // 7.87:1
+  "Demon Hunter": "#7a1a99", // 8.62:1
+  Druid: "#a34d00", // 5.80:1  (기존 #b05500 5.07→여유 확보)
+  Evoker: "#1a6d5c", // 6.20:1
+  Hunter: "#4a7a00", // 5.15:1
+  Mage: "#0069a0", // 5.95:1  (기존 #0077aa 4.98→여유 확보)
+  Monk: "#007040", // 6.19:1  (기존 #007a40 — jade 색감 복원)
+  Paladin: "#b03070", // 6.00:1  (기존 #c04080 4.90→여유 확보)
+  Priest: "#666666", // 5.74:1  (흰 직업색 특성상 회색 불가피)
+  Rogue: "#736000", // 6.17:1  (기존 #9a7800 4.15:1 ❌ → 수정)
+  Shaman: "#005599", // 7.61:1
+  Warlock: "#4040bb", // 7.87:1
+  Warrior: "#8a6010", // 5.58:1
 }
 
 // 한글 직업명 → 영문 매핑

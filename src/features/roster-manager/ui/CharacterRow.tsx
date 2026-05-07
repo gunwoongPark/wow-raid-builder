@@ -66,7 +66,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
               className="font-semibold hover:underline"
               href={armoryUrl}
               rel="noopener noreferrer"
-              style={{ color: classColor }}
+              style={{ color: classColor, textShadow: "var(--class-text-shadow)" }}
               target="_blank"
             >
               {character.name}
@@ -91,7 +91,10 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
 
       <td className="text-muted-foreground min-w-[90px] px-3 py-2 text-sm">{character.realm}</td>
       <td className="text-foreground/80 min-w-[90px] px-3 py-2 text-sm">{character.className}</td>
-      <td className="min-w-[80px] px-3 py-2 text-sm" style={{ color: classColor }}>
+      <td
+        className="min-w-[80px] px-3 py-2 text-sm"
+        style={{ color: classColor, textShadow: "var(--class-text-shadow)" }}
+      >
         {character.specName}
       </td>
       <td className="min-w-[56px] px-3 py-2 text-sm">
