@@ -122,8 +122,11 @@ export const CharacterSearchForm = () => {
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter" || query.length < 2) return
-    // debounce를 건너뛰고 즉시 검색 실행
-    // preventDefault 없음 → 옵션이 포커스되어 있으면 Headless UI가 Enter로 선택 가능
+    // 결과가 없을 때: Headless UI의 Enter 처리(combobox 닫힘)를 막고 즉시 검색만 실행
+    // 결과가 있을 때: preventDefault 없음 → 포커스된 옵션을 Enter로 선택 가능
+    if (searchResults.length === 0) {
+      event.preventDefault()
+    }
     setInstantQuery(query)
   }
 
