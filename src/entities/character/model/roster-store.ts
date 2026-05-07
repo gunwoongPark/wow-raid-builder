@@ -150,6 +150,9 @@ export const useRosterStore = create<RosterState>()(
     {
       name: "wow-raid-roster",
       partialize: (state) => ({ characters: state.characters }),
+      // 서버와 클라이언트 첫 렌더를 characters=[] 로 일치시켜 hydration 불일치 방지
+      // rehydrate()는 RosterInitializer에서 mount 후 수동 호출
+      skipHydration: true,
     }
   )
 )

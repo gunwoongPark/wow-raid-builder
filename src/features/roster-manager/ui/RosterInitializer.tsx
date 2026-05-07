@@ -19,12 +19,16 @@ export const RosterInitializer = ({ characters, entries }: RosterInitializerProp
   const router = useRouter()
 
   useEffect(() => {
+    // persist skipHydration: true 설정으로 인해 수동으로 rehydrate 호출
+    // 서버·클라이언트 첫 렌더를 일치시켜 CLS를 줄이기 위한 구조
+    useRosterStore.persist.rehydrate()
+
     if (initialized.current || characters.length === 0) return
     initialized.current = true
 
     const { addCharacter, assignToParty } = useRosterStore.getState()
 
-    characters.forEach(addCharacter)
+    characters.forEach((character) => addCharacter(character))
 
     entries.forEach(({ name, partyNumber, realmSlug }) => {
       if (partyNumber !== undefined) {

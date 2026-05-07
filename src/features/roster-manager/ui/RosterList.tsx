@@ -40,17 +40,6 @@ export const RosterList = () => {
   // 변수부 — 커스텀 훅
   const { copyShareUrl, isRefreshing, refreshAll, refreshingIds, refreshOne } = useRosterSync()
 
-  // 공격대원이 없어지면 정렬 쿼리스트링 초기화
-  useEffect(() => {
-    if (characters.length === 0 && (searchParams.get("sort") || searchParams.get("dir"))) {
-      const params = new URLSearchParams(searchParams.toString())
-      params.delete("sort")
-      params.delete("dir")
-      const query = params.toString()
-      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
-    }
-  }, [characters.length, pathname, router, searchParams])
-
   // 함수
   const handleSort = (column: SortColumn) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -80,6 +69,17 @@ export const RosterList = () => {
     await refreshAll()
     toast.success("최신화 완료!", { description: "모든 공격대원 데이터가 업데이트됐습니다." })
   }
+
+  // 공격대원이 없어지면 정렬 쿼리스트링 초기화
+  useEffect(() => {
+    if (characters.length === 0 && (searchParams.get("sort") || searchParams.get("dir"))) {
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete("sort")
+      params.delete("dir")
+      const query = params.toString()
+      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
+    }
+  }, [characters.length, pathname, router, searchParams])
 
   // 빈 상태
   if (characters.length === 0) {
