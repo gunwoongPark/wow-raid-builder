@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   category: "game",
   creator: "gunwoongPark",
   description:
-    "공대장을 위한 월드 오브 워크래프트 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 확인하고, 파티 프레임으로 5인 파티 단위 편성까지 지원합니다. 한밤(Midnight) 시즌 1 기준.",
+    "WoW Raid Builder — World of Warcraft raid composition tool for raid leaders. Analyze buff & utility coverage, build party frames, and share your roster. 공격대 버프·유틸 커버리지 분석 및 파티 편성 도구. 한밤(Midnight) 시즌 1 기준.",
   keywords: [
     "WoW",
     "World of Warcraft",
@@ -82,10 +82,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   openGraph: {
     description:
-      "공대장을 위한 공격대 구성 분석 도구. 캐릭터 검색, 버프·유틸 커버리지 분석, 파티 프레임 기반 5인 파티 편성을 지원합니다.",
+      "WoW Raid Builder — Raid composition analyzer for WoW raid leaders. Buff & utility coverage, party frames, Raider.IO & Warcraft Logs integration. 공격대 버프·유틸 커버리지 분석 도구.",
     locale: "ko_KR",
     siteName: "WoW Raid Builder",
-    title: "WoW Raid Builder — 공격대 구성 분석",
+    title: "WoW Raid Builder — Raid Buff & Utility Coverage Analyzer",
     type: "website",
     url: SITE_URL,
   },
@@ -102,14 +102,14 @@ export const metadata: Metadata = {
     index: true,
   },
   title: {
-    default: "WoW Raid Builder — 공격대 구성 분석",
+    default: "WoW Raid Builder — Raid Buff & Utility Coverage Analyzer",
     template: "%s | WoW Raid Builder",
   },
   twitter: {
     card: "summary_large_image",
     description:
-      "공대장을 위한 공격대 구성 분석 도구. 캐릭터 검색, 버프·유틸 커버리지 분석, 파티 프레임 기반 5인 파티 편성을 지원합니다.",
-    title: "WoW Raid Builder — 공격대 구성 분석",
+      "WoW Raid Builder — Raid composition analyzer for WoW raid leaders. Buff & utility coverage, party frames, Raider.IO & Warcraft Logs integration.",
+    title: "WoW Raid Builder — Raid Buff & Utility Coverage Analyzer",
   },
   verification: {
     google: "C5ltSj2PKFCtP1T0Qkhv8AqrK49ecrsuXQ8Tt_kIpH4",

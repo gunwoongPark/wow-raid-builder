@@ -1,0 +1,217 @@
+{
+  "home": {
+    "title": "WoW Raid Builder",
+    "season": "Midnight Season 1",
+    "description": "Search for characters to build your raid roster, arrange 5-player parties in the party frame, and check buff coverage.",
+    "characterSearch": "Add Character",
+    "loading": "Loading…"
+  },
+  "meta": {
+    "title": "WoW Raid Builder — Raid Composition Analyzer",
+    "description": "A World of Warcraft raid composition tool for raid leaders. Search characters, analyze buff/utility coverage, and arrange 5-player parties with the party frame. Based on Midnight Season 1.",
+    "ogTitle": "WoW Raid Builder — Raid Composition Analyzer",
+    "ogDescription": "Raid composition tool for WoW raid leaders. Character search, buff/utility coverage analysis, and 5-player party arrangement.",
+    "keywords": "WoW, World of Warcraft, raid, raid builder, composition, buff, utility, coverage, Midnight, Midnight Season 1, raid leader, party frame, Raider.IO, Warcraft Logs"
+  },
+  "buff": {
+    "sectionTitle": "Buff / Utility Coverage",
+    "category": {
+      "bloodlust": "Bloodlust",
+      "battleRez": "Battle Rez",
+      "synergy": "Synergy",
+      "externalCd": "External CD",
+      "raidCd": "Raid CD",
+      "utility": "Utility"
+    },
+    "label": {
+      "heroism": "Bloodlust / Heroism / Time Warp / Primal Rage",
+      "battleRez": "Battle Resurrection",
+      "arcaneIntellect": "Arcane Intellect — 3% Intellect",
+      "atrophicPoison": "Atrophic Poison — 3% enemy Attack Power",
+      "battleShout": "Battle Shout — 5% Attack Power",
+      "blessingOfTheBronze": "Blessing of the Bronze — 15% CDR on major movement ability",
+      "chaosBrand": "Chaos Brand — 3% magic damage taken",
+      "concentrationAura": "Concentration Aura — 30% interrupt/silence duration reduction",
+      "crusaderAura": "Crusader Aura — 20% mounted speed",
+      "devoutionAura": "Devotion Aura — 3% damage reduction",
+      "huntersMark": "Hunter's Mark — 3% damage taken",
+      "markOfTheWild": "Mark of the Wild — 3% Versatility",
+      "mysticTouch": "Mystic Touch — 5% physical damage taken",
+      "powerWordFortitude": "Power Word: Fortitude — 5% Stamina",
+      "skyfury": "Skyfury Totem — 2% Mastery, 20% chance extra auto attack",
+      "blessingOfProtection": "Blessing of Protection — Physical immunity (10s)",
+      "blessingOfSacrifice": "Blessing of Sacrifice — 30% damage redirected to caster (12s)",
+      "guardianSpirit": "Guardian Spirit — 60% healing↑, revive at 40% HP on death (10s)",
+      "innervate": "Innervate — Target casts without mana cost (8s)",
+      "ironBark": "Ironbark — 20% damage reduction (12s)",
+      "layOnHands": "Lay on Hands — Restore 100% max HP",
+      "lifeCocoon": "Life Cocoon — Large absorb + 50% periodic healing↑ (12s)",
+      "painSuppression": "Pain Suppression — 40% damage reduction",
+      "powerInfusion": "Power Infusion — 20% Haste (15s)",
+      "antiMagicZone": "Anti-Magic Zone — 15% magic damage reduction (6s)",
+      "auraMastery": "Aura Mastery — Devotion Aura 12% / Concentration Aura silence immunity (8s)",
+      "darkness": "Darkness — 15% dodge chance in area (8s)",
+      "powerWordBarrier": "Power Word: Barrier — 20% damage reduction in area (10s)",
+      "rallying": "Rallying Cry — 10% max HP↑ raid-wide (10s)",
+      "revival": "Revival — Massive group heal + dispel magic/poison/disease",
+      "rewind": "Rewind — Heal 30% of damage taken over last 5s",
+      "abominationLimb": "Abomination Limb — Pull nearby enemies periodically, slow (12s)",
+      "conjureRefreshment": "Conjure Refreshment — Raid food table",
+      "curseOfTongues": "Curse of Tongues — 30% slower enemy cast time",
+      "deathGrip": "Death Grip — Single target pull",
+      "demonicGateway": "Demonic Gateway — Raid movement portal",
+      "gorefiendGrasp": "Gorefiend's Grasp — AoE pull all nearby enemies",
+      "healthstone": "Healthstone — 25% HP restore item",
+      "leapOfFaith": "Leap of Faith — Pull one ally to you",
+      "magePortal": "Portal — Quick travel to major cities",
+      "rescue": "Rescue — Carry ally to target location, remove movement impairment",
+      "ritualOfSummoning": "Ritual of Summoning — Remote summon (needs 2 helpers)",
+      "shroudOfConcealment": "Shroud of Concealment — 15s group stealth",
+      "soulstone": "Soulstone — Battle rez / auto-revive on death if pre-applied",
+      "stampedingRoar": "Stampeding Roar — 60% movement speed (8s)",
+      "tremorTotem": "Tremor Totem — Remove Fear/Charm/Sleep from nearby allies",
+      "windRush": "Wind Rush Totem — 40% movement speed (5s)"
+    }
+  },
+  "recommendation": {
+    "sectionTitle": "Buff Recommendations",
+    "subtitle": "Based on {count} uncovered buffs",
+    "description": "Adding these classes/specs would cover the most synergy buffs.",
+    "synergy": "Synergy +{count}",
+    "other": "Other +{count}"
+  },
+  "candidateProvider": {
+    "Mage": "Mage",
+    "Paladin": "Paladin",
+    "Warrior": "Warrior",
+    "Druid": "Druid",
+    "DeathKnight": "Death Knight",
+    "Hunter": "Hunter",
+    "Priest": "Priest",
+    "Rogue": "Rogue",
+    "Shaman": "Shaman",
+    "Warlock": "Warlock",
+    "Monk": "Monk",
+    "DemonHunter": "Demon Hunter",
+    "Evoker": "Evoker",
+    "Hunter_BeastMastery": "Beast Mastery Hunter",
+    "Monk_Mistweaver": "Mistweaver Monk",
+    "Priest_Discipline": "Discipline Priest",
+    "Priest_Holy": "Holy Priest",
+    "Paladin_Holy": "Holy Paladin",
+    "Evoker_Preservation": "Preservation Evoker",
+    "DeathKnight_Blood": "Blood Death Knight"
+  },
+  "roster": {
+    "sectionTitle": "Raid",
+    "memberCount": "({count})",
+    "empty": "No raid members added yet.",
+    "ariaLabel": "Raid roster",
+    "column": {
+      "character": "Character",
+      "realm": "Realm",
+      "class": "Class",
+      "spec": "Spec",
+      "faction": "Faction",
+      "role": "Role",
+      "itemLevel": "Item Lvl",
+      "score": "M+ Score",
+      "logHeroic": "Log H",
+      "logMythic": "Log M",
+      "raidProgress": "Raid Progress",
+      "actions": "Actions"
+    },
+    "action": {
+      "refreshAll": "Refresh All",
+      "refreshing": "Refreshing…",
+      "copyLink": "Copy Link",
+      "clearAll": "Clear All",
+      "remove": "Remove",
+      "refresh": "Refresh"
+    },
+    "view": {
+      "list": "List",
+      "party": "Party Frame"
+    },
+    "toast": {
+      "linkCopied": "Link copied!",
+      "linkCopiedDesc": "Link for {count} raid members copied to clipboard.",
+      "refreshDone": "Refresh complete!",
+      "refreshDoneDesc": "All raid member data has been updated."
+    }
+  },
+  "role": {
+    "TANK": "Tank",
+    "HEALER": "Healer",
+    "MELEE": "Melee",
+    "RANGED": "Ranged"
+  },
+  "faction": {
+    "alliance": "Alliance",
+    "horde": "Horde"
+  },
+  "preset": {
+    "sectionTitle": "Presets",
+    "savedCount": "{count} saved",
+    "namePlaceholder": "Preset name (e.g. Team A 20-man)",
+    "saveButton": "Save Current Roster",
+    "loadButton": "Load",
+    "deleteButton": "Delete",
+    "deleteAriaLabel": "Delete preset {name}",
+    "memberCount": "{count}",
+    "empty": "No presets saved.",
+    "toast": {
+      "noMembers": "No raid members to save.",
+      "saved": "\"{name}\" preset saved.",
+      "loaded": "\"{name}\" preset loaded.",
+      "loadedDesc": "{count} raid members loaded.",
+      "deleted": "\"{name}\" preset deleted."
+    }
+  },
+  "search": {
+    "placeholder": "Search character (e.g. Thrall)",
+    "placeholderMax": "Max {max} members reached",
+    "adding": "Adding…",
+    "searching": "Searching…",
+    "noResults": "No results found.",
+    "toast": {
+      "duplicate": "Character already in raid.",
+      "duplicateDesc": "{name} is already in the roster.",
+      "maxReached": "Roster limit reached",
+      "maxReachedDesc": "You can add up to {max} raid members.",
+      "raiderioFail": "Raider.IO data failed to load",
+      "raiderioFailDesc": "Could not load M+ score and raid progress for {name}.",
+      "wclFail": "Warcraft Logs data failed to load",
+      "wclFailDesc": "Could not load log percentiles for {name}."
+    },
+    "error": {
+      "notFound": "Character \"{name}\" not found on Blizzard servers. They may have changed name or transferred realm.",
+      "serverError": "Blizzard servers are temporarily unavailable. Please try again shortly.",
+      "generic": "Failed to load character data."
+    }
+  },
+  "footer": {
+    "dataSource": "Data sources:"
+  },
+  "network": {
+    "offline": "Internet connection lost.",
+    "offlineDesc": "Please check your network connection.",
+    "online": "Internet connection restored."
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you requested does not exist or has been moved.",
+    "backHome": "Back to Home",
+    "createdBy": "Created by"
+  },
+  "error": {
+    "title": "An Error Occurred",
+    "description": "An unexpected error occurred. Please try again or refresh the page.",
+    "errorCode": "Error code: {code}",
+    "retry": "Try Again"
+  },
+  "language": {
+    "switchTo": "한국어",
+    "current": "EN"
+  }
+}

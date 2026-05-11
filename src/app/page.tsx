@@ -19,25 +19,25 @@ const jsonLd = {
   applicationCategory: "GameApplication",
   audience: {
     "@type": "Audience",
-    audienceType: "월드 오브 워크래프트 공대장, 레이드 리더",
+    audienceType: "World of Warcraft raid leaders, 월드 오브 워크래프트 공대장",
   },
-  browserRequirements: "JavaScript 필요",
+  browserRequirements: "Requires JavaScript",
   description:
-    "공대장을 위한 월드 오브 워크래프트 공격대 구성 분석 도구. 캐릭터 검색, 버프·유틸 커버리지 분석, 파티 프레임 기반 5인 파티 편성을 지원합니다. 한밤(Midnight) 시즌 1 기준.",
+    "WoW Raid Builder — World of Warcraft raid composition tool for raid leaders. Analyze buff and utility coverage, build party frames (5-player groups), and share your roster. Supports Raider.IO M+ scores and Warcraft Logs integration. Midnight Season 1.",
   featureList: [
-    "캐릭터 검색 및 공격대원 추가",
-    "파티 프레임 기반 5인 파티 편성",
-    "파티 간 드래그 앤 드롭 재배치",
-    "버프·유틸리티 커버리지 시각화",
-    "시너지·외생기·공생기 추천",
-    "Raider.IO M+ 점수 연동",
-    "Warcraft Logs 레이드 로그 연동",
-    "공격대 URL 공유",
-    "로스터 프리셋 저장/불러오기",
+    "Character search and roster management",
+    "Party frame builder (5-player groups)",
+    "Drag and drop party rearrangement",
+    "Buff and utility coverage visualization",
+    "Synergy, external cooldown, and symbiosis recommendations",
+    "Raider.IO M+ score integration",
+    "Warcraft Logs raid log integration",
+    "Roster URL sharing",
+    "Roster preset save and load",
   ],
-  inLanguage: "ko-KR",
+  inLanguage: ["en", "ko-KR"],
   keywords:
-    "WoW, 공격대, 레이드, 버프, 유틸, 한밤, Midnight, 공대장, 레이드 빌더, 공격대 편성, 파티 프레임, 파티 편성, 5인 파티, 드래그 앤 드롭",
+    "wow raid builder, world of warcraft raid builder, WoW raid composition, raid buff coverage, utility coverage, wow raid tool, WoW Midnight Season 1, 공격대 편성, 버프 커버리지, 레이드 빌더",
   name: "WoW Raid Builder",
   offers: {
     "@type": "Offer",
@@ -91,7 +91,11 @@ const HomePage = async ({ searchParams }: PageProps) => {
           <div className="wow-header-divider" />
           <p className="text-muted-foreground text-sm">
             캐릭터를 검색해 공격대를 구성하고, 파티 프레임으로 5인 파티를 편성하며 버프 커버리지를
-            확인하세요.
+            확인하세요.{" "}
+            <span className="sr-only">
+              WoW Raid Builder is a World of Warcraft raid composition tool. Analyze buff and
+              utility coverage, build party frames, and share your roster URL with your raid team.
+            </span>
           </p>
         </header>
 
