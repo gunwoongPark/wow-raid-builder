@@ -1,7 +1,13 @@
 export { buildRaiderIOProfile, characterApi } from "./api"
 export { buildCharacterUrls, getFirstRaidProgression } from "./lib/character-urls"
 export { type BuffRecommendation, getBuffRecommendations } from "./lib/buff-recommendations"
-export { analyzeBuffCoverage, BUFF_CATEGORIES, COUNTABLE_CATEGORIES, wowheadIconUrl } from "./buffs"
+export {
+  analyzeBuffCoverage,
+  BUFF_CATEGORIES,
+  candidateProviderKey,
+  COUNTABLE_CATEGORIES,
+  wowheadIconUrl,
+} from "./buffs"
 export type { BuffCategory, BuffCoverage, BuffKey, CandidateProvider } from "./buffs"
 export { SPEC_ROLE_MAP } from "./config/spec-role"
 export { MAX_ROSTER_SIZE, useRosterStore } from "./model/roster-store"

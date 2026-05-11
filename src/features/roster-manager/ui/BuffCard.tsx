@@ -1,9 +1,10 @@
 "use client"
 
 import { cva } from "class-variance-authority"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 
-import { type BuffCoverage, wowheadIconUrl } from "@/entities/character"
+import { type BuffCoverage, candidateProviderKey, wowheadIconUrl } from "@/entities/character"
 import { cn } from "@/lib/utils"
 
 import { ProviderBadge } from "./ProviderBadge"
@@ -28,53 +29,62 @@ interface BuffCardProps {
   isCountable: boolean
 }
 
-export const BuffCard = ({ buff, isCountable, isDark }: BuffCardProps) => (
-  <div className={buffCardVariants({ state: buff.covered ? "covered" : "missing" })}>
-    <div className="relative shrink-0">
-      <Image
-        alt={buff.label}
-        className={cn("rounded", !buff.covered && "opacity-30 grayscale")}
-        height={24}
-        src={wowheadIconUrl(buff.icon)}
-        width={24}
-      />
-      <span
-        className={cn(
-          "absolute -right-1 -bottom-1 flex h-3 w-3 items-center justify-center rounded-full text-[8px] leading-none font-bold text-white",
-          buff.covered ? "bg-emerald-500" : "bg-red-500/60"
-        )}
-      >
-        {buff.covered ? "✓" : "✗"}
-      </span>
-    </div>
-    <div className="min-w-0 flex-1">
-      <div className="flex items-baseline gap-1.5">
-        <p
+export const BuffCard = ({ buff, isCountable, isDark }: BuffCardProps) => {
+  const t = useTranslations("buff.label")
+  const label = t(buff.key)
+
+  return (
+    <div className={buffCardVariants({ state: buff.covered ? "covered" : "missing" })}>
+      <div className="relative shrink-0">
+        <Image
+          alt={label}
+          className={cn("rounded", !buff.covered && "opacity-30 grayscale")}
+          height={24}
+          src={wowheadIconUrl(buff.icon)}
+          width={24}
+        />
+        <span
           className={cn(
-            "line-clamp-2 min-w-0 flex-1 text-xs leading-snug font-medium",
-            buff.covered ? "text-foreground" : "text-foreground/50"
+            "absolute -right-1 -bottom-1 flex h-3 w-3 items-center justify-center rounded-full text-[8px] leading-none font-bold text-white",
+            buff.covered ? "bg-emerald-500" : "bg-red-500/60"
           )}
         >
-          {buff.label}
-        </p>
-        {isCountable && buff.covered && buff.count > 0 && (
-          <span className="shrink-0 rounded bg-emerald-500/20 px-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-            ×{buff.count}
-          </span>
+          {buff.covered ? "✓" : "✗"}
+        </span>
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline gap-1.5">
+          <p
+            className={cn(
+              "line-clamp-2 min-w-0 flex-1 text-xs leading-snug font-medium",
+              buff.covered ? "text-foreground" : "text-foreground/50"
+            )}
+          >
+            {label}
+          </p>
+          {isCountable && buff.covered && buff.count > 0 && (
+            <span className="shrink-0 rounded bg-emerald-500/20 px-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+              ×{buff.count}
+            </span>
+          )}
+        </div>
+        {buff.covered && (
+          <p className="mt-0.5 truncate text-[10px] text-emerald-600 dark:text-emerald-400/70">
+            {buff.providers.join(", ")}
+          </p>
+        )}
+        {!buff.covered && buff.candidateProviders.length > 0 && (
+          <div className="mt-1.5 flex gap-1 overflow-hidden">
+            {buff.candidateProviders.map((provider) => (
+              <ProviderBadge
+                isDark={isDark}
+                key={candidateProviderKey(provider)}
+                provider={provider}
+              />
+            ))}
+          </div>
         )}
       </div>
-      {buff.covered && (
-        <p className="mt-0.5 truncate text-[10px] text-emerald-600 dark:text-emerald-400/70">
-          {buff.providers.join(", ")}
-        </p>
-      )}
-      {!buff.covered && buff.candidateProviders.length > 0 && (
-        <div className="mt-1.5 flex gap-1 overflow-hidden">
-          {buff.candidateProviders.map((provider) => (
-            <ProviderBadge isDark={isDark} key={provider.label} provider={provider} />
-          ))}
-        </div>
-      )}
     </div>
-  </div>
-)
+  )
+}

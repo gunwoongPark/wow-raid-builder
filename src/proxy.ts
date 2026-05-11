@@ -20,7 +20,7 @@ const detectLocale = (request: NextRequest): "ko" | "en" => {
   return acceptLanguage.toLowerCase().startsWith("ko") ? "ko" : "en"
 }
 
-export const middleware = (request: NextRequest) => {
+export const proxy = (request: NextRequest) => {
   const { pathname } = request.nextUrl
 
   // API 라우트는 로케일 처리 불필요

@@ -1,10 +1,3 @@
-export const ROLE_LABEL: Record<string, string> = {
-  HEALER: "힐러",
-  MELEE: "근딜",
-  RANGED: "원딜",
-  TANK: "탱커",
-}
-
 export const ROLE_COLOR: Record<string, string> = {
   HEALER: "text-emerald-600 dark:text-emerald-400",
   MELEE: "text-red-600 dark:text-red-400",
@@ -17,9 +10,4 @@ export const ROLE_SORT_ORDER = ["TANK", "HEALER", "MELEE", "RANGED"]
 export const FACTION_CLASS: Record<string, string> = {
   alliance: "bg-blue-500/15 text-blue-700 dark:text-blue-400",
   horde: "bg-red-500/15 text-red-700 dark:text-red-400",
-}
-
-export const FACTION_LABEL: Record<string, string> = {
-  alliance: "얼라",
-  horde: "호드",
 }

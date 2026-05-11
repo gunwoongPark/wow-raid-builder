@@ -1,9 +1,13 @@
+import { useTranslations } from "next-intl"
+
 export const AppFooter = () => {
+  const t = useTranslations("footer")
+
   return (
     <footer className="border-border/60 bg-card/70 mt-auto border-t backdrop-blur-sm">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-3 text-xs sm:px-6">
         <p className="text-muted-foreground">
-          데이터 출처:{" "}
+          {t("dataSource")}{" "}
           <a
             className="text-primary hover:text-primary/80 underline-offset-2 hover:underline"
             href="https://develop.battle.net/"

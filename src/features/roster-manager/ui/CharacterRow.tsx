@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 
 import { Skeleton } from "@/components/ui/skeleton"
@@ -12,7 +13,7 @@ import {
 import { cn } from "@/lib/utils"
 import { getClassColor, getClassColorLight } from "@/shared/config/class-colors"
 
-import { FACTION_CLASS, FACTION_LABEL, ROLE_COLOR, ROLE_LABEL } from "../config/roster-display"
+import { FACTION_CLASS, ROLE_COLOR } from "../config/roster-display"
 import { LogCell } from "./LogCell"
 import { ScoreCell } from "./ScoreCell"
 
@@ -23,7 +24,6 @@ interface CharacterRowProps {
 }
 
 export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRowProps) => {
-  // 변수부
   const removeCharacter = useRosterStore((store) => store.removeCharacter)
   const storePendingRaiderIO = useRosterStore((store) => store.pendingRaiderIOIds.has(character.id))
   const storePendingWCL = useRosterStore((store) => store.pendingWCLIds.has(character.id))
@@ -39,14 +39,16 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
     wclKeystone: wclKeystoneUrl,
     wclMythic: wclMythicUrl,
   } = buildCharacterUrls(character)
+  const tRole = useTranslations("role")
+  const tFaction = useTranslations("faction")
+  const tAction = useTranslations("roster.action")
 
   const handleRemove = () => removeCharacter(character.id)
   const handleRefresh = () => onRefresh(character.id)
 
-  // 렌더
   return (
     <tr className="border-border/30 hover:bg-primary/5 dark:hover:bg-primary/[0.07] h-14 border-b transition-colors">
-      {/* 썸네일 + 이름(아머리) + Raider.IO 링크 */}
+      {/* Thumbnail + name (armory) + Raider.IO link */}
       <td className="min-w-[160px] px-3 py-2">
         <div className="flex items-center gap-2">
           {isPendingRaiderIO ? (
@@ -105,11 +107,11 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
             FACTION_CLASS[character.faction]
           )}
         >
-          {FACTION_LABEL[character.faction]}
+          {tFaction(character.faction)}
         </span>
       </td>
       <td className={cn("min-w-[56px] px-3 py-2 text-sm font-medium", ROLE_COLOR[character.role])}>
-        {ROLE_LABEL[character.role] ?? character.role}
+        {tRole(character.role)}
       </td>
       <td className="text-foreground/90 min-w-[80px] px-3 py-2 text-sm">{character.itemLevel}</td>
 
@@ -156,15 +158,15 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
         )}
       </td>
 
-      {/* 액션 버튼: 최신화 + 제거 */}
+      {/* Action: refresh + remove */}
       <td className="min-w-[64px] px-3 py-2">
         <div className="flex items-center gap-2">
           <button
-            aria-label="최신화"
+            aria-label={tAction("refresh")}
             className="dark:text-muted-foreground/40 rounded border border-transparent p-1.5 text-stone-400 transition-all hover:border-sky-500/25 hover:bg-sky-500/10 hover:text-sky-600 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:border-sky-400/25 dark:hover:text-sky-400"
             disabled={isRefreshing}
             onClick={handleRefresh}
-            title="최신화"
+            title={tAction("refresh")}
           >
             <span className={cn("block text-base leading-none", isRefreshing && "animate-spin")}>
               ↻
@@ -172,11 +174,11 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
           </button>
           <div className="bg-border/40 h-4 w-px" />
           <button
-            aria-label={`${character.name} 제거`}
+            aria-label={`${character.name} ${tAction("remove")}`}
             className="dark:text-muted-foreground/40 rounded border border-transparent p-1.5 text-xs text-stone-400 transition-all hover:border-red-500/25 hover:bg-red-500/10 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:border-red-400/25 dark:hover:text-red-400"
             disabled={isRefreshing}
             onClick={handleRemove}
-            title="제거"
+            title={tAction("remove")}
           >
             ✕
           </button>
