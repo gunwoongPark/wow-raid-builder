@@ -1,13 +1,14 @@
 "use client"
 
 import { Link } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import { useRosterStore } from "@/entities/character"
 
-import { ROLE_COLOR, ROLE_LABEL, ROLE_SORT_ORDER } from "../config/roster-display"
+import { ROLE_COLOR, ROLE_SORT_ORDER } from "../config/roster-display"
 import { HEADER_COLUMNS } from "../config/table-columns"
 import { countByRole } from "../lib/roster-stats"
 import { SORT_COLUMNS, type SortColumn, type SortDirection, sortRoster } from "../lib/sort-roster"
@@ -18,14 +19,11 @@ import { type RosterView, RosterViewToggle } from "./RosterViewToggle"
 import { SortableHeaderCell } from "./SortableHeaderCell"
 
 export const RosterList = () => {
-  // 변수부 — 스토어
   const characters = useRosterStore((store) => store.characters)
   const clearRoster = useRosterStore((store) => store.clearRoster)
 
-  // 변수부 — 뷰 토글 (목록 | 파티 프레임)
   const [view, setView] = useState<RosterView>("list")
 
-  // 변수부 — 정렬 상태 (URL 쿼리스트링)
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
@@ -37,10 +35,12 @@ export const RosterList = () => {
     rawSortColumn && isSortColumn(rawSortColumn) ? rawSortColumn : null
   const sortDirection: SortDirection = searchParams.get("dir") === "asc" ? "asc" : "desc"
 
-  // 변수부 — 커스텀 훅
   const { copyShareUrl, isRefreshing, refreshAll, refreshingIds, refreshOne } = useRosterSync()
 
-  // 함수
+  const t = useTranslations("roster")
+  const tRole = useTranslations("role")
+  const tColumn = useTranslations("roster.column")
+
   const handleSort = (column: SortColumn) => {
     const params = new URLSearchParams(searchParams.toString())
     if (sortColumn === column) {
@@ -60,17 +60,16 @@ export const RosterList = () => {
 
   const handleCopyLink = () => {
     copyShareUrl()
-    toast.success("링크 복사됨!", {
-      description: `공격대 ${characters.length}명 링크가 클립보드에 복사됐습니다.`,
+    toast.success(t("toast.linkCopied"), {
+      description: t("toast.linkCopiedDesc", { count: characters.length }),
     })
   }
 
   const handleRefreshAll = async () => {
     await refreshAll()
-    toast.success("최신화 완료!", { description: "모든 공격대원 데이터가 업데이트됐습니다." })
+    toast.success(t("toast.refreshDone"), { description: t("toast.refreshDoneDesc") })
   }
 
-  // 공격대원이 없어지면 정렬 쿼리스트링 초기화
   useEffect(() => {
     if (characters.length === 0 && (searchParams.get("sort") || searchParams.get("dir"))) {
       const params = new URLSearchParams(searchParams.toString())
@@ -81,18 +80,14 @@ export const RosterList = () => {
     }
   }, [characters.length, pathname, router, searchParams])
 
-  // 빈 상태
   if (characters.length === 0) {
     return (
       <section className="wow-panel border-border/60 bg-card/90 min-w-0 rounded-lg border p-5">
-        <p className="text-muted-foreground py-4 text-center text-sm">
-          아직 추가된 공격대원이 없습니다.
-        </p>
+        <p className="text-muted-foreground py-4 text-center text-sm">{t("empty")}</p>
       </section>
     )
   }
 
-  // 파생 데이터
   const sorted = sortColumn
     ? sortRoster(characters, sortColumn, sortDirection)
     : [...characters].sort(
@@ -101,26 +96,39 @@ export const RosterList = () => {
 
   const roleCounts = countByRole(characters)
 
-  // 렌더
+  const columnLabels: Record<string, string> = {
+    className: tColumn("class"),
+    faction: tColumn("faction"),
+    itemLevel: tColumn("itemLevel"),
+    logHeroic: tColumn("logHeroic"),
+    logMythic: tColumn("logMythic"),
+    raidProgress: tColumn("raidProgress"),
+    realm: tColumn("realm"),
+    role: tColumn("role"),
+    score: tColumn("score"),
+    specName: tColumn("spec"),
+  }
+
   return (
     <section className="wow-panel border-border/60 bg-card/90 rounded-lg border p-5">
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 flex-1 items-center gap-3">
             <span className="text-primary shrink-0 font-bold tracking-wide">
-              공격대{" "}
-              <span className="text-primary/60 text-sm font-normal">({characters.length}명)</span>
+              {t("sectionTitle")}{" "}
+              <span className="text-primary/60 text-sm font-normal">
+                {t("memberCount", { count: characters.length })}
+              </span>
             </span>
             <div className="flex flex-wrap gap-2 text-xs">
               {ROLE_SORT_ORDER.filter((role) => roleCounts[role]).map((role) => (
                 <span className={ROLE_COLOR[role] ?? ""} key={role}>
-                  {ROLE_LABEL[role]} {roleCounts[role]}
+                  {tRole(role)} {roleCounts[role]}
                 </span>
               ))}
             </div>
           </div>
 
-          {/* 헤더 액션 버튼 */}
           <div className="flex shrink-0 flex-wrap items-center gap-1.5">
             <RosterViewToggle onViewChange={setView} view={view} />
 
@@ -132,7 +140,7 @@ export const RosterList = () => {
               <span className={`text-sm leading-none ${isRefreshing ? "animate-spin" : ""}`}>
                 ↻
               </span>
-              {isRefreshing ? "최신화 중…" : "전체 최신화"}
+              {isRefreshing ? t("action.refreshing") : t("action.refreshAll")}
             </button>
 
             <button
@@ -140,39 +148,39 @@ export const RosterList = () => {
               onClick={handleCopyLink}
             >
               <Link className="size-3" />
-              링크 복사
+              {t("action.copyLink")}
             </button>
 
             <button
               className="rounded border border-transparent px-2 py-1 text-xs text-red-600/70 transition-all hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-600 dark:text-red-400/40 dark:hover:border-red-400/25 dark:hover:text-red-400"
               onClick={clearRoster}
             >
-              전체 초기화
+              {t("action.clearAll")}
             </button>
           </div>
         </div>
 
         {view === "list" ? (
           <div className="border-border/60 bg-card/95 min-w-0 overflow-x-auto rounded-md border">
-            <table aria-label="공격대 목록" className="w-full min-w-[900px] text-left">
+            <table aria-label={t("ariaLabel")} className="w-full min-w-[1060px] text-left">
               <thead>
                 <tr className="border-border/50 text-muted-foreground border-b bg-black/3 text-xs dark:bg-black/40">
                   <th className="min-w-[160px] px-3 py-2" scope="col">
-                    캐릭터
+                    {tColumn("character")}
                   </th>
-                  {HEADER_COLUMNS.map(({ className, column, label }) => (
+                  {HEADER_COLUMNS.map(({ className, column }) => (
                     <SortableHeaderCell
                       className={className}
                       column={column}
                       key={column}
-                      label={label}
+                      label={columnLabels[column] ?? column}
                       onSort={handleSort}
                       sortColumn={sortColumn}
                       sortDirection={sortDirection}
                     />
                   ))}
                   <th className="min-w-[64px] px-3 py-2" scope="col">
-                    <span className="sr-only">액션</span>
+                    <span className="sr-only">{tColumn("actions")}</span>
                   </th>
                 </tr>
               </thead>

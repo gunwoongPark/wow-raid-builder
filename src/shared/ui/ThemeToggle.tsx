@@ -1,15 +1,18 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useTheme } from "next-themes"
 import { useEffect, useRef, useState } from "react"
 
 import { cn } from "@/lib/utils"
 
-const THEMES = [
-  { icon: "☀️", label: "라이트", value: "light" },
-  { icon: "🌙", label: "다크", value: "dark" },
-  { icon: "💻", label: "시스템", value: "system" },
+const THEME_OPTIONS = [
+  { icon: "☀️", value: "light" },
+  { icon: "🌙", value: "dark" },
+  { icon: "💻", value: "system" },
 ] as const
+
+type ThemeValue = (typeof THEME_OPTIONS)[number]["value"]
 
 interface ThemeButtonProps {
   icon: string
@@ -43,6 +46,7 @@ export const ThemeToggle = () => {
   const { setTheme, theme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const mountedRef = useRef(false)
+  const t = useTranslations("theme")
 
   useEffect(() => {
     if (!mountedRef.current) {
@@ -55,12 +59,12 @@ export const ThemeToggle = () => {
 
   return (
     <div className="border-border/60 bg-card/90 fixed bottom-5 left-5 z-50 flex flex-col gap-1 rounded-xl border p-1.5 shadow-xl backdrop-blur-sm">
-      {THEMES.map(({ icon, label, value }) => (
+      {THEME_OPTIONS.map(({ icon, value }) => (
         <ThemeButton
           icon={icon}
           isActive={theme === value}
           key={value}
-          label={label}
+          label={t(value satisfies ThemeValue)}
           onSelect={setTheme}
           value={value}
         />

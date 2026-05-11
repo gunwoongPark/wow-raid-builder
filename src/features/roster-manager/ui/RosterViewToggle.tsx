@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { cn } from "@/lib/utils"
 
 export type RosterView = "list" | "party"
@@ -10,6 +12,7 @@ interface RosterViewToggleProps {
 }
 
 export const RosterViewToggle = ({ onViewChange, view }: RosterViewToggleProps) => {
+  const t = useTranslations("roster.view")
   const handleList = () => onViewChange("list")
   const handleParty = () => onViewChange("party")
 
@@ -24,7 +27,7 @@ export const RosterViewToggle = ({ onViewChange, view }: RosterViewToggleProps) 
             : "text-muted-foreground hover:text-foreground"
         )}
       >
-        목록
+        {t("list")}
       </button>
       <div className="bg-border/60 w-px" />
       <button
@@ -36,7 +39,7 @@ export const RosterViewToggle = ({ onViewChange, view }: RosterViewToggleProps) 
             : "text-muted-foreground hover:text-foreground"
         )}
       >
-        파티 프레임
+        {t("party")}
       </button>
     </div>
   )

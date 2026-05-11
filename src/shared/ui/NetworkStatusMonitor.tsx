@@ -1,15 +1,17 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useEffect, useRef } from "react"
 import { toast } from "sonner"
 
 export const NetworkStatusMonitor = () => {
+  const t = useTranslations("network")
   const toastIdRef = useRef<string | number | null>(null)
 
   useEffect(() => {
     const handleOffline = () => {
-      toastIdRef.current = toast.error("인터넷 연결이 끊어졌습니다.", {
-        description: "네트워크 상태를 확인해 주세요.",
+      toastIdRef.current = toast.error(t("offline"), {
+        description: t("offlineDesc"),
         duration: Infinity,
       })
     }
@@ -19,7 +21,7 @@ export const NetworkStatusMonitor = () => {
         toast.dismiss(toastIdRef.current)
         toastIdRef.current = null
       }
-      toast.success("인터넷 연결이 복구됐습니다.")
+      toast.success(t("online"))
     }
 
     window.addEventListener("offline", handleOffline)
@@ -29,7 +31,7 @@ export const NetworkStatusMonitor = () => {
       window.removeEventListener("offline", handleOffline)
       window.removeEventListener("online", handleOnline)
     }
-  }, [])
+  }, [t])
 
   return null
 }

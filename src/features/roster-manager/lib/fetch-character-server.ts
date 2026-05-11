@@ -2,6 +2,7 @@ import axios from "axios"
 
 import {
   buildRaiderIOProfile,
+  getEnglishClassAndSpec,
   parseZoneRankings,
   type RaiderIOProfile,
   type RosterCharacter,
@@ -25,9 +26,16 @@ const fetchBlizzardSummary = async (realmSlug: string, name: string): Promise<Ro
     { namespace: "profile" }
   )
   const specId = summary.active_spec.id
+  // Normalize to English: Blizzard KR API returns localized names without a locale param
+  const { className, specName } = getEnglishClassAndSpec(
+    specId,
+    summary.character_class.name,
+    summary.active_spec.name
+  )
+
   return {
     classId: summary.character_class.id,
-    className: summary.character_class.name,
+    className,
     faction: summary.faction.type.toLowerCase() as "alliance" | "horde",
     id: `${realmSlug}-${name.toLowerCase()}`,
     itemLevel: summary.equipped_item_level,
@@ -36,7 +44,7 @@ const fetchBlizzardSummary = async (realmSlug: string, name: string): Promise<Ro
     realm: summary.realm.name,
     role: SPEC_ROLE_MAP[specId] ?? "MELEE",
     specId,
-    specName: summary.active_spec.name,
+    specName,
     warcraftLogs: null,
   }
 }

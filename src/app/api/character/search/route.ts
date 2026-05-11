@@ -1,7 +1,11 @@
 import axios from "axios"
 import { type NextRequest, NextResponse } from "next/server"
 
-import { type CharacterSearchResult, type RaiderIOProfile } from "@/entities/character"
+import {
+  type CharacterSearchResult,
+  getSpecIdByClassAndName,
+  type RaiderIOProfile,
+} from "@/entities/character"
 import { RAIDERIO_BASE_URL } from "@/shared/config/raiderio"
 import { KR_SEARCH_REALM_SLUGS } from "@/shared/config/realms"
 import { CURRENT_SEASON } from "@/shared/config/season"
@@ -32,6 +36,7 @@ const searchOnRealm = async (
       realm: data.realm,
       realmSlug,
       score: data.mythic_plus_scores_by_season?.[0]?.scores.all ?? 0,
+      specId: getSpecIdByClassAndName(data.class, data.active_spec_name),
       specName: data.active_spec_name,
       thumbnailUrl: data.thumbnail_url,
       totalBosses: raidProgression?.total_bosses ?? null,
