@@ -14,6 +14,7 @@ import {
   characterQueries,
   type CharacterSearchResult,
   MAX_ROSTER_SIZE,
+  normalizeName,
   useRosterStore,
 } from "@/entities/character"
 import { useDebounce } from "@/shared/lib/use-debounce"
@@ -36,6 +37,8 @@ export const CharacterSearchForm = () => {
   const { data: searchResults = [], isFetching } = useQuery(characterQueries.search(effectiveQuery))
 
   const t = useTranslations("search")
+  const tClass = useTranslations("className")
+  const tSpec = useTranslations("specById")
 
   const onSelect = async (result: CharacterSearchResult | null) => {
     if (!result) return
@@ -170,7 +173,8 @@ export const CharacterSearchForm = () => {
                   <div>
                     <p className="text-foreground font-semibold">{result.name}</p>
                     <p className="text-muted-foreground text-xs">
-                      {result.realm} · {result.specName} {result.className}
+                      {result.realm} · {tSpec(String(result.specId))}{" "}
+                      {tClass(normalizeName(result.className))}
                       {result.score > 0 && (
                         <span className="text-primary ml-1.5">
                           M+ {result.score.toLocaleString()}

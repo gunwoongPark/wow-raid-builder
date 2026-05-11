@@ -134,6 +134,24 @@ const SPEC_INFO: Record<number, { className: string; specName: string }> = {
   1473: { className: "Evoker", specName: "Augmentation" },
 }
 
+/**
+ * Reverse lookup: "ClassName:SpecName" → specId
+ * Used to resolve specId from Raider.IO responses that only carry specName.
+ */
+const SPEC_ID_BY_CLASS_AND_NAME: Record<string, number> = Object.fromEntries(
+  Object.entries(SPEC_INFO).map(([id, { className, specName }]) => [
+    `${className}:${specName}`,
+    Number(id),
+  ])
+)
+
+/**
+ * Returns the Blizzard spec ID for an English class + spec name combination.
+ * Returns 0 if not found (unknown / new spec not yet in the table).
+ */
+export const getSpecIdByClassAndName = (className: string, specName: string): number =>
+  SPEC_ID_BY_CLASS_AND_NAME[`${className}:${specName}`] ?? 0
+
 // Class → all spec IDs (English class name keys)
 const CLASS_ALL_SPEC_IDS: Record<string, number[]> = {
   "Death Knight": [250, 251, 252],

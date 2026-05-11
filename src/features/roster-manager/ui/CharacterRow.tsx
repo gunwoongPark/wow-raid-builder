@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import {
   buildCharacterUrls,
   getFirstRaidProgression,
+  normalizeName,
   type RosterCharacter,
   useRosterStore,
 } from "@/entities/character"
@@ -42,6 +43,8 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
   const tRole = useTranslations("role")
   const tFaction = useTranslations("faction")
   const tAction = useTranslations("roster.action")
+  const tClass = useTranslations("className")
+  const tSpec = useTranslations("specById")
 
   const handleRemove = () => removeCharacter(character.id)
   const handleRefresh = () => onRefresh(character.id)
@@ -93,12 +96,14 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
       </td>
 
       <td className="text-muted-foreground min-w-[90px] px-3 py-2 text-sm">{character.realm}</td>
-      <td className="text-foreground/80 min-w-[90px] px-3 py-2 text-sm">{character.className}</td>
+      <td className="text-foreground/80 min-w-[90px] px-3 py-2 text-sm">
+        {tClass(normalizeName(character.className))}
+      </td>
       <td
         className="min-w-[80px] px-3 py-2 text-sm"
         style={{ color: `light-dark(${classColorLight}, ${classColor})` }}
       >
-        {character.specName}
+        {tSpec(String(character.specId))}
       </td>
       <td className="min-w-[56px] px-3 py-2 text-sm">
         <span

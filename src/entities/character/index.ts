@@ -6,6 +6,8 @@ export {
   BUFF_CATEGORIES,
   candidateProviderKey,
   COUNTABLE_CATEGORIES,
+  getSpecIdByClassAndName,
+  normalizeName,
   wowheadIconUrl,
 } from "./buffs"
 export type { BuffCategory, BuffCoverage, BuffKey, CandidateProvider } from "./buffs"
