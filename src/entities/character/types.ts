@@ -104,6 +104,7 @@ export interface CharacterSearchResult {
   realm: string
   realmSlug: string
   score: number
+  specId: number
   specName: string
   thumbnailUrl: string
   totalBosses: number | null

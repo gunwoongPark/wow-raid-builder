@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-import { type RosterCharacter, SPEC_ROLE_MAP } from "@/entities/character"
+import { getEnglishClassAndSpec, type RosterCharacter, SPEC_ROLE_MAP } from "@/entities/character"
 import { CACHE_HEADERS } from "@/shared/config/cache-headers"
 import { toRealmSlug } from "@/shared/config/realms"
 import { handleRouteError } from "@/shared/lib/api-error"
@@ -29,10 +29,16 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
     )
 
     const specId = summary.active_spec.id
+    // Normalize to English: Blizzard KR API returns localized names without a locale param
+    const { className, specName } = getEnglishClassAndSpec(
+      specId,
+      summary.character_class.name,
+      summary.active_spec.name
+    )
 
     const character: RosterCharacter = {
       classId: summary.character_class.id,
-      className: summary.character_class.name,
+      className,
       faction: summary.faction.type.toLowerCase() as "alliance" | "horde",
       id: `${realmSlug}-${name.toLowerCase()}`,
       itemLevel: summary.equipped_item_level,
@@ -41,7 +47,7 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
       realm: summary.realm.name,
       role: SPEC_ROLE_MAP[specId] ?? "MELEE",
       specId,
-      specName: summary.active_spec.name,
+      specName,
       warcraftLogs: null,
     }
 

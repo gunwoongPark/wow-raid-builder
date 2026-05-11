@@ -1,17 +1,18 @@
-import { type BuffCoverage } from "../buffs"
+import { type BuffCoverage, type CandidateProvider, candidateProviderKey } from "../buffs"
 
 export interface BuffRecommendation {
   buffCount: number
-  buffLabels: string[]
+  buffKeys: string[]
   className: string
-  label: string
+  providerKey: string
+  specName: string | null
   synergyCount: number
-  synergyLabels: string[]
+  synergyKeys: string[]
 }
 
 /**
- * 미커버 버프를 기준으로 추가 시 가장 유용한 직업/특성 목록을 반환한다.
- * 정렬: 시너지 커버 수 우선 → 전체 버프 수
+ * Returns the top classes/specs that would cover the most uncovered buffs.
+ * Sorted by: synergy count first → total buff count.
  */
 export const getBuffRecommendations = (
   coverage: BuffCoverage[],
@@ -22,31 +23,39 @@ export const getBuffRecommendations = (
 
   const map = new Map<
     string,
-    { buffLabels: string[]; className: string; label: string; synergyLabels: string[] }
+    {
+      buffKeys: string[]
+      provider: CandidateProvider
+      synergyKeys: string[]
+    }
   >()
 
   for (const buff of uncovered) {
     for (const provider of buff.candidateProviders) {
-      const entry = map.get(provider.label)
+      const key = candidateProviderKey(provider)
+      const entry = map.get(key)
       if (entry) {
-        entry.buffLabels.push(buff.label)
-        if (buff.category === "시너지") entry.synergyLabels.push(buff.label)
+        entry.buffKeys.push(buff.key)
+        if (buff.category === "synergy") entry.synergyKeys.push(buff.key)
       } else {
-        map.set(provider.label, {
-          buffLabels: [buff.label],
-          className: provider.className,
-          label: provider.label,
-          synergyLabels: buff.category === "시너지" ? [buff.label] : [],
+        map.set(key, {
+          buffKeys: [buff.key],
+          provider,
+          synergyKeys: buff.category === "synergy" ? [buff.key] : [],
         })
       }
     }
   }
 
-  return Array.from(map.values())
-    .map((rec) => ({
-      ...rec,
-      buffCount: rec.buffLabels.length,
-      synergyCount: rec.synergyLabels.length,
+  return Array.from(map.entries())
+    .map(([providerKey, { buffKeys, provider, synergyKeys }]) => ({
+      buffCount: buffKeys.length,
+      buffKeys,
+      className: provider.className,
+      providerKey,
+      specName: provider.specName,
+      synergyCount: synergyKeys.length,
+      synergyKeys,
     }))
     .sort((a, b) => {
       if (b.synergyCount !== a.synergyCount) return b.synergyCount - a.synergyCount

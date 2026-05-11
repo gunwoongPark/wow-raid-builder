@@ -1,0 +1,279 @@
+{
+  "home": {
+    "title": "WoW Raid Builder",
+    "season": "한밤 시즌 1",
+    "description": "캐릭터를 검색해 공격대를 구성하고, 파티 프레임으로 5인 파티를 편성하며 버프 커버리지를 확인하세요.",
+    "characterSearch": "캐릭터 추가",
+    "loading": "불러오는 중…"
+  },
+  "meta": {
+    "title": "WoW Raid Builder — 공격대 구성 분석",
+    "description": "공대장을 위한 월드 오브 워크래프트 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 확인하고, 파티 프레임으로 5인 파티 단위 편성까지 지원합니다. 한밤(Midnight) 시즌 1 기준.",
+    "ogTitle": "WoW Raid Builder — 공격대 구성 분석",
+    "ogDescription": "공대장을 위한 공격대 구성 분석 도구. 캐릭터 검색, 버프·유틸 커버리지 분석, 파티 프레임 기반 5인 파티 편성을 지원합니다.",
+    "keywords": "WoW, World of Warcraft, 월드 오브 워크래프트, 공격대, 공대, 레이드, 레이드 빌더, 공격대 편성, 버프, 유틸, 커버리지, 시너지, 외생기, 공생기, 한밤, Midnight, 한밤 시즌 1, 공대장, 파티 프레임, Raider.IO, Warcraft Logs"
+  },
+  "buff": {
+    "sectionTitle": "버프 / 유틸 커버리지",
+    "category": {
+      "bloodlust": "블러드",
+      "battleRez": "전투 부활",
+      "synergy": "시너지",
+      "externalCd": "외생기",
+      "raidCd": "공생기",
+      "utility": "유틸"
+    },
+    "label": {
+      "heroism": "블러드 / 영웅심 / 시간 왜곡 / 원초적 분노",
+      "battleRez": "전투 부활",
+      "arcaneIntellect": "신비한 지능 — 지능 3% 증가",
+      "atrophicPoison": "위축의 독 — 적 공격력 3% 감소",
+      "battleShout": "전투의 외침 — 공격력 5% 증가",
+      "blessingOfTheBronze": "청동용군단의 축복 — 주요 이동기 재사용 15% 감소",
+      "chaosBrand": "혼돈의 낙인 — 마법 피해 3% 증가",
+      "concentrationAura": "집중의 오라 — 침묵·방해 효과 30% 단축",
+      "crusaderAura": "성전사의 오라 — 탈것 이동속도 20% 증가",
+      "devoutionAura": "헌신의 오라 — 받는 피해 3% 감소",
+      "huntersMark": "사냥꾼의 징표 — 대상 받는 피해 3% 증가",
+      "markOfTheWild": "야생의 징표 — 유연성 3% 증가",
+      "mysticTouch": "신비한 손길 — 물리 피해 5% 증가",
+      "powerWordFortitude": "신의 권능: 인내 — 체력 5% 증가",
+      "skyfury": "하늘의 격노 — 특화 2% 증가, 20% 확률 추가 공격",
+      "blessingOfProtection": "보호의 축복 — 물리 공격 면역 (10초)",
+      "blessingOfSacrifice": "희생의 축복 — 대상 피해 30%를 시전자가 대신 받음 (12초)",
+      "guardianSpirit": "수호 영혼 — 치유량 60%↑ + 치사 시 40% 소생 (10초)",
+      "innervate": "정신 자극 — 8초간 마나 소모 없이 주문 시전",
+      "ironBark": "무쇠껍질 — 피해 20% 감소 (12초)",
+      "layOnHands": "신의 축복 — 최대 생명력 100% 즉시 회복",
+      "lifeCocoon": "기의 고치 — 대형 흡수 보호막 + 주기 치유 50%↑ (12초)",
+      "painSuppression": "고통 억제 — 피해 40% 감소",
+      "powerInfusion": "마력 주입 — 가속 20% 증가 (15초)",
+      "antiMagicZone": "대마법 지대 — 마법 피해 15% 감소 (6초)",
+      "auraMastery": "오라 숙련 — 헌신의 오라 12% / 집중의 오라 침묵 면역 (8초)",
+      "darkness": "어둠 — 구역 내 피해 회피 15% 확률 (8초)",
+      "powerWordBarrier": "신의 권능: 방벽 — 구역 내 피해 20% 감소 (10초)",
+      "rallying": "재집결의 함성 — 공격대 최대 체력 10%↑ (10초)",
+      "revival": "재활 — 광역 치유 + 해로운 마법·독·질병 제거",
+      "rewind": "되돌리기 — 지난 5초 받은 피해 30% 회복",
+      "abominationLimb": "흉물 사지 — 주변 적 주기 끌어당기기 + 이동 감소 (12초)",
+      "conjureRefreshment": "원기 회복의 식탁 창조 — 공격대 음식 제공",
+      "curseOfTongues": "언어의 저주 — 적 주문 시전 시간 30% 증가",
+      "deathGrip": "죽음의 손아귀 — 적 단일 끌어당기기",
+      "demonicGateway": "악마의 관문 — 공격대 이동 포탈",
+      "gorefiendGrasp": "고어핀드의 손아귀 — 주변 모든 적 광역 끌어당기기",
+      "healthstone": "생명석 — 체력 25% 즉시 회복",
+      "leapOfFaith": "신의의 도약 — 아군 1명을 자신에게 끌어당기기",
+      "magePortal": "차원의 문 — 주요 도시 포탈 생성",
+      "rescue": "구출 — 아군 위치까지 비행, 이동 방해 제거",
+      "ritualOfSummoning": "소환의 문 — 원격 소환 (시전 2회 도움 필요)",
+      "shroudOfConcealment": "은폐의 장막 — 15초 그룹 은신",
+      "soulstone": "영혼석 — 전투 부활 겸용, 사전 배치 시 자동 소생",
+      "stampedingRoar": "쇄도의 포효 — 이동속도 60% 증가 (8초)",
+      "tremorTotem": "정기의 토템 — 공포·매혹·수면 효과 제거",
+      "windRush": "바람 질주 토템 — 이동속도 40% 증가 (5초)"
+    }
+  },
+  "recommendation": {
+    "sectionTitle": "버프 추천",
+    "subtitle": "미커버 {count}개 버프 기준",
+    "description": "아래 직업/특성을 추가하면 가장 많은 시너지 버프를 채울 수 있습니다.",
+    "synergy": "시너지 +{count}",
+    "other": "기타 +{count}"
+  },
+  "candidateProvider": {
+    "Mage": "마법사",
+    "Paladin": "성기사",
+    "Warrior": "전사",
+    "Druid": "드루이드",
+    "DeathKnight": "죽음의 기사",
+    "Hunter": "사냥꾼",
+    "Priest": "사제",
+    "Rogue": "도적",
+    "Shaman": "주술사",
+    "Warlock": "흑마법사",
+    "Monk": "수도사",
+    "DemonHunter": "악마사냥꾼",
+    "Evoker": "기원사",
+    "Hunter_BeastMastery": "야수 사냥꾼",
+    "Monk_Mistweaver": "운무 수도사",
+    "Priest_Discipline": "수양 사제",
+    "Priest_Holy": "신성 사제",
+    "Paladin_Holy": "신성 성기사",
+    "Evoker_Preservation": "보존 기원사",
+    "DeathKnight_Blood": "혈기 죽음의 기사"
+  },
+  "roster": {
+    "sectionTitle": "공격대",
+    "memberCount": "({count}명)",
+    "empty": "아직 추가된 공격대원이 없습니다.",
+    "ariaLabel": "공격대 목록",
+    "column": {
+      "character": "캐릭터",
+      "realm": "서버",
+      "class": "직업",
+      "spec": "특성",
+      "faction": "진영",
+      "role": "역할",
+      "itemLevel": "아이템레벨",
+      "score": "M+ 점수",
+      "logHeroic": "로그 H",
+      "logMythic": "로그 M",
+      "raidProgress": "레이드 진행",
+      "actions": "액션"
+    },
+    "action": {
+      "refreshAll": "전체 최신화",
+      "refreshing": "최신화 중…",
+      "copyLink": "링크 복사",
+      "clearAll": "전체 초기화",
+      "remove": "제거",
+      "refresh": "최신화"
+    },
+    "view": {
+      "list": "목록",
+      "party": "파티 프레임"
+    },
+    "toast": {
+      "linkCopied": "링크 복사됨!",
+      "linkCopiedDesc": "공격대 {count}명 링크가 클립보드에 복사됐습니다.",
+      "refreshDone": "최신화 완료!",
+      "refreshDoneDesc": "모든 공격대원 데이터가 업데이트됐습니다."
+    }
+  },
+  "role": {
+    "TANK": "탱커",
+    "HEALER": "힐러",
+    "MELEE": "근딜",
+    "RANGED": "원딜"
+  },
+  "faction": {
+    "alliance": "얼라",
+    "horde": "호드"
+  },
+  "preset": {
+    "sectionTitle": "프리셋",
+    "savedCount": "{count}개 저장됨",
+    "namePlaceholder": "프리셋 이름 (예: A팀 20인)",
+    "saveButton": "현재 구성 저장",
+    "loadButton": "불러오기",
+    "deleteButton": "삭제",
+    "deleteAriaLabel": "{name} 프리셋 삭제",
+    "memberCount": "{count}명",
+    "empty": "저장된 프리셋이 없습니다.",
+    "toast": {
+      "noMembers": "저장할 공격대원이 없습니다.",
+      "saved": "\"{name}\" 프리셋이 저장됐습니다.",
+      "loaded": "\"{name}\" 프리셋을 불러왔습니다.",
+      "loadedDesc": "공격대원 {count}명이 로드됐습니다.",
+      "deleted": "\"{name}\" 프리셋이 삭제됐습니다."
+    }
+  },
+  "search": {
+    "placeholder": "캐릭터명 검색 (예: 액흑)",
+    "placeholderMax": "최대 {max}명 도달",
+    "adding": "추가 중…",
+    "searching": "검색 중…",
+    "noResults": "검색 결과가 없습니다.",
+    "toast": {
+      "duplicate": "이미 공격대에 추가된 캐릭터입니다.",
+      "duplicateDesc": "{name}은(는) 이미 공격대 목록에 있습니다.",
+      "maxReached": "공격대 인원 초과",
+      "maxReachedDesc": "공격대원은 최대 {max}명까지 추가할 수 있습니다.",
+      "raiderioFail": "Raider.IO 데이터 로드 실패",
+      "raiderioFailDesc": "{name}의 M+ 점수·레이드 진행도를 불러오지 못했습니다.",
+      "wclFail": "Warcraft Logs 데이터 로드 실패",
+      "wclFailDesc": "{name}의 로그 %를 불러오지 못했습니다."
+    },
+    "error": {
+      "notFound": "\"{name}\" 캐릭터를 블리자드 서버에서 찾을 수 없습니다. 이름 변경이나 서버 이전이 있었을 수 있어요.",
+      "serverError": "블리자드 서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
+      "generic": "캐릭터 정보를 불러오지 못했습니다."
+    }
+  },
+  "footer": {
+    "dataSource": "데이터 출처:"
+  },
+  "network": {
+    "offline": "인터넷 연결이 끊어졌습니다.",
+    "offlineDesc": "네트워크 상태를 확인해 주세요.",
+    "online": "인터넷 연결이 복구됐습니다."
+  },
+  "notFound": {
+    "title": "페이지를 찾을 수 없습니다",
+    "description": "요청하신 페이지가 존재하지 않거나 이동되었습니다.",
+    "backHome": "홈으로 돌아가기",
+    "createdBy": "Created by"
+  },
+  "error": {
+    "title": "오류가 발생했습니다",
+    "description": "예기치 않은 문제가 발생했습니다. 다시 시도하거나 페이지를 새로고침해 주세요.",
+    "errorCode": "오류 코드: {code}",
+    "retry": "다시 시도"
+  },
+  "language": {
+    "switchTo": "EN",
+    "current": "한국어"
+  },
+  "theme": {
+    "light": "라이트",
+    "dark": "다크",
+    "system": "시스템"
+  },
+  "className": {
+    "DeathKnight": "죽음의 기사",
+    "DemonHunter": "악마사냥꾼",
+    "Druid": "드루이드",
+    "Evoker": "기원사",
+    "Hunter": "사냥꾼",
+    "Mage": "마법사",
+    "Monk": "수도사",
+    "Paladin": "성기사",
+    "Priest": "사제",
+    "Rogue": "도적",
+    "Shaman": "주술사",
+    "Warlock": "흑마법사",
+    "Warrior": "전사"
+  },
+  "specById": {
+    "62": "비전",
+    "63": "화염",
+    "64": "냉기",
+    "65": "신성",
+    "66": "보호",
+    "70": "징벌",
+    "71": "무기",
+    "72": "분노",
+    "73": "방어",
+    "102": "조화",
+    "103": "야성",
+    "104": "수호",
+    "105": "회복",
+    "250": "혈기",
+    "251": "냉기",
+    "252": "부정",
+    "253": "야수",
+    "254": "사격",
+    "255": "생존",
+    "256": "수양",
+    "257": "신성",
+    "258": "암흑",
+    "259": "암살",
+    "260": "무법",
+    "261": "잠행",
+    "262": "원소",
+    "263": "향상",
+    "264": "복원",
+    "265": "고통",
+    "266": "악마소환사",
+    "267": "파괴",
+    "268": "양조",
+    "269": "풍운",
+    "270": "운무",
+    "577": "파멸",
+    "581": "복수",
+    "1467": "황폐",
+    "1468": "보존",
+    "1473": "증강",
+    "1480": "포식"
+  }
+}

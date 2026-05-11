@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next"
 
-import { SITE_RELEASE_DATE, SITE_URL } from "@/shared/config/site"
+import { SITE_URL } from "@/shared/config/site"
 
 const sitemap = (): MetadataRoute.Sitemap => [
   {
-    changeFrequency: "monthly",
-    lastModified: SITE_RELEASE_DATE,
+    changeFrequency: "weekly",
+    lastModified: new Date(),
     priority: 1,
     url: SITE_URL,
   },
