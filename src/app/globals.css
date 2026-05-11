@@ -106,6 +106,8 @@
   html {
     @apply font-sans;
     min-height: 100dvh;
+    /* 스크롤바가 나타날 때 레이아웃 시프트 방지 — 스크롤바 공간을 항상 예약 */
+    scrollbar-gutter: stable;
   }
 
   /* 라이트 — 양피지 상단 밝고 아래로 갈수록 황갈색 */

@@ -152,6 +152,21 @@ const SPEC_ID_BY_CLASS_AND_NAME: Record<string, number> = Object.fromEntries(
 export const getSpecIdByClassAndName = (className: string, specName: string): number =>
   SPEC_ID_BY_CLASS_AND_NAME[`${className}:${specName}`] ?? 0
 
+/**
+ * Returns the English class and spec names for a given spec ID.
+ * Use this to normalize Blizzard API responses (which may return localized names)
+ * into language-neutral English identifiers stored in RosterCharacter.
+ * Falls back to the provided raw strings if the specId is unknown.
+ */
+export const getEnglishClassAndSpec = (
+  specId: number,
+  fallbackClassName: string,
+  fallbackSpecName: string
+): { className: string; specName: string } => {
+  const info = SPEC_INFO[specId]
+  return info ?? { className: fallbackClassName, specName: fallbackSpecName }
+}
+
 // Class → all spec IDs (English class name keys)
 const CLASS_ALL_SPEC_IDS: Record<string, number[]> = {
   "Death Knight": [250, 251, 252],

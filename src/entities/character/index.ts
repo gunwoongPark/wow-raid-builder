@@ -6,6 +6,7 @@ export {
   BUFF_CATEGORIES,
   candidateProviderKey,
   COUNTABLE_CATEGORIES,
+  getEnglishClassAndSpec,
   getSpecIdByClassAndName,
   normalizeName,
   wowheadIconUrl,
