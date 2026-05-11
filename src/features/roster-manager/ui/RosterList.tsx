@@ -162,7 +162,7 @@ export const RosterList = () => {
 
         {view === "list" ? (
           <div className="border-border/60 bg-card/95 min-w-0 overflow-x-auto rounded-md border">
-            <table aria-label={t("ariaLabel")} className="w-full min-w-[900px] text-left">
+            <table aria-label={t("ariaLabel")} className="w-full min-w-[1060px] text-left">
               <thead>
                 <tr className="border-border/50 text-muted-foreground border-b bg-black/3 text-xs dark:bg-black/40">
                   <th className="min-w-[160px] px-3 py-2" scope="col">

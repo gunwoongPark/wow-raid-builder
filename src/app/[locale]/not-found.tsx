@@ -6,7 +6,7 @@ const NotFoundPage = () => {
   const t = useTranslations("notFound")
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col items-center gap-6 p-4 pt-20 sm:p-6">
+    <main className="mx-auto flex w-full max-w-7xl flex-col items-center gap-6 p-4 pt-20 sm:p-6">
       <div className="wow-panel border-border/60 bg-card/90 w-full max-w-lg rounded-lg border p-8 text-center">
         <div className="wow-header-divider mb-6" />
         <p className="text-primary/40 mb-2 font-mono text-6xl font-bold">404</p>

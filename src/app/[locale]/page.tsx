@@ -81,7 +81,7 @@ const HomePage = async ({ params, searchParams }: PageProps) => {
         type="application/ld+json"
       />
       <RosterInitializer characters={initialCharacters} entries={entries} />
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4 sm:p-6">
+      <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6">
         <header className="flex flex-col gap-3 pb-6">
           <div className="flex items-end justify-between gap-4">
             <h1 className="fantasy text-primary text-4xl font-bold tracking-wide">{t("title")}</h1>

@@ -16,7 +16,7 @@ const ErrorPage = ({ error, unstable_retry: retry }: ErrorPageProps) => {
   }, [error])
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col items-center gap-6 p-4 pt-20 sm:p-6">
+    <main className="mx-auto flex w-full max-w-7xl flex-col items-center gap-6 p-4 pt-20 sm:p-6">
       <div className="wow-panel border-border/60 bg-card/90 w-full max-w-lg rounded-lg border p-8 text-center">
         <div className="wow-header-divider mb-6" />
         <h2 className="fantasy text-primary mb-3 text-2xl font-bold tracking-wide">{t("title")}</h2>
