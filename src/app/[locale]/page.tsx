@@ -44,7 +44,7 @@ const jsonLd = {
   inLanguage: ["ko-KR", "en"],
   keywords:
     "WoW, raid, raid builder, composition, buff, utility, Midnight, Midnight Season 1, raid leader, party frame, Raider.IO, Warcraft Logs",
-  name: "WoW Raid Builder",
+  name: "RaidCraft",
   offers: {
     "@type": "Offer",
     price: "0",

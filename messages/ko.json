@@ -1,15 +1,15 @@
 {
   "home": {
-    "title": "WoW Raid Builder",
+    "title": "RaidCraft",
     "season": "한밤 시즌 1",
     "description": "캐릭터를 검색해 공격대를 구성하고, 파티 프레임으로 5인 파티를 편성하며 버프 커버리지를 확인하세요.",
     "characterSearch": "캐릭터 추가",
     "loading": "불러오는 중…"
   },
   "meta": {
-    "title": "WoW Raid Builder — 공격대 구성 분석",
+    "title": "RaidCraft — 공격대 구성 분석",
     "description": "공대장을 위한 월드 오브 워크래프트 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 확인하고, 파티 프레임으로 5인 파티 단위 편성까지 지원합니다. 한밤(Midnight) 시즌 1 기준.",
-    "ogTitle": "WoW Raid Builder — 공격대 구성 분석",
+    "ogTitle": "RaidCraft — 공격대 구성 분석",
     "ogDescription": "공대장을 위한 공격대 구성 분석 도구. 캐릭터 검색, 버프·유틸 커버리지 분석, 파티 프레임 기반 5인 파티 편성을 지원합니다.",
     "keywords": "WoW, World of Warcraft, 월드 오브 워크래프트, 공격대, 공대, 레이드, 레이드 빌더, 공격대 편성, 버프, 유틸, 커버리지, 시너지, 외생기, 공생기, 한밤, Midnight, 한밤 시즌 1, 공대장, 파티 프레임, Raider.IO, Warcraft Logs"
   },

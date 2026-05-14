@@ -1,15 +1,15 @@
 {
   "home": {
-    "title": "WoW Raid Builder",
+    "title": "RaidCraft",
     "season": "Midnight Season 1",
     "description": "Search for characters to build your raid roster, arrange 5-player parties in the party frame, and check buff coverage.",
     "characterSearch": "Add Character",
     "loading": "Loading…"
   },
   "meta": {
-    "title": "WoW Raid Builder — Raid Composition Analyzer",
+    "title": "RaidCraft — Raid Composition Analyzer",
     "description": "A World of Warcraft raid composition tool for raid leaders. Search characters, analyze buff/utility coverage, and arrange 5-player parties with the party frame. Based on Midnight Season 1.",
-    "ogTitle": "WoW Raid Builder — Raid Composition Analyzer",
+    "ogTitle": "RaidCraft — Raid Composition Analyzer",
     "ogDescription": "Raid composition tool for WoW raid leaders. Character search, buff/utility coverage analysis, and 5-player party arrangement.",
     "keywords": "WoW, World of Warcraft, raid, raid builder, composition, buff, utility, coverage, Midnight, Midnight Season 1, raid leader, party frame, Raider.IO, Warcraft Logs"
   },
