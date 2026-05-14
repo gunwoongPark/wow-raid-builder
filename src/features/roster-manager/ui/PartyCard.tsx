@@ -2,6 +2,7 @@
 
 import { useDroppable } from "@dnd-kit/core"
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { useTranslations } from "next-intl"
 
 import { type RosterCharacter, useRosterStore } from "@/entities/character"
 import { cn } from "@/lib/utils"
@@ -17,13 +18,6 @@ export { MAX_PARTY_SIZE, PARTY_COUNT }
 // 슬롯 고정 높이 — CharacterSlot / EmptySlot 동일 적용으로 layout shift 방지
 const SLOT_HEIGHT = "h-[46px]"
 
-export const ROLE_BADGE: Record<string, string> = {
-  HEALER: "힐",
-  MELEE: "근",
-  RANGED: "원",
-  TANK: "탱",
-}
-
 // ─── CharacterSlot (Sortable + Draggable) ──────────────────────────────────────
 
 interface CharacterSlotProps {
@@ -35,6 +29,8 @@ export const CharacterSlot = ({ character }: CharacterSlotProps) => {
   const { attributes, isDragging, listeners, setNodeRef } = useSortable({
     id: character.id,
   })
+  const tRole = useTranslations("role")
+  const tPartyFrame = useTranslations("roster.partyFrame")
 
   const classColor = getClassColor(character.className)
   const classColorLight = getClassColorLight(character.className)
@@ -62,7 +58,7 @@ export const CharacterSlot = ({ character }: CharacterSlotProps) => {
       <span
         className={cn("w-3 shrink-0 text-center text-[10px] font-bold", ROLE_COLOR[character.role])}
       >
-        {ROLE_BADGE[character.role] ?? ""}
+        {tRole(`badge.${character.role}`)}
       </span>
 
       {/* 이름 + 아이템레벨 */}
@@ -78,10 +74,10 @@ export const CharacterSlot = ({ character }: CharacterSlotProps) => {
 
       {/* 해제 버튼 */}
       <button
-        aria-label={`${character.name} 파티 배정 해제`}
+        aria-label={tPartyFrame("unassignAriaLabel", { name: character.name })}
         className="text-muted-foreground/30 shrink-0 text-xs transition-colors hover:text-red-500"
         onClick={handleUnassign}
-        title="배정 해제"
+        title={tPartyFrame("unassignTitle")}
       >
         ✕
       </button>
@@ -91,18 +87,22 @@ export const CharacterSlot = ({ character }: CharacterSlotProps) => {
 
 // ─── EmptySlot ─────────────────────────────────────────────────────────────────
 
-const EmptySlot = () => (
-  <div
-    className={cn(
-      "border-border/10 text-muted-foreground/25 flex items-center gap-2 border-b px-2 text-[10px] last:border-0",
-      SLOT_HEIGHT
-    )}
-  >
-    <div className="size-3 shrink-0" />
-    <div className="h-5 w-0.5 shrink-0 rounded-full bg-transparent" />
-    <span className="select-none">· · · 빈 슬롯</span>
-  </div>
-)
+const EmptySlot = () => {
+  const t = useTranslations("roster.partyFrame")
+
+  return (
+    <div
+      className={cn(
+        "border-border/10 text-muted-foreground/25 flex items-center gap-2 border-b px-2 text-[10px] last:border-0",
+        SLOT_HEIGHT
+      )}
+    >
+      <div className="size-3 shrink-0" />
+      <div className="h-5 w-0.5 shrink-0 rounded-full bg-transparent" />
+      <span className="select-none">{t("emptySlot")}</span>
+    </div>
+  )
+}
 
 // ─── PartyCard (Droppable + SortableContext) ────────────────────────────────────
 
@@ -120,6 +120,8 @@ export const PartyCard = ({
   partyNumber,
 }: PartyCardProps) => {
   const { isOver, setNodeRef } = useDroppable({ id: `${DND_IDS.PARTY_PREFIX}${partyNumber}` })
+  const tRole = useTranslations("role")
+  const tPartyFrame = useTranslations("roster.partyFrame")
   const isFull = characters.length >= MAX_PARTY_SIZE
   const isEmpty = characters.length === 0
 
@@ -141,20 +143,34 @@ export const PartyCard = ({
     >
       {/* 헤더 */}
       <div className="border-border/40 flex items-center justify-between border-b px-3 py-2">
-        <span className="text-primary/80 text-xs font-bold tracking-wide">파티 {partyNumber}</span>
+        <span className="text-primary/80 text-xs font-bold tracking-wide">
+          {tPartyFrame("partyTitle", { number: partyNumber })}
+        </span>
         {!isEmpty ? (
           <div className="flex items-center gap-1.5 text-[10px]">
             {(roleCounts.TANK ?? 0) > 0 && (
-              <span className="text-blue-700 dark:text-blue-400">탱{roleCounts.TANK}</span>
+              <span className="text-blue-700 dark:text-blue-400">
+                {tRole("badge.TANK")}
+                {roleCounts.TANK}
+              </span>
             )}
             {(roleCounts.HEALER ?? 0) > 0 && (
-              <span className="text-emerald-600 dark:text-emerald-400">힐{roleCounts.HEALER}</span>
+              <span className="text-emerald-600 dark:text-emerald-400">
+                {tRole("badge.HEALER")}
+                {roleCounts.HEALER}
+              </span>
             )}
             {(roleCounts.MELEE ?? 0) > 0 && (
-              <span className="text-red-600 dark:text-red-400">근{roleCounts.MELEE}</span>
+              <span className="text-red-600 dark:text-red-400">
+                {tRole("badge.MELEE")}
+                {roleCounts.MELEE}
+              </span>
             )}
             {(roleCounts.RANGED ?? 0) > 0 && (
-              <span className="text-sky-600 dark:text-sky-400">원{roleCounts.RANGED}</span>
+              <span className="text-sky-600 dark:text-sky-400">
+                {tRole("badge.RANGED")}
+                {roleCounts.RANGED}
+              </span>
             )}
             <span
               className={cn(
@@ -167,7 +183,7 @@ export const PartyCard = ({
           </div>
         ) : (
           <span className="text-muted-foreground/40 text-[10px]">
-            {isDragging ? "여기에 놓기" : "비어있음"}
+            {isDragging ? tPartyFrame("dropHere") : tPartyFrame("emptyParty")}
           </span>
         )}
       </div>

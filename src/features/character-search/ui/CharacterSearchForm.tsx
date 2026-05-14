@@ -3,7 +3,7 @@
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import Image from "next/image"
 import { type ChangeEvent, type FormEvent, type KeyboardEvent, useRef, useState } from "react"
 import { toast } from "sonner"
@@ -17,6 +17,7 @@ import {
   normalizeName,
   useRosterStore,
 } from "@/entities/character"
+import { localeToRegion } from "@/shared/config/region"
 import { useDebounce } from "@/shared/lib/use-debounce"
 
 export const CharacterSearchForm = () => {
@@ -26,6 +27,9 @@ export const CharacterSearchForm = () => {
   const setPendingRaiderIO = useRosterStore((store) => store.setPendingRaiderIO)
   const setPendingWCL = useRosterStore((store) => store.setPendingWCL)
 
+  const locale = useLocale()
+  const region = localeToRegion(locale)
+
   const [query, setQuery] = useState("")
   const [isAdding, setIsAdding] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -34,7 +38,9 @@ export const CharacterSearchForm = () => {
   const effectiveQuery = instantQuery.length >= 2 ? instantQuery : debouncedQuery
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const { data: searchResults = [], isFetching } = useQuery(characterQueries.search(effectiveQuery))
+  const { data: searchResults = [], isFetching } = useQuery(
+    characterQueries.search(effectiveQuery, region)
+  )
 
   const t = useTranslations("search")
   const tClass = useTranslations("className")
@@ -63,7 +69,7 @@ export const CharacterSearchForm = () => {
     setErrorMessage(null)
 
     try {
-      const characterData = await characterApi.getSummary(result.realmSlug, result.name)
+      const characterData = await characterApi.getSummary(result.realmSlug, result.name, region)
       addCharacter({ ...characterData, raiderIO: null, warcraftLogs: null })
       setPendingRaiderIO(characterId, true)
       setPendingWCL(characterId, true)
@@ -72,7 +78,7 @@ export const CharacterSearchForm = () => {
       inputRef.current?.blur()
 
       characterApi
-        .getRaiderIO(result.realmSlug, result.name)
+        .getRaiderIO(result.realmSlug, result.name, region)
         .then((data) => updateCharacter(characterId, { raiderIO: buildRaiderIOProfile(data) }))
         .catch(() =>
           toast.error(t("toast.raiderioFail"), {
@@ -82,7 +88,7 @@ export const CharacterSearchForm = () => {
         .finally(() => setPendingRaiderIO(characterId, false))
 
       characterApi
-        .getWarcraftLogs(result.realmSlug, result.name)
+        .getWarcraftLogs(result.realmSlug, result.name, region)
         .then((data) => updateCharacter(characterId, { warcraftLogs: data }))
         .catch(() =>
           toast.error(t("toast.wclFail"), {
@@ -158,7 +164,7 @@ export const CharacterSearchForm = () => {
               searchResults.map((result) => (
                 <ComboboxOption
                   className="text-foreground data-focus:bg-primary/10 flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm transition-colors"
-                  key={result.realmSlug}
+                  key={`${result.realmSlug}-${result.name}`}
                   value={result}
                 >
                   {result.thumbnailUrl && (

@@ -40,7 +40,7 @@ export const useRosterSync = () => {
 
     try {
       const realmSlug = extractRealmSlug(character.id, character.name)
-      const fresh = await fetchCharacter(realmSlug, character.name)
+      const fresh = await fetchCharacter(realmSlug, character.name, "kr")
       if (fresh) updateCharacter(id, fresh)
     } finally {
       setState((previous) => {
@@ -60,7 +60,7 @@ export const useRosterSync = () => {
       await Promise.allSettled(
         characters.map(async (character) => {
           const realmSlug = extractRealmSlug(character.id, character.name)
-          const fresh = await fetchCharacter(realmSlug, character.name)
+          const fresh = await fetchCharacter(realmSlug, character.name, "kr")
           if (fresh) updateCharacter(character.id, fresh)
         })
       )
@@ -78,7 +78,7 @@ export const useRosterSync = () => {
       await Promise.allSettled(
         entries.map(async ({ name, realmSlug }) => {
           const id = `${realmSlug}-${name.toLowerCase()}`
-          const fresh = await fetchCharacter(realmSlug, name)
+          const fresh = await fetchCharacter(realmSlug, name, "kr")
           if (!fresh) return
 
           const { characters: current } = useRosterStore.getState()

@@ -25,7 +25,7 @@ const Icon = () =>
           textShadow: "0 0 8px rgba(200, 160, 60, 0.9)",
         }}
       >
-        WR
+        RS
       </div>
     </div>,
     { ...size }

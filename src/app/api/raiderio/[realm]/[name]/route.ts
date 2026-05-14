@@ -1,20 +1,21 @@
 import axios from "axios"
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
 import { type RaiderIOProfile } from "@/entities/character"
+import { API_TIMEOUTS } from "@/shared/config/api-timeouts"
 import { CACHE_HEADERS } from "@/shared/config/cache-headers"
 import { RAIDERIO_BASE_URL } from "@/shared/config/raiderio"
 import { toRealmSlug } from "@/shared/config/realms"
 import { CURRENT_SEASON } from "@/shared/config/season"
 import { handleRouteError } from "@/shared/lib/api-error"
-import { characterParamSchema } from "@/shared/lib/route-param-schema"
+import { characterParamSchema, regionQuerySchema } from "@/shared/lib/route-param-schema"
 
 interface Params {
   name: string
   realm: string
 }
 
-export const GET = async (_req: Request, { params }: { params: Promise<Params> }) => {
+export const GET = async (req: NextRequest, { params }: { params: Promise<Params> }) => {
   try {
     const raw = await params
     const parsed = characterParamSchema.safeParse(raw)
@@ -24,13 +25,18 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
     const { name, realm } = parsed.data
     const realmSlug = toRealmSlug(realm)
 
+    const { region } = regionQuerySchema.parse({
+      region: req.nextUrl.searchParams.get("region") ?? undefined,
+    })
+
     const { data } = await axios.get<RaiderIOProfile>(`${RAIDERIO_BASE_URL}/characters/profile`, {
       params: {
         fields: `mythic_plus_scores_by_season:${CURRENT_SEASON},raid_progression`,
         name,
         realm: realmSlug,
-        region: "kr",
+        region,
       },
+      timeout: API_TIMEOUTS.RAIDERIO_PROFILE,
     })
 
     return NextResponse.json(data, {

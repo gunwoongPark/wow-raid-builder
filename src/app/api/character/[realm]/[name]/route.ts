@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
 import { getEnglishClassAndSpec, type RosterCharacter, SPEC_ROLE_MAP } from "@/entities/character"
 import { CACHE_HEADERS } from "@/shared/config/cache-headers"
 import { toRealmSlug } from "@/shared/config/realms"
 import { handleRouteError } from "@/shared/lib/api-error"
 import { blizzardFetch } from "@/shared/lib/blizzard-fetch"
-import { characterParamSchema } from "@/shared/lib/route-param-schema"
+import { characterParamSchema, regionQuerySchema } from "@/shared/lib/route-param-schema"
 import { type BlizzardCharacterSummary } from "@/shared/types/blizzard"
 
 interface Params {
@@ -13,7 +13,7 @@ interface Params {
   realm: string
 }
 
-export const GET = async (_req: Request, { params }: { params: Promise<Params> }) => {
+export const GET = async (req: NextRequest, { params }: { params: Promise<Params> }) => {
   try {
     const raw = await params
     const parsed = characterParamSchema.safeParse(raw)
@@ -23,13 +23,16 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
     const { name, realm } = parsed.data
     const realmSlug = toRealmSlug(realm)
 
+    const { region } = regionQuerySchema.parse({
+      region: req.nextUrl.searchParams.get("region") ?? undefined,
+    })
+
     const summary = await blizzardFetch<BlizzardCharacterSummary>(
       `/profile/wow/character/${encodeURIComponent(realmSlug)}/${encodeURIComponent(name.toLowerCase())}`,
-      { namespace: "profile" }
+      { namespace: "profile", region }
     )
 
     const specId = summary.active_spec.id
-    // Normalize to English: Blizzard KR API returns localized names without a locale param
     const { className, specName } = getEnglishClassAndSpec(
       specId,
       summary.character_class.name,

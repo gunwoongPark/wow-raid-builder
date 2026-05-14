@@ -10,8 +10,10 @@ import {
   SPEC_ROLE_MAP,
   ZONE_RANKINGS_QUERY,
 } from "@/entities/character"
+import { API_TIMEOUTS } from "@/shared/config/api-timeouts"
 import { env } from "@/shared/config/env"
 import { RAIDERIO_BASE_URL } from "@/shared/config/raiderio"
+import { type GameRegion, localeToRegion, REGION_CONFIG } from "@/shared/config/region"
 import { CURRENT_SEASON } from "@/shared/config/season"
 import { WCL_GRAPHQL_URL } from "@/shared/config/warcraftlogs"
 import { blizzardFetch } from "@/shared/lib/blizzard-fetch"
@@ -20,10 +22,14 @@ import { type BlizzardCharacterSummary } from "@/shared/types/blizzard"
 
 import "server-only"
 
-const fetchBlizzardSummary = async (realmSlug: string, name: string): Promise<RosterCharacter> => {
+const fetchBlizzardSummary = async (
+  realmSlug: string,
+  name: string,
+  region: GameRegion
+): Promise<RosterCharacter> => {
   const summary = await blizzardFetch<BlizzardCharacterSummary>(
     `/profile/wow/character/${encodeURIComponent(realmSlug)}/${encodeURIComponent(name.toLowerCase())}`,
-    { namespace: "profile" }
+    { namespace: "profile", region }
   )
   const specId = summary.active_spec.id
   // Normalize to English: Blizzard KR API returns localized names without a locale param
@@ -51,7 +57,8 @@ const fetchBlizzardSummary = async (realmSlug: string, name: string): Promise<Ro
 
 const fetchRaiderIODirect = async (
   realmSlug: string,
-  name: string
+  name: string,
+  region: GameRegion
 ): Promise<RaiderIOProfile | null> => {
   try {
     const { data } = await axios.get<RaiderIOProfile>(`${RAIDERIO_BASE_URL}/characters/profile`, {
@@ -59,9 +66,9 @@ const fetchRaiderIODirect = async (
         fields: `mythic_plus_scores_by_season:${CURRENT_SEASON},raid_progression`,
         name,
         realm: realmSlug,
-        region: "kr",
+        region: REGION_CONFIG[region].raiderIORegion,
       },
-      timeout: 5000,
+      timeout: API_TIMEOUTS.RAIDERIO_PROFILE,
     })
     return data
   } catch {
@@ -71,7 +78,8 @@ const fetchRaiderIODirect = async (
 
 const fetchWCLDirect = async (
   realmSlug: string,
-  name: string
+  name: string,
+  region: GameRegion
 ): Promise<RosterCharacterWCL | null> => {
   if (!env.warcraftLogs.clientId || !env.warcraftLogs.clientSecret) return null
   try {
@@ -80,9 +88,13 @@ const fetchWCLDirect = async (
       WCL_GRAPHQL_URL,
       {
         query: ZONE_RANKINGS_QUERY,
-        variables: { name, serverRegion: "kr", serverSlug: realmSlug },
+        variables: {
+          name,
+          serverRegion: REGION_CONFIG[region].wclServerRegion,
+          serverSlug: realmSlug,
+        },
       },
-      { headers: { Authorization: `Bearer ${token}` }, timeout: 8000 }
+      { headers: { Authorization: `Bearer ${token}` }, timeout: API_TIMEOUTS.WCL }
     )
     const characterData = data.data?.characterData?.character
     if (!characterData) return null
@@ -98,12 +110,15 @@ const fetchWCLDirect = async (
 /** Route Handler를 거치지 않고 외부 API를 서버에서 직접 호출 */
 export const fetchCharacterOnServer = async (
   realmSlug: string,
-  name: string
+  name: string,
+  locale: string
 ): Promise<RosterCharacter | null> => {
+  const region = localeToRegion(locale)
+
   const [characterResult, raiderIOResult, wclResult] = await Promise.allSettled([
-    fetchBlizzardSummary(realmSlug, name),
-    fetchRaiderIODirect(realmSlug, name),
-    fetchWCLDirect(realmSlug, name),
+    fetchBlizzardSummary(realmSlug, name, region),
+    fetchRaiderIODirect(realmSlug, name, region),
+    fetchWCLDirect(realmSlug, name, region),
   ])
 
   if (characterResult.status === "rejected") return null

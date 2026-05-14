@@ -1,11 +1,12 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import Image from "next/image"
 
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   buildCharacterUrls,
+  extractRealmSlug,
   getFirstRaidProgression,
   normalizeName,
   type RosterCharacter,
@@ -13,6 +14,7 @@ import {
 } from "@/entities/character"
 import { cn } from "@/lib/utils"
 import { getClassColor, getClassColorLight } from "@/shared/config/class-colors"
+import { getRealmDisplayName } from "@/shared/config/realms"
 
 import { FACTION_CLASS, ROLE_COLOR } from "../config/roster-display"
 import { LogCell } from "./LogCell"
@@ -40,11 +42,15 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
     wclKeystone: wclKeystoneUrl,
     wclMythic: wclMythicUrl,
   } = buildCharacterUrls(character)
+  const locale = useLocale()
   const tRole = useTranslations("role")
   const tFaction = useTranslations("faction")
   const tAction = useTranslations("roster.action")
   const tClass = useTranslations("className")
   const tSpec = useTranslations("specById")
+
+  const realmSlug = extractRealmSlug(character.id, character.name)
+  const realmDisplayName = getRealmDisplayName(realmSlug, locale, character.realm)
 
   const handleRemove = () => removeCharacter(character.id)
   const handleRefresh = () => onRefresh(character.id)
@@ -95,7 +101,7 @@ export const CharacterRow = ({ character, isRefreshing, onRefresh }: CharacterRo
         </div>
       </td>
 
-      <td className="text-muted-foreground min-w-[90px] px-3 py-2 text-sm">{character.realm}</td>
+      <td className="text-muted-foreground min-w-[90px] px-3 py-2 text-sm">{realmDisplayName}</td>
       <td className="text-foreground/80 min-w-[90px] px-3 py-2 text-sm">
         {tClass(normalizeName(character.className))}
       </td>

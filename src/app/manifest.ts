@@ -8,9 +8,9 @@ const manifest = (): MetadataRoute.Manifest => ({
     { purpose: "any", sizes: "32x32", src: "/icon", type: "image/png" },
     { purpose: "maskable", sizes: "180x180", src: "/apple-icon", type: "image/png" },
   ],
-  name: "RaidScope",
+  name: "Raid Scope",
   orientation: "portrait",
-  short_name: "RaidScope",
+  short_name: "Raid Scope",
   start_url: "/",
   theme_color: "#c9a84c",
 })

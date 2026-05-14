@@ -1,45 +1,58 @@
-import axios, { type InternalAxiosRequestConfig } from "axios"
+import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from "axios"
 
-import { env } from "@/shared/config/env"
+import { type GameRegion, REGION_CONFIG } from "@/shared/config/region"
 import { getBlizzardToken, invalidateToken } from "@/shared/lib/blizzard-token"
 
-// 401 재시도 추적 — config 객체 변조 없이 WeakSet으로 관리
 const retriedConfigs = new WeakSet<InternalAxiosRequestConfig>()
+const clients = new Map<GameRegion, AxiosInstance>()
 
-export const blizzardClient = axios.create({
-  baseURL: `https://${env.blizzard.region}.api.blizzard.com`,
-  headers: { "Content-Type": "application/json" },
-  params: { locale: env.blizzard.locale },
-})
+const createClient = (region: GameRegion): AxiosInstance => {
+  const regionConfig = REGION_CONFIG[region]
 
-// ─── Request interceptor: Bearer 토큰 자동 주입 ───────────────────────────
-blizzardClient.interceptors.request.use(async (config) => {
-  const token = await getBlizzardToken()
-  config.headers.Authorization = `Bearer ${token}`
-  return config
-})
+  const client = axios.create({
+    baseURL: regionConfig.apiBaseUrl,
+    headers: { "Content-Type": "application/json" },
+    params: { locale: regionConfig.locale },
+  })
 
-// ─── Response interceptor: 401 시 토큰 무효화 후 1회 재시도 ───────────────
-blizzardClient.interceptors.response.use(
-  (response) => response,
-  async (error: unknown) => {
-    if (!axios.isAxiosError(error)) return Promise.reject(error)
+  client.interceptors.request.use(async (config) => {
+    const token = await getBlizzardToken(region)
+    config.headers.Authorization = `Bearer ${token}`
+    return config
+  })
 
-    const config = error.config
-    if (!config) return Promise.reject(error)
+  client.interceptors.response.use(
+    (response) => response,
+    async (error: unknown) => {
+      if (!axios.isAxiosError(error)) return Promise.reject(error)
 
-    const isUnauthorized = error.response?.status === 401
-    const alreadyRetried = retriedConfigs.has(config)
+      const config = error.config
+      if (!config) return Promise.reject(error)
 
-    if (isUnauthorized && !alreadyRetried) {
-      retriedConfigs.add(config)
-      invalidateToken()
+      const isUnauthorized = error.response?.status === 401
+      const alreadyRetried = retriedConfigs.has(config)
 
-      const freshToken = await getBlizzardToken()
-      config.headers.Authorization = `Bearer ${freshToken}`
-      return blizzardClient(config)
+      if (isUnauthorized && !alreadyRetried) {
+        retriedConfigs.add(config)
+        invalidateToken(region)
+
+        const freshToken = await getBlizzardToken(region)
+        config.headers.Authorization = `Bearer ${freshToken}`
+        return client(config)
+      }
+
+      return Promise.reject(error)
     }
+  )
 
-    return Promise.reject(error)
-  }
-)
+  return client
+}
+
+export const getBlizzardClient = (region: GameRegion): AxiosInstance => {
+  const existing = clients.get(region)
+  if (existing) return existing
+
+  const client = createClient(region)
+  clients.set(region, client)
+  return client
+}

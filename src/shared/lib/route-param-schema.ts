@@ -12,3 +12,7 @@ export const characterParamSchema = z.object({
     .max(40, "서버 슬러그가 너무 깁니다.")
     .regex(/^[a-z-]+$/, "유효하지 않은 서버 슬러그입니다."),
 })
+
+export const regionQuerySchema = z.object({
+  region: z.enum(["kr", "us"]).default("kr"),
+})

@@ -24,7 +24,7 @@ const AppleIcon = () =>
           textShadow: "0 0 30px rgba(200, 160, 60, 0.8)",
         }}
       >
-        WR
+        RS
       </div>
     </div>,
     { ...size }
