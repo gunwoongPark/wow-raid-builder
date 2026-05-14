@@ -15,7 +15,7 @@ export const LanguageSwitcher = () => {
     // 소프트 내비게이션은 미들웨어를 거치지 않아 쿠키 반영이 불안정함
     // 하드 내비게이션으로 미들웨어가 새 쿠키를 읽도록 보장
     const nextPath = nextLocale === "en" ? `/en${pathname === "/" ? "" : pathname}` : pathname
-    window.location.href = nextPath || "/"
+    window.location.href = (nextPath || "/") + window.location.search
   }
 
   return (
