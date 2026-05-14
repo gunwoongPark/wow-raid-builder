@@ -10,6 +10,7 @@ import {
   SPEC_ROLE_MAP,
   ZONE_RANKINGS_QUERY,
 } from "@/entities/character"
+import { API_TIMEOUTS } from "@/shared/config/api-timeouts"
 import { env } from "@/shared/config/env"
 import { RAIDERIO_BASE_URL } from "@/shared/config/raiderio"
 import { CURRENT_SEASON } from "@/shared/config/season"
@@ -54,14 +55,15 @@ const fetchRaiderIODirect = async (
   name: string
 ): Promise<RaiderIOProfile | null> => {
   try {
-    const { data } = await axios.get<RaiderIOProfile>(`${RAIDERIO_BASE_URL}/characters/profile`, {
-      params: {
-        fields: `mythic_plus_scores_by_season:${CURRENT_SEASON},raid_progression`,
-        name,
-        realm: realmSlug,
-        region: "kr",
-      },
-      timeout: 5000,
+    const url =
+      `${RAIDERIO_BASE_URL}/characters/profile` +
+      `?region=kr` +
+      `&realm=${encodeURIComponent(realmSlug)}` +
+      `&name=${encodeURIComponent(name)}` +
+      `&fields=mythic_plus_scores_by_season:${CURRENT_SEASON},raid_progression`
+
+    const { data } = await axios.get<RaiderIOProfile>(url, {
+      timeout: API_TIMEOUTS.RAIDERIO_PROFILE,
     })
     return data
   } catch {
@@ -82,7 +84,7 @@ const fetchWCLDirect = async (
         query: ZONE_RANKINGS_QUERY,
         variables: { name, serverRegion: "kr", serverSlug: realmSlug },
       },
-      { headers: { Authorization: `Bearer ${token}` }, timeout: 8000 }
+      { headers: { Authorization: `Bearer ${token}` }, timeout: API_TIMEOUTS.WCL }
     )
     const characterData = data.data?.characterData?.character
     if (!characterData) return null

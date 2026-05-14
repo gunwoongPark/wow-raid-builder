@@ -1,6 +1,6 @@
 @AGENTS.md
 
-# WoW Raid Builder — Claude 지침
+# Raid Scope — Claude 지침
 
 공대장을 위한 공격대 구성 분석 서비스. Blizzard API + Raider.IO + WCL로 캐릭터 데이터 자동 수집, 버프/유틸 커버리지 시각화, 파티 프레임 편성.
 
@@ -79,7 +79,7 @@ entities/character/
   queries.ts / types.ts / index.ts
 
 features/character-search/
-  ui/CharacterSearchForm.tsx  ← Combobox (useDebounce 350ms)
+  ui/CharacterSearchForm.tsx  ← Combobox (useDebounce 250ms)
   index.ts
 
 features/roster-manager/
@@ -199,7 +199,7 @@ CURRENT_RAID_NAME = "VS / DR / MQD"
 ## 환경변수
 
 ```bash
-NEXT_PUBLIC_BASE_URL=            # 배포 URL (SEO canonical, OG). 기본값: https://wow-raid-builder.vercel.app
+NEXT_PUBLIC_BASE_URL=            # 배포 URL (SEO canonical, OG). 기본값: https://raid-scope.vercel.app
 BLIZZARD_CLIENT_ID=
 BLIZZARD_CLIENT_SECRET=
 WARCRAFT_LOGS_CLIENT_ID=

@@ -1,0 +1,5 @@
+export const API_TIMEOUTS = {
+  RAIDERIO_PROFILE: 5000,
+  RAIDERIO_SEARCH: 2500,
+  WCL: 8000,
+} as const
