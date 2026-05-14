@@ -169,7 +169,7 @@
     }
   },
   "search": {
-    "placeholder": "캐릭터명 검색 (예: 액흑)",
+    "placeholder": "캐릭터명 검색 (예: 홍길동)",
     "placeholderMax": "최대 {max}명 도달",
     "adding": "추가 중…",
     "searching": "검색 중…",

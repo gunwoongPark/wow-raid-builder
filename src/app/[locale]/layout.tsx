@@ -54,6 +54,7 @@ export const generateMetadata = async ({ params }: LocaleLayoutProps): Promise<M
       languages: {
         en: `${SITE_URL}/en`,
         "ko-KR": SITE_URL,
+        "x-default": SITE_URL,
       },
     },
     applicationName: "Raid Scope",
