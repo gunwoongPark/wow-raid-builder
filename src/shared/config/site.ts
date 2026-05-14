@@ -1,4 +1,4 @@
-export const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://wow-raid-builder.vercel.app"
+export const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://raid-scope.vercel.app"
 
 export const SITE_VERSION = "1.0.0"
 
