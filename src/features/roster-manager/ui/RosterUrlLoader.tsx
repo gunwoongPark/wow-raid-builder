@@ -25,8 +25,11 @@ export const RosterUrlLoader = () => {
     if (!entries.length) return
 
     loadFromUrl(entries).then(() => {
-      // 로드 완료 후 ?r= 제거 — history에 남기지 않음
-      router.replace("/", { scroll: false })
+      // ?r= 제거하되 view, sort, dir 등 다른 파라미터는 유지
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete("r")
+      const query = params.toString()
+      router.replace(query ? `/?${query}` : "/", { scroll: false })
     })
   }, [loadFromUrl, router, searchParams])
 

@@ -3,7 +3,7 @@
 import { Link } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { toast } from "sonner"
 
 import { useRosterStore } from "@/entities/character"
@@ -37,6 +37,9 @@ export const RosterList = () => {
   const sortDirection: SortDirection = searchParams.get("dir") === "asc" ? "asc" : "desc"
 
   const { copyShareUrl, isRefreshing, refreshAll, refreshingIds, refreshOne } = useRosterSync()
+
+  // skipHydration으로 인해 초기 렌더 시 characters=[]이므로 첫 번째 effect는 반드시 건너뜀
+  const isInitialMount = useRef(true)
 
   const t = useTranslations("roster")
   const tRole = useTranslations("role")
@@ -83,6 +86,10 @@ export const RosterList = () => {
   }
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
     if (
       characters.length === 0 &&
       (searchParams.get("sort") || searchParams.get("dir") || searchParams.get("view"))
