@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useRef } from "react"
 
 import { type RosterCharacter, type RosterUrlEntry, useRosterStore } from "@/entities/character"
@@ -17,6 +17,7 @@ interface RosterInitializerProps {
 export const RosterInitializer = ({ characters, entries }: RosterInitializerProps) => {
   const initialized = useRef(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     // persist skipHydration: true 설정으로 인해 수동으로 rehydrate 호출
@@ -36,9 +37,12 @@ export const RosterInitializer = ({ characters, entries }: RosterInitializerProp
       }
     })
 
-    // 히스토리에 ?r= 남기지 않음
-    router.replace("/", { scroll: false })
-  }, [characters, entries, router])
+    // ?r= 제거하되 view, sort, dir 등 다른 파라미터는 유지
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete("r")
+    const query = params.toString()
+    router.replace(query ? `/?${query}` : "/", { scroll: false })
+  }, [characters, entries, router, searchParams])
 
   return null
 }

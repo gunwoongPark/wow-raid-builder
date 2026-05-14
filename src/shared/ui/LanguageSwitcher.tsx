@@ -2,18 +2,20 @@
 
 import { useLocale, useTranslations } from "next-intl"
 
-import { usePathname, useRouter } from "@/i18n/navigation"
+import { usePathname } from "@/i18n/navigation"
 
 export const LanguageSwitcher = () => {
   const locale = useLocale()
-  const router = useRouter()
   const pathname = usePathname()
   const t = useTranslations("language")
 
   const handleToggle = () => {
     const nextLocale = locale === "ko" ? "en" : "ko"
     document.cookie = `NEXT_LOCALE=${nextLocale};max-age=${60 * 60 * 24 * 365};path=/;samesite=lax`
-    router.replace(pathname, { locale: nextLocale })
+    // 소프트 내비게이션은 미들웨어를 거치지 않아 쿠키 반영이 불안정함
+    // 하드 내비게이션으로 미들웨어가 새 쿠키를 읽도록 보장
+    const nextPath = nextLocale === "en" ? `/en${pathname === "/" ? "" : pathname}` : pathname
+    window.location.href = (nextPath || "/") + window.location.search
   }
 
   return (

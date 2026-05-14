@@ -20,8 +20,8 @@
 
 ## 작업 규칙
 
-- 작업 완료 후: `pnpm build` 통과 → `git add -A && git commit && git push origin develop`
-- **브랜치**: `develop` 작업, `main`은 PR로만 (Vercel은 main 브랜치만 프로덕션 배포)
+- 작업 완료 후: `pnpm build` 통과 → `git add -A && git commit && git push origin <브랜치>`
+- **브랜치**: `develop`에서 브랜치 따서 작업, PR로 `develop` 머지. `main`은 사용자 허락 후 PR로만 (Vercel 프로덕션 배포)
 - **백그라운드 서버 실행 금지** — 사용자가 직접 `pnpm dev`
 
 ---
@@ -56,6 +56,10 @@ app/
   layout.tsx                      ← root layout (html 태그, 폰트 없음)
   [locale]/layout.tsx             ← 로케일별 레이아웃 (NextIntlClientProvider, QueryProvider 등)
   [locale]/page.tsx               ← 메인 페이지 (SSR: URL r= 파라미터로 초기 로스터 로드)
+                                    URL queryString 파라미터:
+                                      r=   로스터 공유 링크 (캐릭터 목록 인코딩)
+                                      sort= 정렬 컬럼, dir= 정렬 방향 (asc/desc)
+                                      view= 뷰 모드 ("party" | 없으면 "list")
   [locale]/error.tsx / not-found.tsx
   global-error.tsx
   api/character/[realm]/[name]/   ← Blizzard 캐릭터 Route Handler
@@ -107,13 +111,16 @@ features/roster-manager/
   index.ts
 
 shared/
-  api/    axios.ts · blizzard-client.ts
-  config/ cache-headers.ts · class-colors.ts · env.ts · raiderio.ts
-          realms.ts · season.ts · site.ts · warcraftlogs.ts
+  api/    axios.ts · blizzard-client.ts  ← getBlizzardClient(region) 팩토리
+  config/ api-timeouts.ts               ← API_TIMEOUTS (RAIDERIO_PROFILE/SEARCH/WCL ms)
+          cache-headers.ts · class-colors.ts · env.ts · raiderio.ts
+          realms.ts                     ← KR_SEARCH_REALM_SLUGS / US_SEARCH_REALM_SLUGS
+          region.ts                     ← GameRegion, REGION_CONFIG, localeToRegion()
+          season.ts · site.ts · warcraftlogs.ts
   lib/    api-error.ts · blizzard-fetch.ts · blizzard-token.ts
           create-token-cache.ts   ← Blizzard/WCL OAuth 토큰 캐시 공통 팩토리
           query-client.ts · query-keys.ts · query-provider.tsx
-          route-param-schema.ts   ← Route Handler 파라미터 Zod 검증
+          route-param-schema.ts   ← Route Handler 파라미터 Zod 검증 (regionQuerySchema 포함)
           theme-provider.tsx · use-debounce.ts · use-is-dark-mode.ts · wcl-token.ts
   types/  blizzard.ts
   ui/     AppFooter.tsx · AppToaster.tsx · LanguageSwitcher.tsx
@@ -148,10 +155,11 @@ messages/
 
 ### Blizzard
 
-- OAuth Client Credentials → `https://kr.battle.net/oauth/token`
-- Base URL: `https://kr.api.blizzard.com` / Namespace: `profile-kr / static-kr`
+- OAuth Client Credentials — KR: `https://kr.battle.net/oauth/token`, US: `https://us.battle.net/oauth/token`
+- 리전별 독립 토큰 캐시 (`getBlizzardClient(region: GameRegion)` 팩토리)
 - interceptor: 토큰 주입 + 401 → invalidate → 재시도 1회
 - realm은 반드시 영문 slug — `shared/config/realms.ts` 참조
+- 사용자 locale → region 변환: `localeToRegion("ko") = "kr"`, `localeToRegion("en") = "us"`
 
 ### Raider.IO
 
@@ -184,15 +192,18 @@ CURRENT_RAID_NAME = "VS / DR / MQD"
 
 ## Known Gotchas
 
-| 문제                          | 원인                                | 해결                                                |
-| ----------------------------- | ----------------------------------- | --------------------------------------------------- |
-| CSS `@import` 오류            | 다른 규칙 뒤에 위치                 | 파일 최상단에 배치                                  |
-| Combobox z-index 무효         | `backdrop-blur-sm` stacking context | 검색 섹션에서 제거                                  |
-| 한글 검색 빈 배열             | axios params 한글 인코딩 깨짐       | URL 직접 구성 + `encodeURIComponent`                |
-| OG 이미지 한글 렌더링 실패    | Edge Runtime Dynamic font 미지원    | opengraph-image.tsx에 한글 텍스트 금지              |
-| 라이트 모드 색상 저대비       | 다크 전용 oklch/opacity 값          | `dark:` prefix 분리, light용 별도 지정              |
-| Next.js 16 미들웨어 파일명    | `middleware.ts` 미인식              | `proxy.ts`가 미들웨어 진입점 (Next.js 16 변경사항)  |
-| 언어 수동 전환 후 재방문 복귀 | 쿠키 미갱신                         | `LanguageSwitcher`에서 `NEXT_LOCALE` 쿠키 직접 갱신 |
+| 문제                                        | 원인                                                             | 해결                                                                           |
+| ------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| CSS `@import` 오류                          | 다른 규칙 뒤에 위치                                              | 파일 최상단에 배치                                                             |
+| Combobox z-index 무효                       | `backdrop-blur-sm` stacking context                              | 검색 섹션에서 제거                                                             |
+| 한글 검색 빈 배열                           | axios params 한글 인코딩 깨짐                                    | URL 직접 구성 + `encodeURIComponent`                                           |
+| OG 이미지 한글 렌더링 실패                  | Edge Runtime Dynamic font 미지원                                 | opengraph-image.tsx에 한글 텍스트 금지                                         |
+| 라이트 모드 색상 저대비                     | 다크 전용 oklch/opacity 값                                       | `dark:` prefix 분리, light용 별도 지정                                         |
+| Next.js 16 미들웨어 파일명                  | `middleware.ts` 미인식                                           | `proxy.ts`가 미들웨어 진입점 (Next.js 16 변경사항)                             |
+| 언어 전환 후 쿠키 미반영                    | 소프트 내비게이션은 미들웨어를 거치지 않음                       | `LanguageSwitcher`에서 `window.location.href`로 하드 내비게이션                |
+| 언어 전환 시 view/sort/dir queryString 소실 | `window.location.search` 미포함                                  | `window.location.href = nextPath + window.location.search`                     |
+| 언어 전환·페이지 리로드 후 view/sort 사라짐 | `skipHydration`으로 초기 `characters=[]` → cleanup effect 오작동 | `RosterList`에 `isInitialMount` ref — 첫 번째 effect 실행 건너뜀               |
+| `?r=` 제거 시 다른 파라미터도 소실          | `router.replace("/")` 호출                                       | `RosterInitializer` / `RosterUrlLoader`에서 `r`만 삭제 후 나머지 파라미터 유지 |
 
 ---
 
