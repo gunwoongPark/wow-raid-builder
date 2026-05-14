@@ -14,6 +14,7 @@ export const LanguageSwitcher = () => {
     const nextLocale = locale === "ko" ? "en" : "ko"
     document.cookie = `NEXT_LOCALE=${nextLocale};max-age=${60 * 60 * 24 * 365};path=/;samesite=lax`
     router.replace(pathname, { locale: nextLocale })
+    router.refresh()
   }
 
   return (
