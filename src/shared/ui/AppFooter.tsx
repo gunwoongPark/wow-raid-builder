@@ -7,6 +7,17 @@ export const AppFooter = () => {
     <footer className="border-border/60 bg-card/70 mt-auto border-t backdrop-blur-sm">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 px-4 py-3 text-xs sm:px-6">
         <p className="text-muted-foreground">
+          {t("madeBy")}{" "}
+          <a
+            className="text-primary hover:text-primary/80 underline-offset-2 hover:underline"
+            href="https://github.com/gunwoongPark"
+            rel="noreferrer"
+            target="_blank"
+          >
+            gunwoongPark
+          </a>
+        </p>
+        <p className="text-muted-foreground">
           {t("dataSource")}{" "}
           <a
             className="text-primary hover:text-primary/80 underline-offset-2 hover:underline"
