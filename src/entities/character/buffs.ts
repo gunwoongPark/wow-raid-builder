@@ -584,6 +584,11 @@ const BUFF_SOURCES: Record<BuffKey, BuffSource> = {
   },
 } satisfies Record<BuffKey, BuffSource>
 
+export interface BuffProvider {
+  name: string
+  specId: number
+}
+
 export interface BuffCoverage {
   /** Providers who can supply this buff (class/spec info, locale-independent) */
   candidateProviders: CandidateProvider[]
@@ -592,7 +597,7 @@ export interface BuffCoverage {
   covered: boolean
   icon: string
   key: BuffKey
-  providers: string[]
+  providers: BuffProvider[]
   spellId: number
 }
 
@@ -619,7 +624,10 @@ export const analyzeBuffCoverage = (characters: RosterCharacter[]): BuffCoverage
     const matchingCharacters = characters.filter((character) =>
       source.specIds.includes(character.specId)
     )
-    const providers = matchingCharacters.map((character) => character.name)
+    const providers = matchingCharacters.map((character) => ({
+      name: character.name,
+      specId: character.specId,
+    }))
     const isCountable = COUNTABLE_CATEGORIES.includes(source.category)
 
     return {

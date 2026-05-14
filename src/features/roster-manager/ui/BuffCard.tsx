@@ -4,10 +4,27 @@ import { cva } from "class-variance-authority"
 import { useTranslations } from "next-intl"
 import Image from "next/image"
 
-import { type BuffCoverage, candidateProviderKey, wowheadIconUrl } from "@/entities/character"
+import {
+  type BuffCoverage,
+  type BuffProvider,
+  candidateProviderKey,
+  wowheadIconUrl,
+} from "@/entities/character"
 import { cn } from "@/lib/utils"
 
 import { ProviderBadge } from "./ProviderBadge"
+
+interface ProviderListProps {
+  providers: BuffProvider[]
+}
+
+const ProviderList = ({ providers }: ProviderListProps) => {
+  const t = useTranslations("specById")
+  const text = providers.map(({ name, specId }) => `${name} (${t(String(specId))})`).join(", ")
+  return (
+    <p className="mt-0.5 truncate text-[10px] text-emerald-600 dark:text-emerald-400/70">{text}</p>
+  )
+}
 
 const buffCardVariants = cva(
   "flex min-h-14 items-center gap-2.5 rounded border border-l-2 p-2 pl-2.5 text-sm",
@@ -68,11 +85,7 @@ export const BuffCard = ({ buff, isCountable, isDark }: BuffCardProps) => {
             </span>
           )}
         </div>
-        {buff.covered && (
-          <p className="mt-0.5 truncate text-[10px] text-emerald-600 dark:text-emerald-400/70">
-            {buff.providers.join(", ")}
-          </p>
-        )}
+        {buff.covered && <ProviderList providers={buff.providers} />}
         {!buff.covered && buff.candidateProviders.length > 0 && (
           <div className="mt-1.5 flex gap-1 overflow-hidden">
             {buff.candidateProviders.map((provider) => (
