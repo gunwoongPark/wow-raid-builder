@@ -1,4 +1,5 @@
 import { apiClient } from "@/shared/api/axios"
+import { type GameRegion } from "@/shared/config/region"
 
 import {
   type CharacterSearchResult,
@@ -16,30 +17,41 @@ export const buildRaiderIOProfile = (data: RaiderIOProfile): RosterCharacterRaid
 })
 
 export const characterApi = {
-  getRaiderIO: async (realm: string, name: string): Promise<RaiderIOProfile> => {
+  getRaiderIO: async (
+    realm: string,
+    name: string,
+    region: GameRegion
+  ): Promise<RaiderIOProfile> => {
     const { data } = await apiClient.get<RaiderIOProfile>(
-      `/raiderio/${encodeURIComponent(realm)}/${encodeURIComponent(name)}`
+      `/raiderio/${encodeURIComponent(realm)}/${encodeURIComponent(name)}`,
+      { params: { region } }
     )
     return data
   },
 
-  getSummary: async (realm: string, name: string): Promise<RosterCharacter> => {
+  getSummary: async (realm: string, name: string, region: GameRegion): Promise<RosterCharacter> => {
     const { data } = await apiClient.get<RosterCharacter>(
-      `/character/${encodeURIComponent(realm)}/${encodeURIComponent(name)}`
+      `/character/${encodeURIComponent(realm)}/${encodeURIComponent(name)}`,
+      { params: { region } }
     )
     return data
   },
 
-  getWarcraftLogs: async (realm: string, name: string): Promise<RosterCharacterWCL | null> => {
+  getWarcraftLogs: async (
+    realm: string,
+    name: string,
+    region: GameRegion
+  ): Promise<RosterCharacterWCL | null> => {
     const { data } = await apiClient.get<RosterCharacterWCL | null>(
-      `/warcraftlogs/${encodeURIComponent(realm)}/${encodeURIComponent(name)}`
+      `/warcraftlogs/${encodeURIComponent(realm)}/${encodeURIComponent(name)}`,
+      { params: { region } }
     )
     return data
   },
 
-  search: async (name: string): Promise<CharacterSearchResult[]> => {
+  search: async (name: string, region: GameRegion): Promise<CharacterSearchResult[]> => {
     const { data } = await apiClient.get<CharacterSearchResult[]>("/character/search", {
-      params: { name },
+      params: { name, region },
     })
     return data
   },

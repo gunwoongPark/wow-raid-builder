@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import {
   Tooltip,
   TooltipContent,
@@ -17,6 +19,7 @@ interface LogCellProps {
 }
 
 export const LogCell = ({ wclUrl, zone }: LogCellProps) => {
+  const t = useTranslations("roster.logTooltip")
   const average = zone?.bestPerformanceAverage
   if (average === null || average === undefined) {
     return <span className="text-muted-foreground">—</span>
@@ -48,7 +51,7 @@ export const LogCell = ({ wclUrl, zone }: LogCellProps) => {
     <Tooltip>
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
       <TooltipContent className="min-w-[220px]" side="left" variant={variant}>
-        <TooltipTitle>보스별 로그 (평균 {percent})</TooltipTitle>
+        <TooltipTitle>{t("title", { percent })}</TooltipTitle>
         <div className="mt-2 flex flex-col gap-1">
           {rankings.map((ranking) => (
             <div className="flex items-center justify-between gap-3" key={ranking.encounter.id}>
