@@ -191,6 +191,7 @@
     }
   },
   "footer": {
+    "madeBy": "Made by",
     "dataSource": "데이터 출처:"
   },
   "network": {
