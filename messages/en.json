@@ -133,6 +133,20 @@
       "list": "List",
       "party": "Party Frame"
     },
+    "partyFrame": {
+      "partyTitle": "Party {number}",
+      "unassignedLabel": "Unassigned",
+      "unassignedCount": "{count}",
+      "dropToUnassign": "← Drop here to unassign",
+      "allAssigned": "All members assigned ✓",
+      "autoAssign": "Auto Assign",
+      "clearAssignments": "Clear Assignments",
+      "emptySlot": "· · · Empty",
+      "dropHere": "Drop here",
+      "emptyParty": "Empty",
+      "unassignAriaLabel": "Unassign {name} from party",
+      "unassignTitle": "Unassign"
+    },
     "toast": {
       "linkCopied": "Link copied!",
       "linkCopiedDesc": "Link for {count} raid members copied to clipboard.",
@@ -144,7 +158,13 @@
     "TANK": "Tank",
     "HEALER": "Healer",
     "MELEE": "Melee",
-    "RANGED": "Ranged"
+    "RANGED": "Ranged",
+    "badge": {
+      "TANK": "T",
+      "HEALER": "H",
+      "MELEE": "M",
+      "RANGED": "R"
+    }
   },
   "faction": {
     "alliance": "Alliance",

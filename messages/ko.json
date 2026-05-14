@@ -133,6 +133,20 @@
       "list": "목록",
       "party": "파티 프레임"
     },
+    "partyFrame": {
+      "partyTitle": "파티 {number}",
+      "unassignedLabel": "미배정",
+      "unassignedCount": "{count}명",
+      "dropToUnassign": "← 여기에 놓으면 배정 해제",
+      "allAssigned": "전원 파티 배정 완료 ✓",
+      "autoAssign": "자동 배치",
+      "clearAssignments": "배정 초기화",
+      "emptySlot": "· · · 빈 슬롯",
+      "dropHere": "여기에 놓기",
+      "emptyParty": "비어있음",
+      "unassignAriaLabel": "{name} 파티 배정 해제",
+      "unassignTitle": "배정 해제"
+    },
     "toast": {
       "linkCopied": "링크 복사됨!",
       "linkCopiedDesc": "공격대 {count}명 링크가 클립보드에 복사됐습니다.",
@@ -144,7 +158,13 @@
     "TANK": "탱커",
     "HEALER": "힐러",
     "MELEE": "근딜",
-    "RANGED": "원딜"
+    "RANGED": "원딜",
+    "badge": {
+      "TANK": "탱",
+      "HEALER": "힐",
+      "MELEE": "근",
+      "RANGED": "원"
+    }
   },
   "faction": {
     "alliance": "얼라",

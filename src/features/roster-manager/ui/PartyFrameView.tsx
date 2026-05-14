@@ -12,6 +12,7 @@ import {
   useSensors,
 } from "@dnd-kit/core"
 import { arrayMove } from "@dnd-kit/sortable"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 
 import { type RosterCharacter, useRosterStore } from "@/entities/character"
@@ -21,7 +22,7 @@ import { getClassColor, getClassColorLight } from "@/shared/config/class-colors"
 import { DND_IDS } from "../config/dnd"
 import { ROLE_COLOR } from "../config/roster-display"
 import { autoAssignParties } from "../lib/auto-assign-parties"
-import { MAX_PARTY_SIZE, PARTY_COUNT, PartyCard, ROLE_BADGE } from "./PartyCard"
+import { MAX_PARTY_SIZE, PARTY_COUNT, PartyCard } from "./PartyCard"
 
 // ─── CharacterDragCard (DragOverlay 전용) ──────────────────────────────────────
 
@@ -30,6 +31,7 @@ interface CharacterDragCardProps {
 }
 
 const CharacterDragCard = ({ character }: CharacterDragCardProps) => {
+  const tRole = useTranslations("role")
   const classColor = getClassColor(character.className)
   const classColorLight = getClassColorLight(character.className)
 
@@ -42,7 +44,7 @@ const CharacterDragCard = ({ character }: CharacterDragCardProps) => {
       <span
         className={cn("w-3 shrink-0 text-center text-[10px] font-bold", ROLE_COLOR[character.role])}
       >
-        {ROLE_BADGE[character.role] ?? ""}
+        {tRole(`badge.${character.role}`)}
       </span>
       <div>
         <p
@@ -67,6 +69,7 @@ const UnassignedSlot = ({ character }: UnassignedSlotProps) => {
   const { attributes, isDragging, listeners, setNodeRef } = useDraggable({
     id: character.id,
   })
+  const tRole = useTranslations("role")
 
   const classColor = getClassColor(character.className)
   const classColorLight = getClassColorLight(character.className)
@@ -89,7 +92,7 @@ const UnassignedSlot = ({ character }: UnassignedSlotProps) => {
 
       {/* 역할 배지 */}
       <span className={cn("shrink-0 text-[10px] font-bold", ROLE_COLOR[character.role])}>
-        {ROLE_BADGE[character.role] ?? ""}
+        {tRole(`badge.${character.role}`)}
       </span>
 
       {/* 이름 */}
@@ -112,6 +115,7 @@ interface UnassignedPoolProps {
 
 const UnassignedPool = ({ characters, isDragging }: UnassignedPoolProps) => {
   const { isOver, setNodeRef } = useDroppable({ id: DND_IDS.UNASSIGNED_POOL })
+  const t = useTranslations("roster.partyFrame")
 
   return (
     <div
@@ -123,9 +127,12 @@ const UnassignedPool = ({ characters, isDragging }: UnassignedPoolProps) => {
       )}
     >
       <p className="text-muted-foreground mb-2 text-xs">
-        미배정 <span className="text-foreground/60 font-medium">{characters.length}명</span>
+        {t("unassignedLabel")}{" "}
+        <span className="text-foreground/60 font-medium">
+          {t("unassignedCount", { count: characters.length })}
+        </span>
         {isDragging && (
-          <span className="text-primary/60 ml-2 text-[10px]">← 여기에 놓으면 배정 해제</span>
+          <span className="text-primary/60 ml-2 text-[10px]">{t("dropToUnassign")}</span>
         )}
       </p>
       {characters.length > 0 ? (
@@ -135,7 +142,7 @@ const UnassignedPool = ({ characters, isDragging }: UnassignedPoolProps) => {
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground/40 text-xs">전원 파티 배정 완료 ✓</p>
+        <p className="text-muted-foreground/40 text-xs">{t("allAssigned")}</p>
       )}
     </div>
   )
@@ -145,6 +152,7 @@ const UnassignedPool = ({ characters, isDragging }: UnassignedPoolProps) => {
 
 export const PartyFrameView = () => {
   const [activeId, setActiveId] = useState<string | null>(null)
+  const t = useTranslations("roster.partyFrame")
 
   const characters = useRosterStore((store) => store.characters)
   const partyAssignments = useRosterStore((store) => store.partyAssignments)
@@ -230,14 +238,14 @@ export const PartyFrameView = () => {
             className="border-primary/60 text-primary hover:bg-primary/10 dark:border-primary/30 dark:text-primary/70 rounded border px-3 py-1.5 text-xs font-medium transition-colors"
             onClick={handleAutoAssign}
           >
-            자동 배치
+            {t("autoAssign")}
           </button>
           {hasAnyAssignment && (
             <button
               className="rounded border border-transparent px-3 py-1.5 text-xs text-red-600/70 transition-colors hover:border-red-500/25 hover:bg-red-500/10 hover:text-red-600 dark:text-red-400/50 dark:hover:border-red-400/25 dark:hover:text-red-400"
               onClick={handleClearAssignments}
             >
-              배정 초기화
+              {t("clearAssignments")}
             </button>
           )}
         </div>

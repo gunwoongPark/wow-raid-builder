@@ -38,6 +38,24 @@ export const KR_SEARCH_REALM_SLUGS = [
   "deathwing",
 ] as const
 
+export const US_SEARCH_REALM_SLUGS = [
+  "area-52",
+  "illidan",
+  "tichondrius",
+  "stormrage",
+  "mal-ganis",
+  "thrall",
+  "bleeding-hollow",
+  "kelthuzad",
+  "sargeras",
+  "emerald-dream",
+  "darkspear",
+  "kil-jaeden",
+  "moonguard",
+  "wyrmrest-accord",
+  "zul-jin",
+] as const
+
 export const toRealmSlug = (input: string): string => {
   const trimmed = input.trim()
   return KR_REALM_SLUGS[trimmed] ?? trimmed.toLowerCase().replace(/\s+/g, "-")

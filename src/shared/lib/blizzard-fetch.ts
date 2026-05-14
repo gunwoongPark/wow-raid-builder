@@ -1,19 +1,21 @@
-import { blizzardClient } from "@/shared/api/blizzard-client"
-import { env } from "@/shared/config/env"
+import { getBlizzardClient } from "@/shared/api/blizzard-client"
+import { type GameRegion, REGION_CONFIG } from "@/shared/config/region"
 
-type Namespace = keyof typeof env.blizzard.namespace
+type Namespace = keyof typeof REGION_CONFIG.kr.namespace
 
 interface BlizzardFetchOptions {
   namespace?: Namespace
+  region: GameRegion
 }
 
 export const blizzardFetch = async <T>(
   path: string,
-  { namespace = "profile" }: BlizzardFetchOptions = {}
+  { namespace = "profile", region }: BlizzardFetchOptions
 ): Promise<T> => {
-  const { data } = await blizzardClient.get<T>(path, {
+  const client = getBlizzardClient(region)
+  const { data } = await client.get<T>(path, {
     headers: {
-      "Battlenet-Namespace": env.blizzard.namespace[namespace],
+      "Battlenet-Namespace": REGION_CONFIG[region].namespace[namespace],
     },
   })
   return data

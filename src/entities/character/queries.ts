@@ -1,42 +1,42 @@
 import { queryOptions } from "@tanstack/react-query"
 
+import { type GameRegion } from "@/shared/config/region"
 import { characterKeys } from "@/shared/lib/query-keys"
 
 import { characterApi } from "./api"
 
 export const characterQueries = {
-  raiderIO: (realm: string, name: string) =>
+  raiderIO: (realm: string, name: string, region: GameRegion) =>
     queryOptions({
-      ...characterKeys.raiderIO(realm, name),
+      ...characterKeys.raiderIO(realm, name, region),
       enabled: Boolean(realm && name),
-      queryFn: () => characterApi.getRaiderIO(realm, name),
+      queryFn: () => characterApi.getRaiderIO(realm, name, region),
       staleTime: 5 * 60 * 1000,
     }),
 
-  search: (name: string) =>
+  search: (name: string, region: GameRegion) =>
     queryOptions({
-      ...characterKeys.search(name),
+      ...characterKeys.search(name, region),
       enabled: name.length >= 2,
       gcTime: 5 * 60 * 1000,
-      queryFn: () => characterApi.search(name),
-      // 검색은 404가 정상 응답(캐릭터 없음)이므로 재시도 불필요
+      queryFn: () => characterApi.search(name, region),
       retry: false,
       staleTime: 2 * 60 * 1000,
     }),
 
-  summary: (realm: string, name: string) =>
+  summary: (realm: string, name: string, region: GameRegion) =>
     queryOptions({
-      ...characterKeys.summary(realm, name),
+      ...characterKeys.summary(realm, name, region),
       enabled: Boolean(realm && name),
-      queryFn: () => characterApi.getSummary(realm, name),
+      queryFn: () => characterApi.getSummary(realm, name, region),
       staleTime: 5 * 60 * 1000,
     }),
 
-  warcraftLogs: (realm: string, name: string) =>
+  warcraftLogs: (realm: string, name: string, region: GameRegion) =>
     queryOptions({
-      ...characterKeys.warcraftLogs(realm, name),
+      ...characterKeys.warcraftLogs(realm, name, region),
       enabled: Boolean(realm && name),
-      queryFn: () => characterApi.getWarcraftLogs(realm, name),
+      queryFn: () => characterApi.getWarcraftLogs(realm, name, region),
       staleTime: 10 * 60 * 1000,
     }),
 }

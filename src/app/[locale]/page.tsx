@@ -68,7 +68,7 @@ const HomePage = async ({ params, searchParams }: PageProps) => {
   const entries = decodeRosterParam(r ?? null)
 
   const results = await Promise.allSettled(
-    entries.map(({ name, realmSlug }) => fetchCharacterOnServer(realmSlug, name))
+    entries.map(({ name, realmSlug }) => fetchCharacterOnServer(realmSlug, name, locale))
   )
   const initialCharacters = results
     .filter(

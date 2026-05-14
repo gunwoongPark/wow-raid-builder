@@ -1,5 +1,5 @@
 import axios from "axios"
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
 import {
   parseZoneRankings,
@@ -12,7 +12,7 @@ import { env } from "@/shared/config/env"
 import { toRealmSlug } from "@/shared/config/realms"
 import { WCL_GRAPHQL_URL } from "@/shared/config/warcraftlogs"
 import { handleRouteError } from "@/shared/lib/api-error"
-import { characterParamSchema } from "@/shared/lib/route-param-schema"
+import { characterParamSchema, regionQuerySchema } from "@/shared/lib/route-param-schema"
 import { getWCLToken } from "@/shared/lib/wcl-token"
 
 interface Params {
@@ -20,7 +20,7 @@ interface Params {
   realm: string
 }
 
-export const GET = async (_req: Request, { params }: { params: Promise<Params> }) => {
+export const GET = async (req: NextRequest, { params }: { params: Promise<Params> }) => {
   if (!env.warcraftLogs.clientId || !env.warcraftLogs.clientSecret) {
     return NextResponse.json(null)
   }
@@ -32,12 +32,16 @@ export const GET = async (_req: Request, { params }: { params: Promise<Params> }
       return NextResponse.json({ error: "잘못된 요청입니다.", status: 400 }, { status: 400 })
     }
     const { name, realm } = parsed.data
-    const token = await getWCLToken()
     const serverSlug = toRealmSlug(realm)
 
+    const { region } = regionQuerySchema.parse({
+      region: req.nextUrl.searchParams.get("region") ?? undefined,
+    })
+
+    const token = await getWCLToken()
     const { data } = await axios.post(
       WCL_GRAPHQL_URL,
-      { query: ZONE_RANKINGS_QUERY, variables: { name, serverRegion: "kr", serverSlug } },
+      { query: ZONE_RANKINGS_QUERY, variables: { name, serverRegion: region, serverSlug } },
       { headers: { Authorization: `Bearer ${token}` }, timeout: API_TIMEOUTS.WCL }
     )
 
