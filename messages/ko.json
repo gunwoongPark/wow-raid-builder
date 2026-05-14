@@ -133,6 +133,9 @@
       "list": "목록",
       "party": "파티 프레임"
     },
+    "logTooltip": {
+      "title": "보스별 로그 (평균 {percent})"
+    },
     "partyFrame": {
       "partyTitle": "파티 {number}",
       "unassignedLabel": "미배정",

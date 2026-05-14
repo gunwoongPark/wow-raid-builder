@@ -133,6 +133,9 @@
       "list": "List",
       "party": "Party Frame"
     },
+    "logTooltip": {
+      "title": "Per-boss logs (avg {percent})"
+    },
     "partyFrame": {
       "partyTitle": "Party {number}",
       "unassignedLabel": "Unassigned",

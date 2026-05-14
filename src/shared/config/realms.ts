@@ -1,3 +1,32 @@
+// 한국 WoW 서버 slug → 영문 공식 서버명
+export const KR_REALM_SLUG_TO_EN: Record<string, string> = {
+  alexstrasza: "Alexstrasza",
+  azshara: "Azshara",
+  cenarius: "Cenarius",
+  dalaran: "Dalaran",
+  deathwing: "Deathwing",
+  durotan: "Durotan",
+  garona: "Garona",
+  guldan: "Gul'dan",
+  hellscream: "Hellscream",
+  hyjal: "Hyjal",
+  malfurion: "Malfurion",
+  medivh: "Medivh",
+  norgannon: "Norgannon",
+  rexxar: "Rexxar",
+  stormrage: "Stormrage",
+  wildhammer: "Wildhammer",
+  windrunner: "Windrunner",
+  zuljin: "Zul'jin",
+}
+
+// 로케일에 맞는 서버 표시명 반환 — ko: API 응답값(한글), en: 영문 공식명
+export const getRealmDisplayName = (
+  realmSlug: string,
+  locale: string,
+  koreanName: string
+): string => (locale === "ko" ? koreanName : (KR_REALM_SLUG_TO_EN[realmSlug] ?? realmSlug))
+
 // 한국 WoW 서버 한글명 → Blizzard API slug 매핑
 export const KR_REALM_SLUGS: Record<string, string> = {
   가로나: "garona",
