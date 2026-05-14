@@ -56,6 +56,10 @@ app/
   layout.tsx                      ← root layout (html 태그, 폰트 없음)
   [locale]/layout.tsx             ← 로케일별 레이아웃 (NextIntlClientProvider, QueryProvider 등)
   [locale]/page.tsx               ← 메인 페이지 (SSR: URL r= 파라미터로 초기 로스터 로드)
+                                    URL queryString 파라미터:
+                                      r=   로스터 공유 링크 (캐릭터 목록 인코딩)
+                                      sort= 정렬 컬럼, dir= 정렬 방향 (asc/desc)
+                                      view= 뷰 모드 ("party" | 없으면 "list")
   [locale]/error.tsx / not-found.tsx
   global-error.tsx
   api/character/[realm]/[name]/   ← Blizzard 캐릭터 Route Handler
