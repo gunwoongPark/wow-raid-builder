@@ -55,14 +55,13 @@ const fetchRaiderIODirect = async (
   name: string
 ): Promise<RaiderIOProfile | null> => {
   try {
-    const url =
-      `${RAIDERIO_BASE_URL}/characters/profile` +
-      `?region=kr` +
-      `&realm=${encodeURIComponent(realmSlug)}` +
-      `&name=${encodeURIComponent(name)}` +
-      `&fields=mythic_plus_scores_by_season:${CURRENT_SEASON},raid_progression`
-
-    const { data } = await axios.get<RaiderIOProfile>(url, {
+    const { data } = await axios.get<RaiderIOProfile>(`${RAIDERIO_BASE_URL}/characters/profile`, {
+      params: {
+        fields: `mythic_plus_scores_by_season:${CURRENT_SEASON},raid_progression`,
+        name,
+        realm: realmSlug,
+        region: "kr",
+      },
       timeout: API_TIMEOUTS.RAIDERIO_PROFILE,
     })
     return data
