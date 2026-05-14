@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og"
 
-export const alt = "WoW Raid Builder — Raid Buff & Utility Coverage Analyzer"
+export const alt = "RaidScope — Raid Buff & Utility Coverage Analyzer"
 export const size = { height: 630, width: 1200 }
 export const contentType = "image/png"
 
@@ -45,7 +45,7 @@ const OgImage = () =>
           lineHeight: 1.1,
         }}
       >
-        WoW Raid Builder
+        RaidScope
       </div>
 
       <div

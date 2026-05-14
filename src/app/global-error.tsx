@@ -16,7 +16,7 @@ const GlobalError = ({ error, reset }: GlobalErrorProps) => {
     <html lang="ko">
       <body className="flex min-h-screen items-center justify-center bg-[#0a0e1a] text-[#e8c96a]">
         <div className="flex flex-col items-center gap-6 p-8 text-center">
-          <h1 className="text-3xl font-bold tracking-widest">WoW Raid Builder</h1>
+          <h1 className="text-3xl font-bold tracking-widest">RaidScope</h1>
           <p className="max-w-sm text-sm text-slate-400">
             치명적인 오류가 발생했습니다. 페이지를 새로고침해 주세요.
           </p>

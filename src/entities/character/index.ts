@@ -11,7 +11,7 @@ export {
   normalizeName,
   wowheadIconUrl,
 } from "./buffs"
-export type { BuffCategory, BuffCoverage, BuffKey, CandidateProvider } from "./buffs"
+export type { BuffCategory, BuffCoverage, BuffKey, BuffProvider, CandidateProvider } from "./buffs"
 export { SPEC_ROLE_MAP } from "./config/spec-role"
 export { MAX_ROSTER_SIZE, useRosterStore } from "./model/roster-store"
 export {
