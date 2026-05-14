@@ -1,17 +1,17 @@
 {
   "home": {
-    "title": "RaidScope",
+    "title": "Raid Scope",
     "season": "Midnight Season 1",
     "description": "Search for characters to build your raid roster, arrange 5-player parties in the party frame, and check buff coverage.",
     "characterSearch": "Add Character",
     "loading": "Loading…"
   },
   "meta": {
-    "title": "RaidScope — WoW Raid Composition Analyzer",
+    "title": "Raid Scope — WoW Raid Composition Analyzer",
     "description": "Free WoW raid composition tool for raid leaders. Search characters, check buff & utility coverage, and arrange 5-player parties with drag & drop. Built for World of Warcraft Midnight Season 1. Powered by Raider.IO & Warcraft Logs.",
-    "ogTitle": "RaidScope — WoW Raid Composition Analyzer",
+    "ogTitle": "Raid Scope — WoW Raid Composition Analyzer",
     "ogDescription": "Free WoW raid tool for raid leaders. Character search, buff & utility coverage analysis, and party frame arrangement — all in one place.",
-    "keywords": "RaidScope, WoW, World of Warcraft, wow raid builder, wow raid composition, raid composition analyzer, buff coverage, utility coverage, raid leader tool, wow raid planner, Midnight Season 1, party frame, Raider.IO, Warcraft Logs, M+ score"
+    "keywords": "Raid Scope, WoW, World of Warcraft, wow raid builder, wow raid composition, raid composition analyzer, buff coverage, utility coverage, raid leader tool, wow raid planner, Midnight Season 1, party frame, Raider.IO, Warcraft Logs, M+ score"
   },
   "buff": {
     "sectionTitle": "Buff / Utility Coverage",

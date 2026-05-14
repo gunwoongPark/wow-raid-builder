@@ -6,6 +6,7 @@ import {
   getSpecIdByClassAndName,
   type RaiderIOProfile,
 } from "@/entities/character"
+import { API_TIMEOUTS } from "@/shared/config/api-timeouts"
 import { RAIDERIO_BASE_URL } from "@/shared/config/raiderio"
 import { KR_SEARCH_REALM_SLUGS } from "@/shared/config/realms"
 import { CURRENT_SEASON } from "@/shared/config/season"
@@ -24,7 +25,9 @@ const searchOnRealm = async (
       `&name=${encodeURIComponent(name)}` +
       `&fields=mythic_plus_scores_by_season:${CURRENT_SEASON},raid_progression`
 
-    const { data } = await axios.get<RaiderIOProfile>(url, { timeout: 2500 })
+    const { data } = await axios.get<RaiderIOProfile>(url, {
+      timeout: API_TIMEOUTS.RAIDERIO_SEARCH,
+    })
 
     const raidProgression = data.raid_progression ? Object.values(data.raid_progression)[0] : null
 

@@ -158,7 +158,7 @@ export const CharacterSearchForm = () => {
               searchResults.map((result) => (
                 <ComboboxOption
                   className="text-foreground data-focus:bg-primary/10 flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm transition-colors"
-                  key={result.realmSlug}
+                  key={`${result.realmSlug}-${result.name}`}
                   value={result}
                 >
                   {result.thumbnailUrl && (
