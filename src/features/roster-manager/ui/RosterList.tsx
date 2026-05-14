@@ -3,7 +3,7 @@
 import { Link } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { toast } from "sonner"
 
 import { useRosterStore } from "@/entities/character"
@@ -22,11 +22,12 @@ export const RosterList = () => {
   const characters = useRosterStore((store) => store.characters)
   const clearRoster = useRosterStore((store) => store.clearRoster)
 
-  const [view, setView] = useState<RosterView>("list")
-
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
+
+  const rawView = searchParams.get("view")
+  const view: RosterView = rawView === "party" ? "party" : "list"
 
   const rawSortColumn = searchParams.get("sort")
   const isSortColumn = (value: string): value is SortColumn =>
@@ -40,6 +41,17 @@ export const RosterList = () => {
   const t = useTranslations("roster")
   const tRole = useTranslations("role")
   const tColumn = useTranslations("roster.column")
+
+  const handleViewChange = (nextView: RosterView) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (nextView === "list") {
+      params.delete("view")
+    } else {
+      params.set("view", nextView)
+    }
+    const query = params.toString()
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
+  }
 
   const handleSort = (column: SortColumn) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -71,10 +83,14 @@ export const RosterList = () => {
   }
 
   useEffect(() => {
-    if (characters.length === 0 && (searchParams.get("sort") || searchParams.get("dir"))) {
+    if (
+      characters.length === 0 &&
+      (searchParams.get("sort") || searchParams.get("dir") || searchParams.get("view"))
+    ) {
       const params = new URLSearchParams(searchParams.toString())
       params.delete("sort")
       params.delete("dir")
+      params.delete("view")
       const query = params.toString()
       router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
     }
@@ -130,7 +146,7 @@ export const RosterList = () => {
           </div>
 
           <div className="flex shrink-0 flex-wrap items-center gap-1.5">
-            <RosterViewToggle onViewChange={setView} view={view} />
+            <RosterViewToggle onViewChange={handleViewChange} view={view} />
 
             <button
               className="flex items-center gap-1 rounded border border-transparent px-2 py-1 text-xs text-sky-700 transition-all hover:border-sky-500/30 hover:bg-sky-500/10 hover:text-sky-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-sky-400/70 dark:hover:border-sky-400/30 dark:hover:text-sky-400"
