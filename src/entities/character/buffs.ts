@@ -619,9 +619,7 @@ export const analyzeBuffCoverage = (characters: RosterCharacter[]): BuffCoverage
     const matchingCharacters = characters.filter((character) =>
       source.specIds.includes(character.specId)
     )
-    const providers = matchingCharacters.map(
-      (character) => `${character.name} (${character.specName})`
-    )
+    const providers = matchingCharacters.map((character) => character.name)
     const isCountable = COUNTABLE_CATEGORIES.includes(source.category)
 
     return {
