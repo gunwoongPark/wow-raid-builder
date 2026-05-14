@@ -56,7 +56,7 @@ export const generateMetadata = async ({ params }: LocaleLayoutProps): Promise<M
         "ko-KR": SITE_URL,
       },
     },
-    applicationName: "RaidCraft",
+    applicationName: "RaidScope",
     authors: [{ name: "gunwoongPark", url: "https://github.com/gunwoongPark" }],
     category: "game",
     creator: "gunwoongPark",
@@ -66,7 +66,7 @@ export const generateMetadata = async ({ params }: LocaleLayoutProps): Promise<M
     openGraph: {
       description: t("ogDescription"),
       locale: isKorean ? "ko_KR" : "en_US",
-      siteName: "RaidCraft",
+      siteName: "RaidScope",
       title: t("ogTitle"),
       type: "website",
       url: localizedUrl,
@@ -85,7 +85,7 @@ export const generateMetadata = async ({ params }: LocaleLayoutProps): Promise<M
     },
     title: {
       default: t("title"),
-      template: `%s | RaidCraft`,
+      template: `%s | RaidScope`,
     },
     twitter: {
       card: "summary_large_image",

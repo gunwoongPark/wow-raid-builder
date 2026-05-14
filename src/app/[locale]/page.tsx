@@ -42,8 +42,8 @@ const jsonLd = {
   ],
   inLanguage: ["ko-KR", "en"],
   keywords:
-    "RaidCraft, WoW, World of Warcraft, wow raid, wow raid builder, wow raid composition, raid leader, buff coverage, utility, Midnight Season 1, Raider.IO, Warcraft Logs",
-  name: "RaidCraft",
+    "RaidScope, WoW, World of Warcraft, wow raid, wow raid builder, wow raid composition, raid leader, buff coverage, utility, Midnight Season 1, Raider.IO, Warcraft Logs",
+  name: "RaidScope",
   offers: {
     "@type": "Offer",
     price: "0",
