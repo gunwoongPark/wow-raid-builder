@@ -7,11 +7,11 @@
     "loading": "Loading…"
   },
   "meta": {
-    "title": "RaidCraft — Raid Composition Analyzer",
-    "description": "A World of Warcraft raid composition tool for raid leaders. Search characters, analyze buff/utility coverage, and arrange 5-player parties with the party frame. Based on Midnight Season 1.",
-    "ogTitle": "RaidCraft — Raid Composition Analyzer",
-    "ogDescription": "Raid composition tool for WoW raid leaders. Character search, buff/utility coverage analysis, and 5-player party arrangement.",
-    "keywords": "WoW, World of Warcraft, raid, raid builder, composition, buff, utility, coverage, Midnight, Midnight Season 1, raid leader, party frame, Raider.IO, Warcraft Logs"
+    "title": "RaidCraft — WoW Raid Composition Analyzer",
+    "description": "Free WoW raid composition tool for raid leaders. Search characters, check buff & utility coverage, and arrange 5-player parties with drag & drop. Built for World of Warcraft Midnight Season 1. Powered by Raider.IO & Warcraft Logs.",
+    "ogTitle": "RaidCraft — WoW Raid Composition Analyzer",
+    "ogDescription": "Free WoW raid tool for raid leaders. Character search, buff & utility coverage analysis, and party frame arrangement — all in one place.",
+    "keywords": "RaidCraft, WoW, World of Warcraft, wow raid builder, wow raid composition, raid composition analyzer, buff coverage, utility coverage, raid leader tool, wow raid planner, Midnight Season 1, party frame, Raider.IO, Warcraft Logs, M+ score"
   },
   "buff": {
     "sectionTitle": "Buff / Utility Coverage",

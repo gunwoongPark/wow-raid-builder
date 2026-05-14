@@ -29,21 +29,20 @@ const jsonLd = {
   },
   browserRequirements: "Requires JavaScript",
   description:
-    "A World of Warcraft raid composition tool for raid leaders. Search characters, check buff/utility coverage, and arrange 5-player parties with the party frame. Based on Midnight Season 1.",
+    "Free WoW raid composition tool for raid leaders. Search characters, check buff & utility coverage, and arrange 5-player parties. Built for World of Warcraft Midnight Season 1.",
   featureList: [
-    "Character search and roster management",
-    "Party frame — 5-player party arrangement",
-    "Drag & drop party reassignment",
-    "Buff/utility coverage visualization",
+    "WoW character search and roster management",
+    "Buff & utility coverage visualization",
+    "Party frame — drag & drop 5-player party arrangement",
     "Synergy, external CD, and raid CD recommendations",
     "Raider.IO M+ score integration",
-    "Warcraft Logs raid log integration",
+    "Warcraft Logs raid log percentile integration",
     "Roster URL sharing",
     "Roster preset save/load",
   ],
   inLanguage: ["ko-KR", "en"],
   keywords:
-    "WoW, raid, raid builder, composition, buff, utility, Midnight, Midnight Season 1, raid leader, party frame, Raider.IO, Warcraft Logs",
+    "RaidCraft, WoW, World of Warcraft, wow raid, wow raid builder, wow raid composition, raid leader, buff coverage, utility, Midnight Season 1, Raider.IO, Warcraft Logs",
   name: "RaidCraft",
   offers: {
     "@type": "Offer",

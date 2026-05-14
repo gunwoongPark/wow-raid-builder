@@ -7,11 +7,11 @@
     "loading": "불러오는 중…"
   },
   "meta": {
-    "title": "RaidCraft — 공격대 구성 분석",
-    "description": "공대장을 위한 월드 오브 워크래프트 공격대 구성 분석 도구. 캐릭터를 검색해 버프·유틸 커버리지를 확인하고, 파티 프레임으로 5인 파티 단위 편성까지 지원합니다. 한밤(Midnight) 시즌 1 기준.",
-    "ogTitle": "RaidCraft — 공격대 구성 분석",
-    "ogDescription": "공대장을 위한 공격대 구성 분석 도구. 캐릭터 검색, 버프·유틸 커버리지 분석, 파티 프레임 기반 5인 파티 편성을 지원합니다.",
-    "keywords": "WoW, World of Warcraft, 월드 오브 워크래프트, 공격대, 공대, 레이드, 레이드 빌더, 공격대 편성, 버프, 유틸, 커버리지, 시너지, 외생기, 공생기, 한밤, Midnight, 한밤 시즌 1, 공대장, 파티 프레임, Raider.IO, Warcraft Logs"
+    "title": "RaidCraft — WoW 레이드 구성 분석기",
+    "description": "와우(WoW) 공대장을 위한 무료 레이드 구성 분석 툴. 캐릭터를 검색해 버프·유틸 커버리지를 한눈에 확인하고, 드래그앤드롭 파티 프레임으로 5인 파티를 자유롭게 편성하세요. 한밤(Midnight) 시즌 1 공격대 기준.",
+    "ogTitle": "RaidCraft — WoW 공격대 구성 분석",
+    "ogDescription": "와우 공대장을 위한 레이드 구성 분석 툴. 캐릭터 검색, 버프·유틸 커버리지 분석, 파티 프레임 5인 편성을 한 곳에서.",
+    "keywords": "RaidCraft, WoW, 와우, 레이드, 공대, 공격대, 공대 구성, 공격대 편성, 와우 레이드, 와우 공대장, 한밤, Midnight, 한밤 시즌 1, 버프, 유틸, 커버리지, 외생기, 공생기, 시너지, 파티 프레임, M+ 점수, Raider.IO, Warcraft Logs, World of Warcraft, 월드 오브 워크래프트"
   },
   "buff": {
     "sectionTitle": "버프 / 유틸 커버리지",
